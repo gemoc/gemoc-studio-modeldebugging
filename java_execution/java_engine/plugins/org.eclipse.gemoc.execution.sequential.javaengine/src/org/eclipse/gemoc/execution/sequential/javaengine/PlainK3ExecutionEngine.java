@@ -15,10 +15,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
@@ -29,26 +26,9 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.impl.InternalTransactionalEditingDomain;
-import org.eclipse.jdt.core.IPackageFragmentRoot;
-import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.search.IJavaSearchConstants;
-import org.eclipse.jdt.core.search.IJavaSearchScope;
-import org.eclipse.jdt.core.search.SearchEngine;
-import org.eclipse.jdt.core.search.SearchMatch;
-import org.eclipse.jdt.core.search.SearchParticipant;
-import org.eclipse.jdt.core.search.SearchPattern;
-import org.eclipse.jdt.core.search.SearchRequestor;
 import org.eclipse.gemoc.executionframework.engine.commons.MelangeHelper;
 import org.eclipse.gemoc.executionframework.engine.core.AbstractCommandBasedSequentialExecutionEngine;
 import org.eclipse.gemoc.executionframework.engine.core.EngineStoppedException;
-import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionContext;
-import org.eclipse.gemoc.xdsmlframework.api.core.IRunConfiguration;
-import org.osgi.framework.Bundle;
-
-import fr.inria.diverse.k3.al.annotationprocessor.stepmanager.IStepManager;
-import fr.inria.diverse.k3.al.annotationprocessor.stepmanager.StepCommand;
-import fr.inria.diverse.k3.al.annotationprocessor.stepmanager.StepManagerRegistry;
-import fr.inria.diverse.melange.adapters.EObjectAdapter;
 import org.eclipse.gemoc.trace.commons.model.launchconfiguration.AddonExtensionParameter;
 import org.eclipse.gemoc.trace.commons.model.launchconfiguration.AnimatorURIParameter;
 import org.eclipse.gemoc.trace.commons.model.launchconfiguration.EntryPointParameter;
@@ -59,6 +39,23 @@ import org.eclipse.gemoc.trace.commons.model.launchconfiguration.LaunchConfigura
 import org.eclipse.gemoc.trace.commons.model.launchconfiguration.LaunchconfigurationFactory;
 import org.eclipse.gemoc.trace.commons.model.launchconfiguration.ModelRootParameter;
 import org.eclipse.gemoc.trace.commons.model.launchconfiguration.ModelURIParameter;
+import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionContext;
+import org.eclipse.gemoc.xdsmlframework.api.core.IRunConfiguration;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.search.IJavaSearchConstants;
+import org.eclipse.jdt.core.search.IJavaSearchScope;
+import org.eclipse.jdt.core.search.SearchEngine;
+import org.eclipse.jdt.core.search.SearchMatch;
+import org.eclipse.jdt.core.search.SearchParticipant;
+import org.eclipse.jdt.core.search.SearchPattern;
+import org.eclipse.jdt.core.search.SearchRequestor;
+import org.osgi.framework.Bundle;
+
+import fr.inria.diverse.k3.al.annotationprocessor.stepmanager.IStepManager;
+import fr.inria.diverse.k3.al.annotationprocessor.stepmanager.StepCommand;
+import fr.inria.diverse.k3.al.annotationprocessor.stepmanager.StepManagerRegistry;
+import fr.inria.diverse.melange.adapters.EObjectAdapter;
 
 /**
  * Implementation of the GEMOC Execution engine dedicated to run Kermeta 3 operational semantic
@@ -352,7 +349,7 @@ public class PlainK3ExecutionEngine extends AbstractCommandBasedSequentialExecut
 		} else {
 			// the main isn't visible directly from the workspace, try another
 			// method
-			bundle = _executionContext.getMelangeBundle();
+			bundle = _executionContext.getDslBundle();
 		}
 
 		return bundle;
