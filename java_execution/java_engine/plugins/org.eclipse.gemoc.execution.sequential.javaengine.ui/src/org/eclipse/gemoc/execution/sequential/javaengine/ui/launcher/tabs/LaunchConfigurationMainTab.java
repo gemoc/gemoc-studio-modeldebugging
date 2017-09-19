@@ -25,6 +25,19 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.gemoc.commons.eclipse.emf.URIHelper;
+import org.eclipse.gemoc.commons.eclipse.ui.dialogs.SelectAnyIFileDialog;
+import org.eclipse.gemoc.dsl.debug.ide.launch.AbstractDSLLaunchConfigurationDelegate;
+import org.eclipse.gemoc.dsl.debug.ide.sirius.ui.launch.AbstractDSLLaunchConfigurationDelegateUI;
+import org.eclipse.gemoc.execution.sequential.javaengine.PlainK3ExecutionEngine;
+import org.eclipse.gemoc.execution.sequential.javaengine.ui.Activator;
+import org.eclipse.gemoc.execution.sequential.javaengine.ui.launcher.LauncherMessages;
+import org.eclipse.gemoc.executionframework.engine.commons.MelangeHelper;
+import org.eclipse.gemoc.executionframework.engine.ui.commons.RunConfiguration;
+import org.eclipse.gemoc.executionframework.ui.utils.ENamedElementQualifiedNameLabelProvider;
+import org.eclipse.gemoc.xdsmlframework.ui.utils.dialogs.SelectAIRDIFileDialog;
+import org.eclipse.gemoc.xdsmlframework.ui.utils.dialogs.SelectAnyEObjectDialog;
+import org.eclipse.gemoc.xdsmlframework.ui.utils.dialogs.SelectMainMethodDialog;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osgi.util.NLS;
@@ -45,21 +58,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.xtext.naming.DefaultDeclarativeQualifiedNameProvider;
 import org.eclipse.xtext.naming.QualifiedName;
-import org.eclipse.gemoc.commons.eclipse.emf.URIHelper;
-import org.eclipse.gemoc.commons.eclipse.ui.dialogs.SelectAnyIFileDialog;
-import org.eclipse.gemoc.execution.sequential.javaengine.PlainK3ExecutionEngine;
-import org.eclipse.gemoc.execution.sequential.javaengine.ui.Activator;
-import org.eclipse.gemoc.execution.sequential.javaengine.ui.launcher.LauncherMessages;
-import org.eclipse.gemoc.executionframework.engine.commons.MelangeHelper;
-import org.eclipse.gemoc.executionframework.engine.ui.commons.RunConfiguration;
-import org.eclipse.gemoc.executionframework.ui.utils.ENamedElementQualifiedNameLabelProvider;
-import org.eclipse.gemoc.xdsmlframework.ui.utils.dialogs.SelectAIRDIFileDialog;
-import org.eclipse.gemoc.xdsmlframework.ui.utils.dialogs.SelectAnyEObjectDialog;
-import org.eclipse.gemoc.xdsmlframework.ui.utils.dialogs.SelectMainMethodDialog;
 import org.osgi.framework.Bundle;
-
-import org.eclipse.gemoc.dsl.debug.ide.launch.AbstractDSLLaunchConfigurationDelegate;
-import org.eclipse.gemoc.dsl.debug.ide.sirius.ui.launch.AbstractDSLLaunchConfigurationDelegateUI;
 
 /**
  * Sequential engine launch configuration main tab
@@ -73,6 +72,8 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 	protected Text _modelLocationText;
 	protected Text _modelInitializationMethodText;
 	protected Text _modelInitializationArgumentsText;
+//	protected Text _scenarioLocationText;
+//	protected Text _arbiterLocationText;
 	protected Text _siriusRepresentationLocationText;
 	protected Button _animateButton;
 	protected Text _delayText;
@@ -155,6 +156,14 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 			_languageCombo.setText(runConfiguration
 					.getLanguageName());
 			_modelInitializationArgumentsText.setText(runConfiguration.getModelInitializationArguments());
+
+//			URI scenarioURI = runConfiguration.getScenarioURI();
+//			_scenarioLocationText.setText(scenarioURI == null ? "" :
+//				URIHelper.removePlatformScheme(scenarioURI));
+//			URI arbiterURI = runConfiguration.getArbiterURI();
+//			_arbiterLocationText.setText(arbiterURI == null ? "" :
+//				URIHelper.removePlatformScheme(arbiterURI));
+			
 			_entryPointModelElementLabel.setText("");
 			updateMainElementName();
 		} catch (CoreException e) {
@@ -169,6 +178,7 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 				this._modelLocationText.getText());
 		configuration.setAttribute(
 				AbstractDSLLaunchConfigurationDelegateUI.SIRIUS_RESOURCE_URI,
+//				AbstractDSLLaunchConfigurationDelegateSiriusUI.SIRIUS_RESOURCE_URI,
 				this._siriusRepresentationLocationText.getText());
 		configuration.setAttribute(RunConfiguration.LAUNCH_DELAY,
 				Integer.parseInt(_delayText.getText()));
@@ -184,6 +194,16 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 				_modelInitializationMethodText.getText());
 		configuration.setAttribute(RunConfiguration.LAUNCH_INITIALIZATION_ARGUMENTS,
 				_modelInitializationArgumentsText.getText());
+//		configuration.setAttribute(RunConfiguration.LAUNCH_SCENARIO_URI,
+//				_scenarioLocationText.getText());
+//		configuration.setAttribute(RunConfiguration.LAUNCH_ARBITER_URI,
+//				_arbiterLocationText.getText());
+//		try {
+//			configuration.setAttribute("Property Monitor",
+//					!configuration.getAttribute(RunConfiguration.LAUNCH_SCENARIO_URI, "").equals(""));
+//		} catch (CoreException e) {
+//			e.printStackTrace();
+//		}
 		configuration.setAttribute(RunConfiguration.LAUNCH_BREAK_START,
 				_animationFirstBreak.getSelection());
 		// DebugModelID for sequential engine
@@ -256,13 +276,51 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 		_modelInitializationArgumentsText.setFont(font);
 		_modelInitializationArgumentsText.setEditable(true);
 		_modelInitializationArgumentsText.addModifyListener(new ModifyListener() {
-
 			@Override
 			public void modifyText(ModifyEvent e) {
 				updateLaunchConfigurationDialog();
 			}
 		});
 		createTextLabelLayout(parent, "");
+		
+//		// Scenario location text
+//		createTextLabelLayout(parent, "Scenario");
+//		_scenarioLocationText = new Text(parent, SWT.SINGLE | SWT.BORDER);
+//		_scenarioLocationText.setLayoutData(createStandardLayout());
+//		_scenarioLocationText.setFont(font);
+//		_scenarioLocationText.addModifyListener(fBasicModifyListener);
+//		Button scenarioLocationButton = createPushButton(parent, "Browse", null);
+//		scenarioLocationButton.addSelectionListener(new SelectionAdapter() {
+//			public void widgetSelected(SelectionEvent evt) {
+//				SelectAnyIFileDialog dialog = new SelectAnyIFileDialog();
+//				if (dialog.open() == Dialog.OK) {
+//					String scenarioPath = ((IResource) dialog.getResult()[0])
+//							.getFullPath().toPortableString();
+//					_scenarioLocationText.setText(scenarioPath);
+//					updateLaunchConfigurationDialog();
+//				}
+//			}
+//		});
+//		
+//		// Arbiter location text
+//		createTextLabelLayout(parent, "Arbiter");
+//		_arbiterLocationText = new Text(parent, SWT.SINGLE | SWT.BORDER);
+//		_arbiterLocationText.setLayoutData(createStandardLayout());
+//		_arbiterLocationText.setFont(font);
+//		_arbiterLocationText.addModifyListener(fBasicModifyListener);
+//		Button arbiterLocationButton = createPushButton(parent, "Browse", null);
+//		arbiterLocationButton.addSelectionListener(new SelectionAdapter() {
+//			public void widgetSelected(SelectionEvent evt) {
+//				SelectAnyIFileDialog dialog = new SelectAnyIFileDialog();
+//				if (dialog.open() == Dialog.OK) {
+//					String arbiterPath = ((IResource) dialog.getResult()[0])
+//							.getFullPath().toPortableString();
+//					_arbiterLocationText.setText(arbiterPath);
+//					updateLaunchConfigurationDialog();
+//				}
+//			}
+//		});
+		
 		return parent;
 	}
 

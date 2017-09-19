@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.gemoc.executionframework.event.model/src"
+    modelPluginID="org.eclipse.gemoc.executionframework.event.model" modelName="Scenario"
+    rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container" importerID="org.eclipse.emf.importer.ecore"
+    complianceLevel="8.0" copyrightFields="false" usedGenPackages="../../org.eclipse.emf.ecore/model/Ecore.genmodel#//ecore property.genmodel#//property"
+    operationReflection="true" importOrganizing="true">
+  <foreignModel>scenario.ecore</foreignModel>
+  <genPackages prefix="Scenario" basePackage="org.eclipse.gemoc.executionframework.event.model"
+      disposableProviderFactory="true" ecorePackage="scenario.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="scenario.ecore#//TruthValue">
+      <genEnumLiterals ecoreEnumLiteral="scenario.ecore#//TruthValue/INCONCLUSIVE"/>
+      <genEnumLiterals ecoreEnumLiteral="scenario.ecore#//TruthValue/TRUE"/>
+      <genEnumLiterals ecoreEnumLiteral="scenario.ecore#//TruthValue/FALSE"/>
+    </genEnums>
+    <genClasses ecoreClass="scenario.ecore#//Scenario">
+      <genTypeParameters ecoreTypeParameter="scenario.ecore#//Scenario/T"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference scenario.ecore#//Scenario/elements"/>
+    </genClasses>
+    <genClasses ecoreClass="scenario.ecore#//Event"/>
+    <genClasses image="false" ecoreClass="scenario.ecore#//ElementProvider">
+      <genTypeParameters ecoreTypeParameter="scenario.ecore#//ElementProvider/T"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="scenario.ecore#//ElementReference">
+      <genTypeParameters ecoreTypeParameter="scenario.ecore#//ElementReference/T"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference scenario.ecore#//ElementReference/element"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="scenario.ecore#//ElementQuery">
+      <genTypeParameters ecoreTypeParameter="scenario.ecore#//ElementQuery/T"/>
+      <genTypeParameters ecoreTypeParameter="scenario.ecore#//ElementQuery/P"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference scenario.ecore#//ElementQuery/query"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="scenario.ecore#//EventOccurrence">
+      <genTypeParameters ecoreTypeParameter="scenario.ecore#//EventOccurrence/E"/>
+      <genTypeParameters ecoreTypeParameter="scenario.ecore#//EventOccurrence/P"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference scenario.ecore#//EventOccurrence/event"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute scenario.ecore#//EventOccurrence/time"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="scenario.ecore#//ScenarioElement">
+      <genTypeParameters ecoreTypeParameter="scenario.ecore#//ScenarioElement/P"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference scenario.ecore#//ScenarioElement/previousElements"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference scenario.ecore#//ScenarioElement/nextElements"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference scenario.ecore#//ScenarioElement/guard"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="scenario.ecore#//ScenarioFSM">
+      <genTypeParameters ecoreTypeParameter="scenario.ecore#//ScenarioFSM/P"/>
+      <genTypeParameters ecoreTypeParameter="scenario.ecore#//ScenarioFSM/E"/>
+      <genTypeParameters ecoreTypeParameter="scenario.ecore#//ScenarioFSM/S"/>
+      <genTypeParameters ecoreTypeParameter="scenario.ecore#//ScenarioFSM/T"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference scenario.ecore#//ScenarioFSM/states"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference scenario.ecore#//ScenarioFSM/initialState"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference scenario.ecore#//ScenarioFSM/acceptingStates"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference scenario.ecore#//ScenarioFSM/transitions"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute scenario.ecore#//ScenarioFSM/name"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="scenario.ecore#//ScenarioFSMState">
+      <genTypeParameters ecoreTypeParameter="scenario.ecore#//ScenarioFSMState/E"/>
+      <genTypeParameters ecoreTypeParameter="scenario.ecore#//ScenarioFSMState/T"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference scenario.ecore#//ScenarioFSMState/event"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference scenario.ecore#//ScenarioFSMState/outgoingTransitions"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference scenario.ecore#//ScenarioFSMState/incomingTransitions"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute scenario.ecore#//ScenarioFSMState/name"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="scenario.ecore#//ScenarioFSMTransition">
+      <genTypeParameters ecoreTypeParameter="scenario.ecore#//ScenarioFSMTransition/P"/>
+      <genTypeParameters ecoreTypeParameter="scenario.ecore#//ScenarioFSMTransition/S"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference scenario.ecore#//ScenarioFSMTransition/guard"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference scenario.ecore#//ScenarioFSMTransition/source"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference scenario.ecore#//ScenarioFSMTransition/target"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute scenario.ecore#//ScenarioFSMTransition/name"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="scenario.ecore#//Arbiter">
+      <genTypeParameters ecoreTypeParameter="scenario.ecore#//Arbiter/P"/>
+      <genTypeParameters ecoreTypeParameter="scenario.ecore#//Arbiter/S"/>
+      <genTypeParameters ecoreTypeParameter="scenario.ecore#//Arbiter/T"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference scenario.ecore#//Arbiter/states"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference scenario.ecore#//Arbiter/transitions"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference scenario.ecore#//Arbiter/initialState"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference scenario.ecore#//Arbiter/acceptingStates"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute scenario.ecore#//Arbiter/name"/>
+    </genClasses>
+    <genClasses ecoreClass="scenario.ecore#//ArbiterState">
+      <genTypeParameters ecoreTypeParameter="scenario.ecore#//ArbiterState/P"/>
+      <genTypeParameters ecoreTypeParameter="scenario.ecore#//ArbiterState/T"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference scenario.ecore#//ArbiterState/incomingTransitions"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference scenario.ecore#//ArbiterState/outgoingTransitions"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute scenario.ecore#//ArbiterState/truthValue"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute scenario.ecore#//ArbiterState/name"/>
+    </genClasses>
+    <genClasses ecoreClass="scenario.ecore#//ArbiterTransition">
+      <genTypeParameters ecoreTypeParameter="scenario.ecore#//ArbiterTransition/P"/>
+      <genTypeParameters ecoreTypeParameter="scenario.ecore#//ArbiterTransition/S"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference scenario.ecore#//ArbiterTransition/guard"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference scenario.ecore#//ArbiterTransition/source"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference scenario.ecore#//ArbiterTransition/target"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute scenario.ecore#//ArbiterTransition/name"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

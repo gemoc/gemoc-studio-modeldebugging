@@ -93,6 +93,7 @@ public class Activator extends GemocPlugin {
 			_loggingBackend = new DefaultLoggingBackend(this);
 			MessagingSystemManager msm = new MessagingSystemManager();
 			MessagingSystem ms = msm.createBestPlatformMessagingSystem(PLUGIN_ID, "Model Debugger console");
+//			MessagingSystem ms = msm.createBestPlatformMessagingSystem(PLUGIN_ID, "Debugger");
 			_loggingBackend.setMessagingSystem(ms);
 		}
 		return _loggingBackend;

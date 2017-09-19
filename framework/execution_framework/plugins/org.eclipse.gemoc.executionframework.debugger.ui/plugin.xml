@@ -93,5 +93,9 @@
             actionClass="org.eclipse.gemoc.executionframework.debugger.ui.breakpoints.GemocToggleBreakpointAction"
             id="org.eclipse.gemoc.executionframework.debugger.ui.GemocToggleBreakpointAction">
       </javaActions>
+      <javaActions
+            actionClass="org.eclipse.gemoc.executionframework.debugger.ui.breakpoints.GemocToggleConditionalBreakpointAction"
+            id="org.eclipse.gemoc.executionframework.engine.ui.debug.sirius.action.GemocToggleConditionalBreakpointAction">
+      </javaActions>
    </extension>
 </plugin>

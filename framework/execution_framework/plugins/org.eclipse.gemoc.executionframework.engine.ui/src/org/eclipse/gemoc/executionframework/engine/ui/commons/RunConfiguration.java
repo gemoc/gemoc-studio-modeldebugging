@@ -26,8 +26,6 @@ import org.eclipse.gemoc.dsl.debug.ide.launch.AbstractDSLLaunchConfigurationDele
 
 public class RunConfiguration implements IRunConfiguration {
 
-	
-
 	protected ILaunchConfiguration _launchConfiguration;
 
 	public RunConfiguration(ILaunchConfiguration launchConfiguration) throws CoreException {
@@ -50,6 +48,10 @@ public class RunConfiguration implements IRunConfiguration {
 		_modelEntryPoint = getAttribute(LAUNCH_MODEL_ENTRY_POINT, "");
 		_modelInitializationMethod = getAttribute(LAUNCH_INITIALIZATION_METHOD, "");
 		_modelInitializationArguments = getAttribute(LAUNCH_INITIALIZATION_ARGUMENTS, "");
+//		String scenarioPath = getAttribute(LAUNCH_SCENARIO_URI, "");
+//		_scenarioURI = scenarioPath.length() > 0 ? URI.createPlatformResourceURI(scenarioPath, true) : null;
+//		String arbiterPath = getAttribute(LAUNCH_ARBITER_URI, "");
+//		_arbiterURI = arbiterPath.length() > 0 ? URI.createPlatformResourceURI(arbiterPath, true) : null;
 		_melangeQuery = getAttribute(LAUNCH_MELANGE_QUERY, "");
 
 		for (EngineAddonSpecificationExtension extension : EngineAddonSpecificationExtensionPoint.getSpecifications()) {
@@ -77,8 +79,6 @@ public class RunConfiguration implements IRunConfiguration {
 	public int getAnimationDelay() {
 		return _animationDelay;
 	}
-
-
 
 	private URI _modelURI;
 
@@ -160,6 +160,20 @@ public class RunConfiguration implements IRunConfiguration {
 	public String getModelInitializationArguments() {
 		return _modelInitializationArguments;
 	}
+	
+//	private URI _scenarioURI;
+
+//	@Override
+//	public URI getScenarioURI() {
+//		return _scenarioURI;
+//	}
+	
+//	private URI _arbiterURI;
+
+//	@Override
+//	public URI getArbiterURI() {
+//		return _arbiterURI;
+//	}
 	
 	private boolean _breakStart;
 	
