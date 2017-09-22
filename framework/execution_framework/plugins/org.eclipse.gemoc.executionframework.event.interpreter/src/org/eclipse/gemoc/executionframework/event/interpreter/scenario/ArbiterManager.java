@@ -1,14 +1,14 @@
-package org.eclipse.gemoc.event.commons.interpreter.scenario;
+package org.eclipse.gemoc.executionframework.event.interpreter.scenario;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import org.eclipse.gemoc.event.commons.interpreter.property.IPropertyListener;
-import org.eclipse.gemoc.event.commons.interpreter.property.IPropertyMonitor;
 import org.eclipse.gemoc.executionframework.event.model.scenario.Arbiter;
 import org.eclipse.gemoc.executionframework.event.model.scenario.ArbiterState;
 import org.eclipse.gemoc.executionframework.event.model.scenario.TruthValue;
+import org.eclipse.gemoc.executionframework.event.interpreter.property.IPropertyListener;
+import org.eclipse.gemoc.executionframework.event.interpreter.property.IPropertyMonitor;
 import org.eclipse.gemoc.executionframework.event.model.property.Property;
 
 public class ArbiterManager implements IArbiterManager {

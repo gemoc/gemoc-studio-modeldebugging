@@ -1,4 +1,4 @@
-package org.eclipse.gemoc.event.commons.interpreter;
+package org.eclipse.gemoc.executionframework.event.interpreter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,11 +11,11 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
-import org.eclipse.gemoc.event.commons.interpreter.property.PropertyMonitor;
-import org.eclipse.gemoc.event.commons.interpreter.scenario.ArbiterManager;
-import org.eclipse.gemoc.event.commons.interpreter.scenario.IArbiterManager;
-import org.eclipse.gemoc.event.commons.interpreter.scenario.IScenarioManager;
-import org.eclipse.gemoc.event.commons.interpreter.scenario.ScenarioManager;
+import org.eclipse.gemoc.executionframework.event.interpreter.property.PropertyMonitor;
+import org.eclipse.gemoc.executionframework.event.interpreter.scenario.ArbiterManager;
+import org.eclipse.gemoc.executionframework.event.interpreter.scenario.IArbiterManager;
+import org.eclipse.gemoc.executionframework.event.interpreter.scenario.IScenarioManager;
+import org.eclipse.gemoc.executionframework.event.interpreter.scenario.ScenarioManager;
 import org.eclipse.gemoc.executionframework.event.model.scenario.Arbiter;
 import org.eclipse.gemoc.executionframework.event.model.scenario.Scenario;
 import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine;

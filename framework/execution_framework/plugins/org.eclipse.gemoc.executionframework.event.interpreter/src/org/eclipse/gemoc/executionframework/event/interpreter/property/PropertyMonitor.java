@@ -1,4 +1,4 @@
-package org.eclipse.gemoc.event.commons.interpreter.property;
+package org.eclipse.gemoc.executionframework.event.interpreter.property;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,9 +18,9 @@ import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.gemoc.event.commons.interpreter.EventInstance;
-import org.eclipse.gemoc.event.commons.interpreter.IEventInterpreter;
-import org.eclipse.gemoc.event.commons.interpreter.scenario.ElementProviderAspect;
+import org.eclipse.gemoc.executionframework.event.interpreter.EventInstance;
+import org.eclipse.gemoc.executionframework.event.interpreter.IEventInterpreter;
+import org.eclipse.gemoc.executionframework.event.interpreter.scenario.ElementProviderAspect;
 import org.eclipse.gemoc.executionframework.event.model.property.CompositeProperty;
 import org.eclipse.gemoc.executionframework.event.model.property.EventPrecondition;
 import org.eclipse.gemoc.executionframework.event.model.property.Property;

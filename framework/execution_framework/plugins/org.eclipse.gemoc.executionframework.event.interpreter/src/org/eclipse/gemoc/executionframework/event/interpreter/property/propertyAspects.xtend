@@ -1,4 +1,4 @@
-package org.eclipse.gemoc.event.commons.interpreter.property
+package org.eclipse.gemoc.executionframework.event.interpreter.property
 
 import org.eclipse.gemoc.executionframework.event.model.property.BinaryProperty
 import org.eclipse.gemoc.executionframework.event.model.property.BooleanAttributeProperty

@@ -1,13 +1,13 @@
-package org.eclipse.gemoc.event.commons.interpreter.scenario
+package org.eclipse.gemoc.executionframework.event.interpreter.scenario
 
+import fr.inria.diverse.k3.al.annotationprocessor.Aspect
+import fr.inria.diverse.k3.al.annotationprocessor.OverrideAspectMethod
+import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.gemoc.executionframework.event.interpreter.property.StatePropertyAspect
 import org.eclipse.gemoc.executionframework.event.model.scenario.ElementProvider
 import org.eclipse.gemoc.executionframework.event.model.scenario.ElementQuery
 import org.eclipse.gemoc.executionframework.event.model.scenario.ElementReference
-import fr.inria.diverse.k3.al.annotationprocessor.Aspect
-import org.eclipse.emf.ecore.resource.Resource
-import org.eclipse.emf.ecore.EObject
-import fr.inria.diverse.k3.al.annotationprocessor.OverrideAspectMethod
-import org.eclipse.gemoc.event.commons.interpreter.property.StatePropertyAspect
 
 @Aspect(className=ElementProvider)
 class ElementProviderAspect {

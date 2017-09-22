@@ -12,7 +12,7 @@ package org.eclipse.gemoc.executionframework.event.ui.views;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.gemoc.event.commons.interpreter.IEventInterpreter;
+import org.eclipse.gemoc.executionframework.event.interpreter.IEventInterpreter;
 
 import javafx.scene.layout.BorderPane;
 

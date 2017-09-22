@@ -1,4 +1,4 @@
-package org.eclipse.gemoc.event.commons.interpreter.scenario;
+package org.eclipse.gemoc.executionframework.event.interpreter.scenario;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,10 +10,10 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.gemoc.event.commons.interpreter.EventInstance;
-import org.eclipse.gemoc.event.commons.interpreter.IEventInterpreter;
-import org.eclipse.gemoc.event.commons.interpreter.property.IPropertyListener;
-import org.eclipse.gemoc.event.commons.interpreter.property.IPropertyMonitor;
+import org.eclipse.gemoc.executionframework.event.interpreter.EventInstance;
+import org.eclipse.gemoc.executionframework.event.interpreter.IEventInterpreter;
+import org.eclipse.gemoc.executionframework.event.interpreter.property.IPropertyListener;
+import org.eclipse.gemoc.executionframework.event.interpreter.property.IPropertyMonitor;
 import org.eclipse.gemoc.executionframework.event.model.property.CompositeProperty;
 import org.eclipse.gemoc.executionframework.event.model.property.EventPrecondition;
 import org.eclipse.gemoc.executionframework.event.model.property.Property;

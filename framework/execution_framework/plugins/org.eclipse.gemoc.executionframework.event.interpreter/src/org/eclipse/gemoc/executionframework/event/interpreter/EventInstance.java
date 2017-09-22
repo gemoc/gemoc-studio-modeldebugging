@@ -1,4 +1,4 @@
-package org.eclipse.gemoc.event.commons.interpreter;
+package org.eclipse.gemoc.executionframework.event.interpreter;
 
 import java.util.Map;
 

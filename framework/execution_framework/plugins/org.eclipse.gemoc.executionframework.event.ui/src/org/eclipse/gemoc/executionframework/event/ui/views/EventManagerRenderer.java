@@ -19,8 +19,8 @@ import java.util.Set;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.gemoc.event.commons.interpreter.EventInstance;
-import org.eclipse.gemoc.event.commons.interpreter.IEventInterpreter;
+import org.eclipse.gemoc.executionframework.event.interpreter.EventInstance;
+import org.eclipse.gemoc.executionframework.event.interpreter.IEventInterpreter;
 import org.eclipse.gemoc.trace.commons.model.trace.Step;
 import org.eclipse.gemoc.xdsmlframework.api.core.EngineStatus.RunStatus;
 import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine;

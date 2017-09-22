@@ -15,16 +15,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
 
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.util.TransactionUtil;
-import org.eclipse.gemoc.event.commons.interpreter.EventInterpreter;
-import org.eclipse.gemoc.event.commons.interpreter.IEventInterpreter;
 import org.eclipse.gemoc.executionframework.engine.Activator;
+import org.eclipse.gemoc.executionframework.event.interpreter.EventInterpreter;
+import org.eclipse.gemoc.executionframework.event.interpreter.IEventInterpreter;
 import org.eclipse.gemoc.trace.commons.model.generictrace.GenericSequentialStep;
 import org.eclipse.gemoc.trace.commons.model.generictrace.GenerictraceFactory;
 import org.eclipse.gemoc.trace.commons.model.trace.GenericMSE;

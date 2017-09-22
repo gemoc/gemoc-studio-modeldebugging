@@ -1,4 +1,4 @@
-package org.eclipse.gemoc.event.commons.interpreter.scenario;
+package org.eclipse.gemoc.executionframework.event.interpreter.scenario;
 
 import org.eclipse.gemoc.executionframework.event.model.scenario.Arbiter;
 import org.eclipse.gemoc.executionframework.event.model.scenario.TruthValue;

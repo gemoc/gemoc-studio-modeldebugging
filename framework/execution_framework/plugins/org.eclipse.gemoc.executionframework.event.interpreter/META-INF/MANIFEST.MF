@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-SymbolicName: org.eclipse.gemoc.executionframework.event.interpreter;singleton:=true
-Export-Package: org.eclipse.gemoc.event.commons.interpreter.property,
- org.eclipse.gemoc.event.commons.interpreter.scenario,
- org.eclipse.gemoc.event.commons.interpreter
-Bundle-Name: org.eclipse.gemoc.event.commons.interpreter
+Export-Package: org.eclipse.gemoc.executionframework.event.interpreter.property,
+ org.eclipse.gemoc.executionframework.event.interpreter.scenario,
+ org.eclipse.gemoc.executionframework.event.interpreter
+Bundle-Name: org.eclipse.gemoc.executionframework.event.interpreter
 Bundle-Version: 2.4.0.qualifier
 Bundle-ClassPath: .
 Require-Bundle: fr.inria.diverse.k3.al.annotationprocessor.plugin;bundle-version="3.0.0";visibility:=reexport,
