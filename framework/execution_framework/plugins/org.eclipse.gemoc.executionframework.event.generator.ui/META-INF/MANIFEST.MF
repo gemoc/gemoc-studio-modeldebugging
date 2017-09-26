@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Ui
+Bundle-SymbolicName: org.eclipse.gemoc.executionframework.event.generator.ui;singleton:=true
+Bundle-Version: 2.4.0.qualifier
+Bundle-Activator: org.eclipse.gemoc.executionframework.event.generator.ui.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.gemoc.xdsmlframework.ide.ui,
+ org.eclipse.core.resources,
+ org.eclipse.emf.ecore,
+ org.eclipse.gemoc.dsl,
+ org.eclipse.gemoc.executionframework.event.generator,
+ org.eclipse.xtext.xbase;bundle-version="2.10.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
