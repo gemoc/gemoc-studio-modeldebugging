@@ -32,6 +32,7 @@ import org.eclipse.gemoc.dsl.debug.ide.sirius.ui.launch.AbstractDSLLaunchConfigu
 import org.eclipse.gemoc.execution.sequential.javaengine.PlainK3ExecutionEngine;
 import org.eclipse.gemoc.execution.sequential.javaengine.ui.Activator;
 import org.eclipse.gemoc.execution.sequential.javaengine.ui.launcher.LauncherMessages;
+import org.eclipse.gemoc.executionframework.engine.commons.DslHelper;
 import org.eclipse.gemoc.executionframework.engine.commons.MelangeHelper;
 import org.eclipse.gemoc.executionframework.engine.ui.commons.RunConfiguration;
 import org.eclipse.gemoc.executionframework.ui.utils.ENamedElementQualifiedNameLabelProvider;
@@ -393,11 +394,11 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 	 */
 	public Composite createLanguageLayout(Composite parent, Font font) {
 		// Language
-		createTextLabelLayout(parent, "Melange languages");
+		createTextLabelLayout(parent, "Languages");
 		_languageCombo = new Combo(parent, SWT.NONE);
 		_languageCombo.setLayoutData(createStandardLayout());
 
-		List<String> languagesNames = MelangeHelper.getAllLanguages();
+		List<String> languagesNames = DslHelper.getAllLanguages();
 		String[] empty = {};
 		_languageCombo.setItems(languagesNames.toArray(empty));
 		_languageCombo.addSelectionListener(new SelectionAdapter() {
@@ -540,7 +541,7 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 			entryPointClassName = entryMethod.substring(0, lastDot);
 		}
 		
-		Bundle bundle = MelangeHelper.getMelangeBundle(_languageCombo.getText());
+		Bundle bundle = DslHelper.getDslBundle(_languageCombo.getText());
 		
 		if(entryPointClassName != null && bundle != null){
 			try {
