@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.gemoc.executionframework.engine.core;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayDeque;
@@ -24,15 +26,14 @@ import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.impl.EMFCommandTransaction;
 import org.eclipse.emf.transaction.impl.InternalTransactionalEditingDomain;
 import org.eclipse.gemoc.executionframework.engine.Activator;
+import org.eclipse.gemoc.trace.commons.model.trace.MSEOccurrence;
+import org.eclipse.gemoc.trace.commons.model.trace.Step;
 import org.eclipse.gemoc.xdsmlframework.api.core.EngineStatus;
 import org.eclipse.gemoc.xdsmlframework.api.core.EngineStatus.RunStatus;
 import org.eclipse.gemoc.xdsmlframework.api.core.IDisposable;
 import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionContext;
 import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine;
 import org.eclipse.gemoc.xdsmlframework.api.engine_addon.IEngineAddon;
-
-import org.eclipse.gemoc.trace.commons.model.trace.MSEOccurrence;
-import org.eclipse.gemoc.trace.commons.model.trace.Step;
 
 
 
@@ -324,6 +325,11 @@ public abstract class AbstractExecutionEngine implements IExecutionEngine, IDisp
 	@Override
 	public final void startSynchronous() {
 		try {
+			String tmpExecuteFilePath = System.getProperty("tmpExecuteFileProperty");
+			File outputExecuteTmp = tmpExecuteFilePath != null && tmpExecuteFilePath.length() > 0 ? new File(tmpExecuteFilePath) : null;
+			FileOutputStream outputExecuteTmpStream = outputExecuteTmp != null ? new FileOutputStream(outputExecuteTmp) : null;
+			PrintWriter outputExecuteTmpWriter = outputExecuteTmpStream != null ? new PrintWriter(outputExecuteTmpStream, true) : null;
+			long t = System.nanoTime();
 			notifyEngineAboutToStart();
 			Activator.getDefault().gemocRunningEngineRegistry.registerEngine(getName(), AbstractExecutionEngine.this);
 			setEngineStatus(EngineStatus.RunStatus.Running);
@@ -336,7 +342,14 @@ public abstract class AbstractExecutionEngine implements IExecutionEngine, IDisp
 				// transaction
 				commitCurrentTransaction();
 			}
-
+			long execTime = System.nanoTime() - t;
+			if (outputExecuteTmpWriter != null) {
+				outputExecuteTmpWriter.println(execTime);
+				outputExecuteTmpStream.close();
+				outputExecuteTmpWriter.close();
+				outputExecuteTmpStream = null;
+				outputExecuteTmpWriter = null;
+			}
 		} catch (EngineStoppedException stopException) {
 			// not really an error, simply print the stop exception
 			// message

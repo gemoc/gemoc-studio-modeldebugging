@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.gemoc.trace.gemoc.traceaddon;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -21,7 +22,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.eclipse.emf.ecore.EObject;
-
 import org.eclipse.gemoc.trace.commons.model.trace.BigStep;
 import org.eclipse.gemoc.trace.commons.model.trace.Dimension;
 import org.eclipse.gemoc.trace.commons.model.trace.SequentialStep;
@@ -57,6 +57,8 @@ public class GenericTraceExplorer implements ITraceExplorer<Step<?>, State<?,?>,
 	
 	private IStateManager<State<?,?>> stateManager;
 	
+	private PrintWriter writer = null;
+	
 	public GenericTraceExplorer(Trace<?,?,?> trace) {
 		this.trace = trace;
 	}
@@ -64,6 +66,12 @@ public class GenericTraceExplorer implements ITraceExplorer<Step<?>, State<?,?>,
 	public GenericTraceExplorer(Trace<?,?,?> trace, IStateManager<State<?,?>> stateManager) {
 		this.stateManager = stateManager;
 		this.trace = trace;
+	}
+	
+	public GenericTraceExplorer(Trace<?,?,?> trace, IStateManager<State<?,?>> stateManager, PrintWriter writer) {
+		this.stateManager = stateManager;
+		this.trace = trace;
+		this.writer = writer;
 	}
 	
 	private List<? extends Step<?>> getSubSteps(Step<?> step) {
@@ -245,7 +253,14 @@ public class GenericTraceExplorer implements ITraceExplorer<Step<?>, State<?,?>,
 	
 	private void goTo(State<?,?> state) {
 		if (state != null && stateManager != null) {
-			stateManager.restoreState(state);
+			if (writer != null) {
+				final long t = System.nanoTime();
+				stateManager.restoreState(state);
+				final long execTime = System.nanoTime() - t;
+				writer.println(execTime);
+			} else {
+				stateManager.restoreState(state);
+			}
 		}
 	}
 	
@@ -524,36 +539,6 @@ public class GenericTraceExplorer implements ITraceExplorer<Step<?>, State<?,?>,
 		if (listener != null) {
 			listeners.remove(listener);
 		}
-	}
-
-	@Override
-	public void statesAdded(List<State<?, ?>> states) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void stepsStarted(List<Step<?>> steps) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void stepsEnded(List<Step<?>> steps) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void valuesAdded(List<Value<?>> values) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void dimensionsAdded(List<Dimension<?>> dimensions) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

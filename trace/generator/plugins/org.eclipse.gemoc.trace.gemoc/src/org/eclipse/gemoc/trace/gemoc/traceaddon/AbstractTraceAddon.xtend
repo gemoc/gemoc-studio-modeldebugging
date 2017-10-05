@@ -44,6 +44,9 @@ import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine
 import org.eclipse.gemoc.xdsmlframework.api.engine_addon.IEngineAddon
 import org.eclipse.gemoc.xdsmlframework.api.engine_addon.modelchangelistener.BatchModelChangeListener
 import org.eclipse.gemoc.xdsmlframework.api.extensions.engine_addon.EngineAddonSpecificationExtensionPoint
+import java.io.File
+import java.io.FileOutputStream
+import java.io.PrintWriter
 
 abstract class AbstractTraceAddon implements IEngineAddon, IMultiDimensionalTraceAddon<Step<?>, State<?, ?>, TracedObject<?>, Dimension<?>, Value<?>> {
 
@@ -51,11 +54,17 @@ abstract class AbstractTraceAddon implements IEngineAddon, IMultiDimensionalTrac
 	private ITraceExplorer<Step<?>, State<?, ?>, TracedObject<?>, Dimension<?>, Value<?>> traceExplorer
 	private ITraceExtractor<Step<?>, State<?, ?>, TracedObject<?>, Dimension<?>, Value<?>> traceExtractor
 	private ITraceConstructor traceConstructor
-	private ITraceNotifier traceNotifier
-	private BatchModelChangeListener traceListener
+//	private ITraceNotifier traceNotifier
+//	private BatchModelChangeListener traceListener
 	private var boolean needTransaction = true
 	private BatchModelChangeListener listenerAddon
 	private Trace<Step<?>, TracedObject<?>, State<?, ?>> trace
+	
+	private var FileOutputStream addStream = null
+	private var PrintWriter addWriter = null
+	
+	private var FileOutputStream restoreStream = null
+	private var PrintWriter restoreWriter = null
 
 	protected abstract def ITraceConstructor constructTraceConstructor(Resource modelResource, Resource traceResource,
 		Map<EObject, TracedObject<?>> exeToTraced)
@@ -76,7 +85,8 @@ abstract class AbstractTraceAddon implements IEngineAddon, IMultiDimensionalTrac
 	}
 
 	override getTraceNotifier() {
-		return traceNotifier
+//		return traceNotifier
+		null
 	}
 
 	public override void load(Resource traceResource) {
@@ -107,21 +117,41 @@ abstract class AbstractTraceAddon implements IEngineAddon, IMultiDimensionalTrac
 	override stepExecuted(IExecutionEngine engine, Step<?> step) {
 		manageStep(step, false)
 	}
+	
+	override engineAboutToStop(IExecutionEngine engine) {
+		trace.states.forEach[s|
+			traceExplorer.jump(s)
+		]
+	}
+	
+	override engineStopped(IExecutionEngine engine) {
+		addWriter?.close
+		addStream?.close
+		restoreWriter?.close
+		restoreStream?.close
+	}
 
 	private def manageStep(Step<?> step, boolean add) {
 		if (step != null) {
 			modifyTrace([
-				traceConstructor.addState(listenerAddon.getChanges(this))
+				if (addWriter != null) {
+					val t1 = System.nanoTime
+					traceConstructor.addState(listenerAddon.getChanges(this))
+					val execTime = System.nanoTime - t1
+					addWriter.println(execTime)
+				} else {
+					traceConstructor.addState(listenerAddon.getChanges(this))
+				}
+				
 				if (add) {
 					traceConstructor.addStep(step)
 				} else {
 					traceConstructor.endStep(step)
 				}
 				// Updating the trace extractor and explorer with the last changes
-				traceNotifier.notifyListener(traceExtractor)
-				traceNotifier.notifyListener(traceExplorer)
+//				traceNotifier.notifyListener(traceExtractor)
 				// Updating other trace listeners with the last changes
-				traceNotifier.notifyListeners
+//				traceNotifier.notifyListeners
 				// Updating the state of the trace explorer
 				traceExplorer.updateCallStack(step)
 			])
@@ -137,12 +167,26 @@ abstract class AbstractTraceAddon implements IEngineAddon, IMultiDimensionalTrac
 	 */
 	override engineAboutToStart(IExecutionEngine engine) {
 		if (_executionContext == null) {
+			
+			val addFileName = System.getProperty("tmpAddFileProperty")
+			if (addFileName != null && !addFileName.empty) {
+				val addFile = new File(addFileName)
+				addStream = new FileOutputStream(addFile)
+				addWriter = new PrintWriter(addStream, true)
+			}
+			
+			val restoreFileName = System.getProperty("tmpRestoreFileProperty")
+			if (restoreFileName != null && !restoreFileName.empty) {
+				val restoreFile = new File(restoreFileName)
+				restoreStream = new FileOutputStream(restoreFile)
+				restoreWriter = new PrintWriter(restoreStream, true)
+			}
+			
 			_executionContext = engine.executionContext
 
 			val modelResource = _executionContext.resourceModel
 
 			// Creating the resource of the trace
-			// val ResourceSet rs = modelResource.getResourceSet()
 			val ResourceSet rs = new ResourceSetImpl
 
 			// We check whether or not we need transactions
@@ -173,12 +217,11 @@ abstract class AbstractTraceAddon implements IEngineAddon, IMultiDimensionalTrac
 			if (root instanceof Trace<?, ?, ?>) {
 				trace = root as Trace<Step<?>, TracedObject<?>, State<?, ?>>
 				val stateManager = constructStateManager(modelResource, exeToTraced.inverse)
-				traceExplorer = new GenericTraceExplorer(trace, stateManager)
+				traceExplorer = new GenericTraceExplorer(trace, stateManager, restoreWriter)
 				traceExtractor = new GenericTraceExtractor(trace)
-				traceListener = new BatchModelChangeListener(EMFResource.getRelatedResources(traceResource))
-				traceNotifier = new GenericTraceNotifier(traceListener)
-				traceNotifier.addListener(traceExtractor)
-				traceNotifier.addListener(traceExplorer)
+//				traceListener = new BatchModelChangeListener(EMFResource.getRelatedResources(traceResource))
+//				traceNotifier = new GenericTraceNotifier(traceListener)
+//				traceNotifier.addListener(traceExtractor)
 			}
 		}
 	}
