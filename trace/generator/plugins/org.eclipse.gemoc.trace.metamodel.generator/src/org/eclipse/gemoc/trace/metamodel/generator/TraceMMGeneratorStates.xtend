@@ -50,7 +50,7 @@ class TraceMMGeneratorStates {
 	new(OperationalSemanticsView mmext,TraceMMGenerationTraceability traceability,
 		TraceMMExplorer traceMMExplorer, String languageName, EPackage tracemmresult, boolean gemoc) {
 		this.mmext = mmext
-		this.allNewEClasses = mmext.eAllContents.toSet.filter(EClass).toSet
+		this.allNewEClasses = mmext.dynamicClasses.toSet.filter(EClass).toSet
 		this.traceability = traceability
 		this.traceMMExplorer = traceMMExplorer
 		this.languageName = languageName
