@@ -125,6 +125,21 @@ abstract class AbstractTraceAddon implements IEngineAddon, IMultiDimensionalTrac
 	}
 	
 	override engineStopped(IExecutionEngine engine) {
+		
+		val editingDomain = TransactionUtil.getEditingDomain(_executionContext.getResourceModel)
+		val path = System.getProperty("saveTracePath")
+		println("PATH: " + path)
+		
+		val command = new RecordingCommand(editingDomain, "Save trace model") {
+			override protected void doExecute() {
+				if (path != null && path.length() > 0) {
+					trace.eResource.setURI(URI.createFileURI(path));
+					trace.eResource.save(null);
+				}
+			}
+		};
+		CommandExecution.execute(editingDomain, command);
+		
 		addWriter?.close
 		addStream?.close
 		restoreWriter?.close
