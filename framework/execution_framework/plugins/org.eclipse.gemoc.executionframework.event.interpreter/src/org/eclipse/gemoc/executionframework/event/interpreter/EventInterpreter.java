@@ -51,7 +51,7 @@ public class EventInterpreter implements IEventInterpreter {
 	
 	@Override
 	public boolean canSendEvent(EventInstance event) {
-		return api.canSendEvent(event);
+		return api == null ? false : api.canSendEvent(event);
 	}
 
 	private List<IEventInterpreterListener> listeners = new ArrayList<>();
@@ -68,29 +68,31 @@ public class EventInterpreter implements IEventInterpreter {
 
 	@Override
 	public void processEvents() {
-		if (canManageEvents) {
-			canManageEvents = false;
-			if (scenarioManager != null && !scenarioManager.isScenarioComplete()) {
-				if (waitForEvents && eventQueue.isEmpty()) {
-					throw new IllegalStateException("Event manager asked to wait for events while playing a scenario");
-				}
-			} else if (waitForEvents && eventQueue.isEmpty()) {
-				t = Thread.currentThread();
-				synchronized (t) {
-					try {
-						t.wait();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
+		if (api != null) {
+			if (canManageEvents) {
+				canManageEvents = false;
+				if (scenarioManager != null && !scenarioManager.isScenarioComplete()) {
+					if (waitForEvents && eventQueue.isEmpty()) {
+						throw new IllegalStateException("Event manager asked to wait for events while playing a scenario");
 					}
+				} else if (waitForEvents && eventQueue.isEmpty()) {
+					t = Thread.currentThread();
+					synchronized (t) {
+						try {
+							t.wait();
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+					waitForEvents = false;
 				}
-				waitForEvents = false;
+				EventInstance event = eventQueue.poll();
+				while (event != null) {
+					api.dispatchEvent(event);
+					event = eventQueue.poll();
+				}
+				canManageEvents = true;
 			}
-			EventInstance event = eventQueue.poll();
-			while (event != null) {
-				api.dispatchEvent(event);
-				event = eventQueue.poll();
-			}
-			canManageEvents = true;
 		}
 	}
 
@@ -148,7 +150,9 @@ public class EventInterpreter implements IEventInterpreter {
 		}
 		
 		final Set<IBehavioralAPI> apis = engine.getAddonsTypedBy(IBehavioralAPI.class);
-		api = apis.iterator().next();
+		if (!apis.isEmpty()) {
+			api = apis.iterator().next();
+		}
 	}
 
 	@Override

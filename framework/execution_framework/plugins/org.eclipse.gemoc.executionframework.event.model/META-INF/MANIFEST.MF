@@ -16,13 +16,5 @@ Export-Package: org.eclipse.gemoc.executionframework.event.model.property,
  org.eclipse.gemoc.executionframework.event.model.arbiter,
  org.eclipse.gemoc.executionframework.event.model.arbiter.impl,
  org.eclipse.gemoc.executionframework.event.model.arbiter.util
-Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.emf.ecore;visibility:=reexport,
- org.eclipse.gemoc.executionframework.event.model;visibility:=reexport,
- com.google.guava,
- org.eclipse.xtext.xbase.lib,
- org.eclipse.xtend.lib,
- org.eclipse.xtend.lib.macro,
- org.eclipse.gemoc.xdsmlframework.api;bundle-version="2.4.0",
- org.eclipse.gemoc.trace.commons.model
+Require-Bundle: org.eclipse.emf.ecore;visibility:=reexport
 Bundle-ActivationPolicy: lazy
