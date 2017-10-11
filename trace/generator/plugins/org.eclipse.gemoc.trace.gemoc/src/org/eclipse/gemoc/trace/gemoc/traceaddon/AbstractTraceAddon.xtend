@@ -119,7 +119,6 @@ abstract class AbstractTraceAddon implements IEngineAddon, IMultiDimensionalTrac
 				}
 				// Updating the trace extractor and explorer with the last changes
 				traceNotifier.notifyListener(traceExtractor)
-				traceNotifier.notifyListener(traceExplorer)
 				// Updating other trace listeners with the last changes
 				traceNotifier.notifyListeners
 				// Updating the state of the trace explorer
@@ -178,7 +177,6 @@ abstract class AbstractTraceAddon implements IEngineAddon, IMultiDimensionalTrac
 				traceListener = new BatchModelChangeListener(EMFResource.getRelatedResources(traceResource))
 				traceNotifier = new GenericTraceNotifier(traceListener)
 				traceNotifier.addListener(traceExtractor)
-				traceNotifier.addListener(traceExplorer)
 			}
 		}
 	}

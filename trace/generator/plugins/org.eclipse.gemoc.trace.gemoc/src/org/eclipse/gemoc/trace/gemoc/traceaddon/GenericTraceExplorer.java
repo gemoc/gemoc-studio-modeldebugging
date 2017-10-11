@@ -527,36 +527,6 @@ public class GenericTraceExplorer implements ITraceExplorer<Step<?>, State<?,?>,
 	}
 
 	@Override
-	public void statesAdded(List<State<?, ?>> states) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void stepsStarted(List<Step<?>> steps) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void stepsEnded(List<Step<?>> steps) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void valuesAdded(List<Value<?>> values) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void dimensionsAdded(List<Dimension<?>> dimensions) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public State<?, ?> getCurrentState() {
 		return currentState;
 	}
