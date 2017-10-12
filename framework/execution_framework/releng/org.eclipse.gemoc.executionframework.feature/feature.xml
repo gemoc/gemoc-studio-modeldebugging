@@ -75,7 +75,7 @@ http://www.eclipse.org/legal/epl-v10.html
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.gemoc.executionframework.event.interpreter"
+         id="org.eclipse.gemoc.executionframework.event.manager"
          download-size="0"
          install-size="0"
          version="0.0.0"

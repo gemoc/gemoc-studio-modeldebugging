@@ -4,15 +4,24 @@ import fr.inria.diverse.k3.al.annotationprocessor.Aspect
 import fr.inria.diverse.k3.al.annotationprocessor.Step
 import java.io.IOException
 import java.lang.reflect.Method
+import java.net.URL
+import java.net.URLClassLoader
+import java.util.ArrayList
 import java.util.HashMap
 import java.util.HashSet
 import java.util.List
 import java.util.Map
 import java.util.Set
+import org.eclipse.core.resources.IProject
+import org.eclipse.core.runtime.Path
 import org.eclipse.emf.codegen.ecore.genmodel.GenJDKLevel
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel
 import org.eclipse.emf.codegen.ecore.genmodel.GenModelFactory
 import org.eclipse.emf.codegen.ecore.genmodel.GenPackage
+import org.eclipse.emf.codegen.ecore.genmodel.generator.GenBaseGeneratorAdapter
+import org.eclipse.emf.codegen.ecore.genmodel.util.GenModelUtil
+import org.eclipse.emf.common.util.Diagnostic
+import org.eclipse.emf.common.util.Monitor
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.common.util.UniqueEList
 import org.eclipse.emf.ecore.EClass
@@ -29,19 +38,10 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl
 import org.eclipse.gemoc.dsl.Dsl
 import org.eclipse.gemoc.dsl.SimpleValue
-import org.eclipse.gemoc.executionframework.event.model.scenario.ScenarioPackage
-import org.eclipse.emf.codegen.ecore.genmodel.util.GenModelUtil
-import org.eclipse.emf.codegen.ecore.genmodel.generator.GenBaseGeneratorAdapter
-import org.eclipse.emf.common.util.Diagnostic
-import org.eclipse.emf.common.util.Monitor
+import org.eclipse.gemoc.executionframework.event.model.event.EventPackage
 import org.eclipse.jdt.core.IJavaProject
-import org.eclipse.jdt.launching.JavaRuntime
-import java.util.ArrayList
-import java.net.URLClassLoader
-import java.net.URL
-import org.eclipse.core.runtime.Path
 import org.eclipse.jdt.core.JavaCore
-import org.eclipse.core.resources.IProject
+import org.eclipse.jdt.launching.JavaRuntime
 
 class EventMetamodelGenerator {
 	
@@ -120,7 +120,7 @@ class EventMetamodelGenerator {
 		eventSpecificClass = EcoreFactory.eINSTANCE.createEClass => [c|
 			c.name = dsl.displayName.value + "DSLEvent"
 			c.abstract = true
-			c.ESuperTypes += ScenarioPackage.Literals.EVENT
+			c.ESuperTypes += EventPackage.Literals.EVENT
 		]
 		
 		eventPkg.EClassifiers += eventSpecificClass

@@ -12,7 +12,7 @@ package org.eclipse.gemoc.executionframework.event.ui.views;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.gemoc.executionframework.event.interpreter.IEventInterpreter;
+import org.eclipse.gemoc.executionframework.event.manager.IEventManager;
 
 import javafx.scene.layout.BorderPane;
 
@@ -20,7 +20,7 @@ public class EventPane extends BorderPane {
 
 	private final EventTableView tableView;
 	
-	public EventPane(EClass eventClass, final Resource executedModel, final IEventInterpreter eventManager) {
+	public EventPane(EClass eventClass, final Resource executedModel, final IEventManager eventManager) {
 		tableView = new EventTableView(eventClass, executedModel, eventManager);
 		setCenter(tableView);
 		tableView.refreshEvents();

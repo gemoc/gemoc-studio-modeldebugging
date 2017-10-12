@@ -33,7 +33,7 @@ import org.eclipse.gemoc.commons.eclipse.pde.manifest.ManifestChanger;
 import org.eclipse.gemoc.commons.eclipse.pde.wizards.pages.pde.TemplateListSelectionPage;
 import org.eclipse.gemoc.commons.eclipse.ui.WizardFinder;
 import org.eclipse.gemoc.execution.sequential.javaxdsml.ide.ui.Activator;
-import org.eclipse.gemoc.execution.sequential.javaxdsml.ide.ui.templates.SequentialTemplate;
+import org.eclipse.gemoc.execution.sequential.javaxdsml.ide.ui.templates.SequentialSingleLanguageTemplate;
 import org.eclipse.gemoc.xdsmlframework.ide.ui.xdsml.wizards.MelangeXDSMLProjectHelper;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -110,7 +110,7 @@ public class CreateDSAProposal implements IProposal{
 					ResourcesPlugin.getWorkspace().removeResourceChangeListener(workspaceListener);
 					dsaProject = workspaceListener.getLastCreatedProject();
 					waitForAutoBuild();
-					Set<String> aspects = SequentialTemplate.getAspectClassesList(dsaProject);
+					Set<String> aspects = SequentialSingleLanguageTemplate.getAspectClassesList(dsaProject);
 					final StringBuilder insertion = new StringBuilder();
 					for (String asp : aspects) {
 						insertion.append("\twith " + asp + "\n");

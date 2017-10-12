@@ -11,7 +11,6 @@
 package org.eclipse.gemoc.executionframework.event.ui.views;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,10 +18,9 @@ import java.util.Set;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.gemoc.executionframework.event.interpreter.EventInstance;
-import org.eclipse.gemoc.executionframework.event.interpreter.IEventInterpreter;
+import org.eclipse.gemoc.executionframework.event.manager.EventInstance;
+import org.eclipse.gemoc.executionframework.event.manager.IEventManager;
 import org.eclipse.gemoc.trace.commons.model.trace.Step;
-import org.eclipse.gemoc.xdsmlframework.api.core.EngineStatus.RunStatus;
 import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine;
 import org.eclipse.gemoc.xdsmlframework.api.engine_addon.IEngineAddon;
 
@@ -48,7 +46,7 @@ import javafx.util.StringConverter;
  */
 public class EventManagerRenderer extends Pane implements IEngineAddon {
 
-	private IEventInterpreter eventInterpreter;
+	private IEventManager eventManager;
 
 	private Resource executedModel;
 
@@ -89,7 +87,7 @@ public class EventManagerRenderer extends Pane implements IEngineAddon {
 		});
 
 		sendButton.setOnAction(e -> {
-			pushedEvents.forEach(eventInterpreter::queueEvent);
+			pushedEvents.forEach(eventManager::queueEvent);
 			eventTypeToEventTableView.values().forEach(t -> t.getSelectionModel().clearSelection());
 //			eventTypeToSelectedEvents.forEach((k,v) -> v.clear());
 			pushedEvents.clear();
@@ -131,7 +129,7 @@ public class EventManagerRenderer extends Pane implements IEngineAddon {
 					eventTypeToSelectedEvents.remove(e);
 				});
 				c.getAddedSubList().stream().forEach(e -> {
-					final EventTableView tableView = new EventTableView(e, executedModel, eventInterpreter);
+					final EventTableView tableView = new EventTableView(e, executedModel, eventManager);
 					eventTypeToEventTableView.put(e, tableView);
 					final List<EventInstance> selectedEvents = new ArrayList<>();
 					eventTypeToSelectedEvents.put(e, selectedEvents);
@@ -153,15 +151,15 @@ public class EventManagerRenderer extends Pane implements IEngineAddon {
 	}
 
 	/**
-	 * Sets the interpreter linked to this event manager
-	 * @param eventInterpreter the event interpreter
+	 * Sets the manager linked to this ui
+	 * @param eventManager the event manager
 	 */
-	public void setEventInterpreter(IEventInterpreter eventInterpreter) {
+	public void setEventInterpreter(IEventManager eventManager) {
 		Runnable runnable = () -> {
-			this.eventInterpreter = eventInterpreter;
+			this.eventManager = eventManager;
 			eventList.clear();
-			if (eventInterpreter != null) {
-//				eventList.addAll(this.eventInterpreter.getEventClasses());
+			if (eventManager != null) {
+//				eventList.addAll(this.eventManager.getEventClasses());
 			}
 		};
 		if (!Platform.isFxApplicationThread()) {
@@ -192,24 +190,16 @@ public class EventManagerRenderer extends Pane implements IEngineAddon {
 	}
 
 	@Override
-	public void engineAboutToStart(IExecutionEngine engine) {
-	}
-
-	@Override
 	public void engineStarted(IExecutionEngine executionEngine) {
 		executedModel = executionEngine.getExecutionContext().getResourceModel();
 	}
 
 	@Override
 	public void engineInitialized(IExecutionEngine executionEngine) {
-		Set<IEventInterpreter> eventManagers = executionEngine.getAddonsTypedBy(IEventInterpreter.class);
+		Set<IEventManager> eventManagers = executionEngine.getAddonsTypedBy(IEventManager.class);
 		if (!eventManagers.isEmpty()) {
 			setEventInterpreter(eventManagers.iterator().next());
 		}
-	}
-
-	@Override
-	public void engineAboutToStop(IExecutionEngine engine) {
 	}
 
 	@Override
@@ -223,14 +213,6 @@ public class EventManagerRenderer extends Pane implements IEngineAddon {
 	}
 
 	@Override
-	public void engineAboutToDispose(IExecutionEngine engine) {
-	}
-
-	@Override
-	public void stepSelected(IExecutionEngine engine, Step<?> selectedStep) {
-	}
-
-	@Override
 	public void aboutToExecuteStep(IExecutionEngine engine, Step<?> stepToExecute) {
 		refreshEvents();
 	}
@@ -238,22 +220,5 @@ public class EventManagerRenderer extends Pane implements IEngineAddon {
 	@Override
 	public void stepExecuted(IExecutionEngine engine, Step<?> stepExecuted) {
 		refreshEvents();
-	}
-
-	@Override
-	public void engineStatusChanged(IExecutionEngine engine, RunStatus newStatus) {
-	}
-
-	@Override
-	public List<String> validate(List<IEngineAddon> otherAddons) {
-		return null;
-	}
-
-	@Override
-	public void aboutToSelectStep(IExecutionEngine engine, Collection<Step<?>> steps) {
-	}
-
-	@Override
-	public void proposedStepsChanged(IExecutionEngine engine, Collection<Step<?>> steps) {
 	}
 }

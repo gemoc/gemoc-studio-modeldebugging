@@ -22,8 +22,8 @@ import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.gemoc.executionframework.engine.Activator;
-import org.eclipse.gemoc.executionframework.event.interpreter.EventInterpreter;
-import org.eclipse.gemoc.executionframework.event.interpreter.IEventInterpreter;
+import org.eclipse.gemoc.executionframework.event.manager.EventManager;
+import org.eclipse.gemoc.executionframework.event.manager.IEventManager;
 import org.eclipse.gemoc.trace.commons.model.generictrace.GenericSequentialStep;
 import org.eclipse.gemoc.trace.commons.model.generictrace.GenerictraceFactory;
 import org.eclipse.gemoc.trace.commons.model.trace.GenericMSE;
@@ -46,7 +46,7 @@ public abstract class AbstractSequentialExecutionEngine extends AbstractExecutio
 
 	private MSEModel _actionModel;
 	private IMultiDimensionalTraceAddon<?, ?, ?, ?, ?> traceAddon;
-	private IEventInterpreter eventInterpreter;
+	private IEventManager eventManager;
 
 	protected abstract void executeEntryPoint();
 
@@ -73,16 +73,8 @@ public abstract class AbstractSequentialExecutionEngine extends AbstractExecutio
 		if (!traceManagers.isEmpty()) {
 			this.traceAddon = traceManagers.iterator().next();
 		}
-		eventInterpreter = new EventInterpreter();
-		getExecutionContext().getExecutionPlatform().addEngineAddon(eventInterpreter);
-//		URI scenarioURI = executionContext.getRunConfiguration().getScenarioURI();
-//		if (scenarioURI != null) {
-//			eventInterpreter.loadScenario(scenarioURI, executionContext.getResourceModel().getResourceSet());
-//		}
-//		URI arbiterURI = executionContext.getRunConfiguration().getArbiterURI();
-//		if (arbiterURI != null) {
-//			eventInterpreter.loadArbiter(arbiterURI, executionContext.getResourceModel().getResourceSet());
-//		}
+		eventManager = new EventManager();
+		getExecutionContext().getExecutionPlatform().addEngineAddon(eventManager);
 		prepareEntryPoint(executionContext);
 		prepareInitializeModel(executionContext);
 	}
@@ -96,8 +88,8 @@ public abstract class AbstractSequentialExecutionEngine extends AbstractExecutio
 	}
 
 	private void manageEvents() {
-		if (eventInterpreter != null) {
-			eventInterpreter.processEvents();
+		if (eventManager != null) {
+			eventManager.processEvents();
 		}
 	}
 

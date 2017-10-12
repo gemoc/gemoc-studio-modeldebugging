@@ -31,13 +31,13 @@ public class RunConfiguration implements IRunConfiguration {
 	public RunConfiguration(ILaunchConfiguration launchConfiguration) throws CoreException {
 		_launchConfiguration = launchConfiguration;
 		extractInformation();
-		
+
 	}
 
 	protected void extractInformation() throws CoreException {
 		_languageName = getAttribute(LAUNCH_SELECTED_LANGUAGE, "");
-		_modelURI = URI.createPlatformResourceURI(
-				getAttribute(AbstractDSLLaunchConfigurationDelegate.RESOURCE_URI, ""), true);
+		_modelURI = URI.createPlatformResourceURI(getAttribute(AbstractDSLLaunchConfigurationDelegate.RESOURCE_URI, ""),
+				true);
 		String animatorURIAsString = getAttribute("airdResource", "");
 		if (animatorURIAsString != null && !animatorURIAsString.equals("")) {
 			_animatorURI = URI.createPlatformResourceURI(animatorURIAsString, true);
@@ -48,10 +48,6 @@ public class RunConfiguration implements IRunConfiguration {
 		_modelEntryPoint = getAttribute(LAUNCH_MODEL_ENTRY_POINT, "");
 		_modelInitializationMethod = getAttribute(LAUNCH_INITIALIZATION_METHOD, "");
 		_modelInitializationArguments = getAttribute(LAUNCH_INITIALIZATION_ARGUMENTS, "");
-//		String scenarioPath = getAttribute(LAUNCH_SCENARIO_URI, "");
-//		_scenarioURI = scenarioPath.length() > 0 ? URI.createPlatformResourceURI(scenarioPath, true) : null;
-//		String arbiterPath = getAttribute(LAUNCH_ARBITER_URI, "");
-//		_arbiterURI = arbiterPath.length() > 0 ? URI.createPlatformResourceURI(arbiterPath, true) : null;
 		_melangeQuery = getAttribute(LAUNCH_MELANGE_QUERY, "");
 
 		for (EngineAddonSpecificationExtension extension : EngineAddonSpecificationExtensionPoint.getSpecifications()) {
@@ -86,7 +82,7 @@ public class RunConfiguration implements IRunConfiguration {
 	public URI getExecutedModelURI() {
 		return _modelURI;
 	}
-	
+
 	private String _melangeQuery = "";
 
 	@Override
@@ -95,7 +91,7 @@ public class RunConfiguration implements IRunConfiguration {
 	}
 
 	@Override
-	public URI getExecutedModelAsMelangeURI() {		
+	public URI getExecutedModelAsMelangeURI() {
 		if (_melangeQuery.isEmpty())
 			return _modelURI;
 		String melangeURIString = _modelURI.toString().replace("platform:/", "melange:/") + _melangeQuery;
@@ -141,54 +137,38 @@ public class RunConfiguration implements IRunConfiguration {
 	public String getModelEntryPoint() {
 		return _modelEntryPoint;
 	}
-	
+
 	@Override
 	public String getLanguageName() {
 		return _languageName;
 	}
-	
+
 	private String _modelInitializationMethod;
 
 	@Override
 	public String getModelInitializationMethod() {
 		return _modelInitializationMethod;
 	}
-	
+
 	private String _modelInitializationArguments;
 
 	@Override
 	public String getModelInitializationArguments() {
 		return _modelInitializationArguments;
 	}
-	
-//	private URI _scenarioURI;
 
-//	@Override
-//	public URI getScenarioURI() {
-//		return _scenarioURI;
-//	}
-	
-//	private URI _arbiterURI;
-
-//	@Override
-//	public URI getArbiterURI() {
-//		return _arbiterURI;
-//	}
-	
 	private boolean _breakStart;
-	
+
 	@Override
 	public boolean getBreakStart() {
 		return _breakStart;
 	}
 
-	
 	private String _debugModelID;
-	
+
 	@Override
 	public String getDebugModelID() {
 		return _debugModelID;
 	}
-
 
 }

@@ -27,13 +27,13 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.gemoc.execution.sequential.javaxdsml.ide.ui.templates.SequentialSingleLanguageTemplate;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.gemoc.dsl.Dsl;
 import org.eclipse.gemoc.dsl.DslFactory;
 import org.eclipse.gemoc.dsl.DslPackage;
 import org.eclipse.gemoc.dsl.SimpleValue;
-import org.eclipse.gemoc.execution.sequential.javaxdsml.ide.ui.templates.SequentialTemplate;
 import org.eclipse.gemoc.execution.sequential.javaxdsml.ide.ui.wizards.CreateDSAWizardContextActionDSAK3;
 import org.eclipse.gemoc.xdsmlframework.ide.ui.commands.AbstractDslSelectHandler;
 
@@ -52,7 +52,7 @@ public class CreateDSAProjectHandler extends AbstractDslSelectHandler implements
 		if(action.getLastCreatedProject() != null){
 			waitForAutoBuild();
 			
-			Set<String> aspects = SequentialTemplate.getAspectClassesList(action.getLastCreatedProject());
+			Set<String> aspects = SequentialSingleLanguageTemplate.getAspectClassesList(action.getLastCreatedProject());
 			updateDsl(event,updatedGemocLanguageProject,language,Lists.newArrayList(aspects));
 		}
 		
