@@ -67,7 +67,6 @@ public class DSLLaunchConfigurationTab extends org.eclipse.gemoc.dsl.debug.ide.u
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
 		super.setDefaults(configuration);
 		configuration.setAttribute(AbstractDSLLaunchConfigurationDelegateUI.SIRIUS_RESOURCE_URI, "");
-		// configuration.setAttribute(AbstractDSLLaunchConfigurationDelegateSiriusUI.SIRIUS_RESOURCE_URI, "");
 	}
 
 	/**
@@ -96,8 +95,6 @@ public class DSLLaunchConfigurationTab extends org.eclipse.gemoc.dsl.debug.ide.u
 		super.performApply(configuration);
 		configuration.setAttribute(AbstractDSLLaunchConfigurationDelegateUI.SIRIUS_RESOURCE_URI,
 				siriusResourceURIText.getText());
-		// configuration.setAttribute(AbstractDSLLaunchConfigurationDelegateSiriusUI.SIRIUS_RESOURCE_URI,
-		// siriusResourceURIText.getText());
 	}
 
 	@Override
@@ -109,7 +106,6 @@ public class DSLLaunchConfigurationTab extends org.eclipse.gemoc.dsl.debug.ide.u
 			if (res) {
 				String siriusResourceURI = launchConfig.getAttribute(
 						AbstractDSLLaunchConfigurationDelegateUI.SIRIUS_RESOURCE_URI, "");
-				// AbstractDSLLaunchConfigurationDelegateSiriusUI.SIRIUS_RESOURCE_URI, "");
 				IFile resourceFile = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(
 						siriusResourceURI));
 				Resource resource = null;
