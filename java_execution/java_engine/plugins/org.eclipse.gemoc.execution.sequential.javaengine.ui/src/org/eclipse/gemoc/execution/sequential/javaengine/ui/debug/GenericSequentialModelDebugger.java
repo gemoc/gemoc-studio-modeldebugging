@@ -30,8 +30,8 @@ import org.eclipse.gemoc.execution.sequential.javaengine.PlainK3ExecutionEngine;
 import org.eclipse.gemoc.executionframework.debugger.AbstractGemocDebugger;
 import org.eclipse.gemoc.executionframework.debugger.GemocBreakpoint;
 import org.eclipse.gemoc.executionframework.engine.core.EngineStoppedException;
-import org.eclipse.gemoc.executionframework.event.interpreter.property.StatePropertyAspect;
-import org.eclipse.gemoc.executionframework.event.model.property.StateProperty;
+//import org.eclipse.gemoc.executionframework.event.manager.property.StatePropertyAspect;
+//import org.eclipse.gemoc.executionframework.event.model.property.StateProperty;
 import org.eclipse.gemoc.trace.commons.model.trace.MSE;
 import org.eclipse.gemoc.trace.commons.model.trace.MSEOccurrence;
 import org.eclipse.gemoc.trace.commons.model.trace.Step;
@@ -235,28 +235,28 @@ public class GenericSequentialModelDebugger extends AbstractGemocDebugger {
 		return false;
 	}
 	
-	private final Map<String, StateProperty<?>> propertyCache = new HashMap<>();
-
-	private boolean checkBreakpointProperty(EObject originalObject, EObject actualObject) {
-		boolean propertyResult = true;
-		final String propertyURI = (String)getBreakpointAttributes(originalObject, GemocBreakpoint.PROPERTY);
-		if (propertyURI != null && !propertyURI.isEmpty()) {
-			StateProperty<?> property = propertyCache.computeIfAbsent(propertyURI, p -> {
-				Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
-				final Resource resource = originalObject.eResource().getResourceSet().getResource(URI.createFileURI(propertyURI), true);
-				EcoreUtil.resolveAll(resource);
-				final EObject content = resource.getContents().get(0);
-				if (content != null && content instanceof StateProperty) {
-					return (StateProperty<?>) content;
-				}
-				return null;
-			});
-			if (property != null) {
-				propertyResult = StatePropertyAspect.evaluate(property, actualObject);
-			}
-		}
-		return propertyResult;
-	}
+//	private final Map<String, StateProperty<?>> propertyCache = new HashMap<>();
+//
+//	private boolean checkBreakpointProperty(EObject originalObject, EObject actualObject) {
+//		boolean propertyResult = true;
+//		final String propertyURI = (String)getBreakpointAttributes(originalObject, GemocBreakpoint.PROPERTY);
+//		if (propertyURI != null && !propertyURI.isEmpty()) {
+//			StateProperty<?> property = propertyCache.computeIfAbsent(propertyURI, p -> {
+//				Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
+//				final Resource resource = originalObject.eResource().getResourceSet().getResource(URI.createFileURI(propertyURI), true);
+//				EcoreUtil.resolveAll(resource);
+//				final EObject content = resource.getContents().get(0);
+//				if (content != null && content instanceof StateProperty) {
+//					return (StateProperty<?>) content;
+//				}
+//				return null;
+//			});
+//			if (property != null) {
+//				propertyResult = StatePropertyAspect.evaluate(property, actualObject);
+//			}
+//		}
+//		return propertyResult;
+//	}
 	
 	private boolean hasRegularBreakpointTrue(EObject o) {
 		EObject target = o;
@@ -284,7 +284,8 @@ public class GenericSequentialModelDebugger extends AbstractGemocDebugger {
 		return super.shouldBreak(target)
 				&& (Boolean.valueOf((String) getBreakpointAttributes(target, GemocBreakpoint.BREAK_ON_LOGICAL_STEP)) || Boolean
 						.valueOf((String) getBreakpointAttributes(target, GemocBreakpoint.BREAK_ON_MSE_OCCURRENCE)))
-				&& checkBreakpointProperty(target, o);
+//				&& checkBreakpointProperty(target, o)
+				;
 	}
 
 	private boolean shouldBreakMSEOccurence(MSEOccurrence mseOccurrence) {

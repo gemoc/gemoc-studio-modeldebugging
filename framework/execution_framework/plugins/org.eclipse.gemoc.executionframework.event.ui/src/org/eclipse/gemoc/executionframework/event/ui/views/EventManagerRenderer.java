@@ -19,8 +19,8 @@ import java.util.Set;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.gemoc.executionframework.event.interpreter.EventInstance;
-import org.eclipse.gemoc.executionframework.event.interpreter.IEventInterpreter;
+import org.eclipse.gemoc.executionframework.event.manager.EventInstance;
+import org.eclipse.gemoc.executionframework.event.manager.IEventManager;
 import org.eclipse.gemoc.trace.commons.model.trace.Step;
 import org.eclipse.gemoc.xdsmlframework.api.core.EngineStatus.RunStatus;
 import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine;
@@ -48,7 +48,7 @@ import javafx.util.StringConverter;
  */
 public class EventManagerRenderer extends Pane implements IEngineAddon {
 
-	private IEventInterpreter eventInterpreter;
+	private IEventManager eventInterpreter;
 
 	private Resource executedModel;
 
@@ -156,7 +156,7 @@ public class EventManagerRenderer extends Pane implements IEngineAddon {
 	 * Sets the interpreter linked to this event manager
 	 * @param eventInterpreter the event interpreter
 	 */
-	public void setEventInterpreter(IEventInterpreter eventInterpreter) {
+	public void setEventInterpreter(IEventManager eventInterpreter) {
 		Runnable runnable = () -> {
 			this.eventInterpreter = eventInterpreter;
 			eventList.clear();
@@ -202,7 +202,7 @@ public class EventManagerRenderer extends Pane implements IEngineAddon {
 
 	@Override
 	public void engineInitialized(IExecutionEngine executionEngine) {
-		Set<IEventInterpreter> eventManagers = executionEngine.getAddonsTypedBy(IEventInterpreter.class);
+		Set<IEventManager> eventManagers = executionEngine.getAddonsTypedBy(IEventManager.class);
 		if (!eventManagers.isEmpty()) {
 			setEventInterpreter(eventManagers.iterator().next());
 		}
