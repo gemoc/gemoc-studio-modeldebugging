@@ -296,6 +296,216 @@ public interface OpsemanticsviewPackage extends EPackage {
 
 
 	/**
+	 * The meta object id for the '{@link opsemanticsview.impl.EventHandlerImpl <em>Event Handler</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see opsemanticsview.impl.EventHandlerImpl
+	 * @see opsemanticsview.impl.OpsemanticsviewPackageImpl#getEventHandler()
+	 * @generated
+	 */
+	int EVENT_HANDLER = 3;
+
+	/**
+	 * The feature id for the '<em><b>Called Rules</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_HANDLER__CALLED_RULES = RULE__CALLED_RULES;
+
+	/**
+	 * The feature id for the '<em><b>Operation</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_HANDLER__OPERATION = RULE__OPERATION;
+
+	/**
+	 * The feature id for the '<em><b>Step Rule</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_HANDLER__STEP_RULE = RULE__STEP_RULE;
+
+	/**
+	 * The feature id for the '<em><b>Overriden By</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_HANDLER__OVERRIDEN_BY = RULE__OVERRIDEN_BY;
+
+	/**
+	 * The feature id for the '<em><b>Overrides</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_HANDLER__OVERRIDES = RULE__OVERRIDES;
+
+	/**
+	 * The feature id for the '<em><b>Containing Class</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_HANDLER__CONTAINING_CLASS = RULE__CONTAINING_CLASS;
+
+	/**
+	 * The feature id for the '<em><b>Abstract</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_HANDLER__ABSTRACT = RULE__ABSTRACT;
+
+	/**
+	 * The feature id for the '<em><b>Main</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_HANDLER__MAIN = RULE__MAIN;
+
+	/**
+	 * The feature id for the '<em><b>Condition</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_HANDLER__CONDITION = RULE_FEATURE_COUNT + 0;
+
+	/**
+	 * The number of structural features of the '<em>Event Handler</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_HANDLER_FEATURE_COUNT = RULE_FEATURE_COUNT + 1;
+
+	/**
+	 * The number of operations of the '<em>Event Handler</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_HANDLER_OPERATION_COUNT = RULE_OPERATION_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link opsemanticsview.impl.EventEmitterImpl <em>Event Emitter</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see opsemanticsview.impl.EventEmitterImpl
+	 * @see opsemanticsview.impl.OpsemanticsviewPackageImpl#getEventEmitter()
+	 * @generated
+	 */
+	int EVENT_EMITTER = 4;
+
+	/**
+	 * The feature id for the '<em><b>Called Rules</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_EMITTER__CALLED_RULES = RULE__CALLED_RULES;
+
+	/**
+	 * The feature id for the '<em><b>Operation</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_EMITTER__OPERATION = RULE__OPERATION;
+
+	/**
+	 * The feature id for the '<em><b>Step Rule</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_EMITTER__STEP_RULE = RULE__STEP_RULE;
+
+	/**
+	 * The feature id for the '<em><b>Overriden By</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_EMITTER__OVERRIDEN_BY = RULE__OVERRIDEN_BY;
+
+	/**
+	 * The feature id for the '<em><b>Overrides</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_EMITTER__OVERRIDES = RULE__OVERRIDES;
+
+	/**
+	 * The feature id for the '<em><b>Containing Class</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_EMITTER__CONTAINING_CLASS = RULE__CONTAINING_CLASS;
+
+	/**
+	 * The feature id for the '<em><b>Abstract</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_EMITTER__ABSTRACT = RULE__ABSTRACT;
+
+	/**
+	 * The feature id for the '<em><b>Main</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_EMITTER__MAIN = RULE__MAIN;
+
+	/**
+	 * The number of structural features of the '<em>Event Emitter</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_EMITTER_FEATURE_COUNT = RULE_FEATURE_COUNT + 0;
+
+	/**
+	 * The number of operations of the '<em>Event Emitter</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_EMITTER_OPERATION_COUNT = RULE_OPERATION_COUNT + 0;
+
+
+	/**
 	 * Returns the meta object for class '{@link opsemanticsview.OperationalSemanticsView <em>Operational Semantics View</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -502,6 +712,37 @@ public interface OpsemanticsviewPackage extends EPackage {
 	EReference getExecutionToASEntry_ASclass();
 
 	/**
+	 * Returns the meta object for class '{@link opsemanticsview.EventHandler <em>Event Handler</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Event Handler</em>'.
+	 * @see opsemanticsview.EventHandler
+	 * @generated
+	 */
+	EClass getEventHandler();
+
+	/**
+	 * Returns the meta object for the reference '{@link opsemanticsview.EventHandler#getCondition <em>Condition</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Condition</em>'.
+	 * @see opsemanticsview.EventHandler#getCondition()
+	 * @see #getEventHandler()
+	 * @generated
+	 */
+	EReference getEventHandler_Condition();
+
+	/**
+	 * Returns the meta object for class '{@link opsemanticsview.EventEmitter <em>Event Emitter</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Event Emitter</em>'.
+	 * @see opsemanticsview.EventEmitter
+	 * @generated
+	 */
+	EClass getEventEmitter();
+
+	/**
 	 * Returns the factory that creates the instances of the model.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -681,6 +922,34 @@ public interface OpsemanticsviewPackage extends EPackage {
 		 * @generated
 		 */
 		EReference EXECUTION_TO_AS_ENTRY__ASCLASS = eINSTANCE.getExecutionToASEntry_ASclass();
+
+		/**
+		 * The meta object literal for the '{@link opsemanticsview.impl.EventHandlerImpl <em>Event Handler</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see opsemanticsview.impl.EventHandlerImpl
+		 * @see opsemanticsview.impl.OpsemanticsviewPackageImpl#getEventHandler()
+		 * @generated
+		 */
+		EClass EVENT_HANDLER = eINSTANCE.getEventHandler();
+
+		/**
+		 * The meta object literal for the '<em><b>Condition</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference EVENT_HANDLER__CONDITION = eINSTANCE.getEventHandler_Condition();
+
+		/**
+		 * The meta object literal for the '{@link opsemanticsview.impl.EventEmitterImpl <em>Event Emitter</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see opsemanticsview.impl.EventEmitterImpl
+		 * @see opsemanticsview.impl.OpsemanticsviewPackageImpl#getEventEmitter()
+		 * @generated
+		 */
+		EClass EVENT_EMITTER = eINSTANCE.getEventEmitter();
 
 	}
 

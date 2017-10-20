@@ -10,32 +10,26 @@
  *******************************************************************************/
 package org.eclipse.gemoc.executionframework.event.generator
 
-import fr.inria.diverse.k3.al.annotationprocessor.Aspect
-import fr.inria.diverse.k3.al.annotationprocessor.Step
-import java.lang.reflect.Method
-import java.net.URL
-import java.net.URLClassLoader
 import java.util.ArrayList
 import java.util.HashMap
 import java.util.List
 import java.util.Map
 import java.util.Set
+import opsemanticsview.EventEmitter
+import opsemanticsview.EventHandler
+import opsemanticsview.OperationalSemanticsView
 import org.eclipse.core.resources.IFolder
-import org.eclipse.core.resources.IProject
-import org.eclipse.core.runtime.Path
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EClassifier
+import org.eclipse.emf.ecore.EOperation
 import org.eclipse.emf.ecore.EPackage
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
-import org.eclipse.gemoc.dsl.Dsl
-import org.eclipse.gemoc.dsl.SimpleValue
+import org.eclipse.emf.mwe2.language.scoping.QualifiedNameProvider
 import org.eclipse.jdt.core.IJavaProject
 import org.eclipse.jdt.core.JavaCore
-import org.eclipse.jdt.launching.JavaRuntime
 import org.eclipse.pde.internal.core.project.PDEProject
 import org.eclipse.xtext.naming.IQualifiedNameProvider
-import org.eclipse.emf.mwe2.language.scoping.QualifiedNameProvider
 
 class EventInterpreterGenerator {
 	
@@ -45,11 +39,11 @@ class EventInterpreterGenerator {
 	
 	private val EcoreExtensions ecoreExt = new EcoreExtensions
 
-	private Map<EClass, Method> inputEventToHandler = new HashMap
+	private Map<EClass, EOperation> inputEventToHandler = new HashMap
 
-	private Map<EClass, Method> outputEventToEmitter = new HashMap
+	private Map<EClass, EOperation> outputEventToEmitter = new HashMap
 
-	private Map<Method, Method> eventMethodToCondition
+	private Map<EOperation, EOperation> eventMethodToCondition
 
 	private IJavaProject targetProject
 
@@ -65,41 +59,41 @@ class EventInterpreterGenerator {
 
 	private String languagePackageString
 	
-	private List<Method> initializeMethods
+	private List<EOperation> initializeMethods
 	
 	private Set<EClassifier> eventParameterTypes
 	
 	private Set<String> elementReferences
 	
-	private var IJavaProject javaProject
+	private val String dslName
 	
-	private var ClassLoader loader
+	private val OperationalSemanticsView operationalSemanticsView
 	
-	private var String ecoreURI
+	private val String pluginName
 	
-	private def String getEventEcoreUri(Dsl dsl) {
-		return '''platform:/resource/«dsl.name».event/model/«dsl.displayName.value»Event.ecore'''
+	private val String eventEcoreUri
+	
+	new(OperationalSemanticsView operationalSemanticsView, String pluginName) {
+		this.operationalSemanticsView = operationalSemanticsView
+		this.pluginName = pluginName
+		dslName = operationalSemanticsView.executionMetamodel.name
+		eventEcoreUri = '''platform:/resource/«this.pluginName».event/model/«dslName»Event.ecore'''
 	}
-
-	public def void generateEventInterpreter(Dsl dsl, IProject project) {
-		
-		javaProject = JavaCore.create(project)
-		loader = createClassLoader
-		ecoreURI = (dsl.abstractSyntax.values.findFirst[it instanceof SimpleValue && name == "ecore"] as SimpleValue).values.head
-		
+	
+	public def void generateEventInterpreter() {
 		// clean before start
-		targetProject = JavaCore.create(projectHelper.createEventInterpreterProject(dsl))
+		targetProject = JavaCore.create(projectHelper.createEventInterpreterProject(pluginName))
 		eventMethodToCondition = newHashMap
 		inputEventToHandler = newHashMap
 		outputEventToEmitter = newHashMap
 		initializeMethods = newArrayList
 		eventParameterTypes = newHashSet
 		elementReferences = newHashSet
-		projectName = dsl.name + ".eventinterpreter"
-		behavioralAPIClassName = '''«dsl.displayName.value»BehavioralAPI'''
-		packageName = dsl.name + ".eventinterpreter"
+		projectName = '''«pluginName».eventinterpreter'''
+		behavioralAPIClassName = '''«dslName»BehavioralAPI'''
+		packageName = '''«pluginName».eventinterpreter'''
 
-		dsl.processLanguage
+		processLanguage
 		
 		val pluginXml = PDEProject::getPluginXml(targetProject.project)
 		val changer = new PluginXmlChanger
@@ -112,31 +106,31 @@ class EventInterpreterGenerator {
 		changer.addAttribute(element, "Default", "false")
 		changer.addAttribute(element, "id", packageName)
 		changer.addAttribute(element, "Default", "false")
-		changer.addAttribute(element, "Name", dsl.displayName.value + " Event Manager")
-		changer.addAttribute(element, "ShortDescription", "Handles events for the " + dsl.displayName.value + " language")
+		changer.addAttribute(element, "Name", dslName + " Event Manager")
+		changer.addAttribute(element, "ShortDescription", "Handles events for the " + dslName + " language")
 		changer.addAttribute(element, "AddonGroupId", "Sequential.AddonGroup")
 		
 		changer.save(2)
 	}
 	
-	private def void processLanguage(Dsl dsl) {
+	private def void processLanguage() {
 		val resSet = new ResourceSetImpl
-		val res = resSet.getResource(URI.createURI(dsl.eventEcoreUri), true)
+		val res = resSet.getResource(URI.createURI(eventEcoreUri), true)
 		ePackage = res.contents.head as EPackage
-		val classNames = dsl.semantic.values
-				.filter[it instanceof SimpleValue && name == "k3"]
-				.map[(it as SimpleValue).values]
-				.flatten.toSet
-		classNames.map[fqn|
-			loader.loadClass(fqn)
-		].filter[isAspect].forEach[a|
-			a.processAspect
-		]
+		operationalSemanticsView.rules
+				.forEach[r|
+					if (r instanceof EventHandler) {
+						r.processEventHandler
+					}
+					if (r instanceof EventEmitter) {
+						r.processEventEmitter
+					}
+				]
 		if (!inputEventToHandler.empty || !outputEventToEmitter.empty) {
 			val qNameSegments = new ArrayList(fqnProvider.getFullyQualifiedName(inputEventToHandler.keySet.filterNull.head).segments)
 			qNameSegments.remove(qNameSegments.size - 1)
-			eventPackageString = dsl.name + ".event." + qNameSegments.join(".")
-			languagePackageString = dsl.name
+			eventPackageString = pluginName + ".event." + qNameSegments.join(".")
+			languagePackageString = pluginName
 			val sourceFolder = targetProject.allPackageFragmentRoots.findFirst [p|
 				if (p.resource instanceof IFolder) {
 					val folder = p.resource as IFolder
@@ -150,88 +144,31 @@ class EventInterpreterGenerator {
 				.createCompilationUnit(behavioralAPIClassName + ".java", generateCode, true, null)
 		}
 	}
-
-	private def boolean isAspect(Class<?> cls) {
-		return cls.declaredAnnotations.exists[it instanceof Aspect]
-	}
-
-	private def boolean isEventHandler(Method m) {
-		val stepAnnotation = m.getAnnotation(Step)
-		if (stepAnnotation != null) {
-			return stepAnnotation.eventHandler
+	
+	private def void processEventHandler(EventHandler handler) {
+		val containingEClass = handler.containingClass
+		val op = handler.operation
+		val condition = handler.condition
+		
+		if (condition != null) {
+			eventMethodToCondition.put(op, condition)
 		}
-		return false
-	}
-
-	private def boolean isEventEmitter(Method m) {
-		val stepAnnotation = m.getAnnotation(Step)
-		if (stepAnnotation != null) {
-			return stepAnnotation.eventEmitter
+		
+		val eventName = '''«containingEClass.name.toFirstUpper»«op.name.toFirstUpper»Event'''
+		val eventClass = ecoreExt.findClassifier(ePackage, eventName)
+		if (eventClass != null) {
+			inputEventToHandler.put(eventClass as EClass, op)
 		}
-		return false
 	}
 	
-	private def String getConditionName(Method m) {
-		val stepAnnotation = m.getAnnotation(Step)
-		if (stepAnnotation != null) {
-			return stepAnnotation.precondition
+	private def void processEventEmitter(EventEmitter emitter) {
+		val containingEClass = emitter.containingClass
+		val op = emitter.operation
+		val eventName = '''«containingEClass.name.toFirstUpper»«op.name.toFirstUpper»Event'''
+		val eventClass = ecoreExt.findClassifier(ePackage, eventName)
+		if (eventClass != null) {
+			outputEventToEmitter.put(eventClass as EClass, op)
 		}
-		return ""
-	}
-
-	private def void processAspect(Class<?> aspect) {
-		val aspectEventHandlers = aspect.methods.filter[eventHandler]
-		
-		aspectEventHandlers.forEach[e|
-			val conditionName = e.conditionName
-			if (conditionName != "") {
-				val conditionMethods = aspect.methods.filter[m|
-					m.name == conditionName
-				].toList
-				if (conditionMethods.size == 1) {
-					eventMethodToCondition.put(e, conditionMethods.get(0))
-				}
-			}
-		]
-		
-		aspectEventHandlers.forEach [ m |
-			val eventName = '''«aspect.aspectedClass.simpleName.toFirstUpper»«m.name.toFirstUpper»Event'''
-			val eventClass = ecoreExt.findClassifier(ePackage, eventName)
-			if (eventClass != null) {
-				inputEventToHandler.put(eventClass as EClass, m)
-			}
-		]
-		
-		val aspectEventEmitters = aspect.methods.filter[eventEmitter]
-		
-		aspectEventEmitters.forEach [m|
-			val eventName = '''«aspect.aspectedClass.simpleName.toFirstUpper»«m.name.toFirstUpper»Event'''
-			val eventClass = ecoreExt.findClassifier(ePackage, eventName)
-			if (eventClass != null) {
-				outputEventToEmitter.put(eventClass as EClass, m)
-			}
-		]
-	}
-	
-	private def Class<?> aspectedClass(Class<?> aspect) {
-		val annotation = aspect.declaredAnnotations.findFirst[it instanceof Aspect]
-		if (annotation != null) {
-			return (annotation as Aspect).className
-		}
-		return null
-	}
-
-	private def ClassLoader createClassLoader() {
-		val classPathEntries = JavaRuntime.computeDefaultRuntimeClassPath(javaProject)
-		val urlList = new ArrayList<URL>()
-		for (var i = 0; i < classPathEntries.length; i++) {
-			val entry = classPathEntries.get(i)
-			val path = new Path(entry)
-			val url = path.toFile().toURI().toURL()
-			urlList.add(url)
-		}
-		val parentClassLoader = Thread.currentThread().getContextClassLoader()
-		return new URLClassLoader(urlList, parentClassLoader)
 	}
 
 	private def String generateCode() {
@@ -261,9 +198,6 @@ class EventInterpreterGenerator {
 			import org.eclipse.gemoc.trace.commons.model.trace.Step;
 			import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine;
 			«ENDIF»
-			«FOR handler : inputEventToHandler.values.filterNull.map[declaringClass].toSet»
-			import «handler.name»;
-			«ENDFOR»
 			«FOR elementReference : elementReferences»
 			import «languagePackageString».«elementReference»;
 			«ENDFOR»
@@ -343,10 +277,10 @@ class EventInterpreterGenerator {
 		'''
 	}
 
-	private def String generateEventHandler(EClass eventClass, Method eventHandler) {
+	private def String generateEventHandler(EClass eventClass, EOperation eventHandler) {
 		val eventClassName = eventClass.name
 		val eventHandlerName = eventHandler.name
-		val eventHandlingClass = eventHandler.declaringClass.simpleName
+		val eventHandlingClass = eventHandler.EContainingClass.name
 		val eventParametersDeclaration = eventClass.eventHandlerParametersDeclaration
 		val eventParameters = eventClass.eventHandlerParameters
 		val eventCondition = eventMethodToCondition.get(eventHandler)
@@ -377,10 +311,10 @@ class EventInterpreterGenerator {
 		'''
 	}
 
-	private def String generateEventCondition(EClass eventClass, Method eventCondition) {
+	private def String generateEventCondition(EClass eventClass, EOperation eventCondition) {
 		val eventClassName = eventClass.name
 		val eventHandlerName = eventCondition.name
-		val eventHandlingClass = eventCondition.declaringClass.simpleName
+		val eventHandlingClass = eventCondition.EContainingClass.name
 		val eventParametersDeclaration = eventClass.eventHandlerParametersDeclaration
 		val eventParameters = eventClass.eventHandlerParameters
 		return '''

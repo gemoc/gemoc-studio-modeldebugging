@@ -2,31 +2,54 @@ package org.eclipse.gemoc.executionframework.event.generator.ui.commands
 
 import org.eclipse.core.commands.ExecutionEvent
 import org.eclipse.core.commands.ExecutionException
+import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IProject
-import org.eclipse.emf.common.util.URI
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
-import org.eclipse.gemoc.dsl.Dsl
-import org.eclipse.gemoc.executionframework.event.generator.EventMetamodelGenerator
-import org.eclipse.gemoc.executionframework.event.generator.EventInterpreterGenerator
+import org.eclipse.core.runtime.IProgressMonitor
+import org.eclipse.core.runtime.Status
+import org.eclipse.core.runtime.jobs.Job
+import org.eclipse.gemoc.executionframework.event.generator.BehavioralInterfaceGeneratorIntegration
 import org.eclipse.gemoc.xdsmlframework.ide.ui.commands.AbstractDslSelectHandler
+import org.eclipse.gemoc.xdsmlframework.ide.ui.xdsml.wizards.MelangeXDSMLProjectHelper
 
 class GenerateBehavioralInterfaceHandler extends AbstractDslSelectHandler {
-	
-	private val EventMetamodelGenerator eventMetamodelGenerator = new EventMetamodelGenerator
-	
-	private val EventInterpreterGenerator eventInterpreterGenerator = new EventInterpreterGenerator
-	
-	override executeForSelectedLanguage(ExecutionEvent event, IProject updatedGemocLanguageProject, String language) throws ExecutionException {
-		val dslFile = getDslFileFromSelection(event);
-		val res = (new ResourceSetImpl).getResource(URI.createURI(dslFile.getFullPath().toOSString()), true)
-		val dsl = res.getContents().get(0) as Dsl
-		eventMetamodelGenerator.generateBehavioralInterface(dsl, updatedGemocLanguageProject)
-		eventInterpreterGenerator.generateEventInterpreter(dsl, updatedGemocLanguageProject)
-		return null
+	val static String pluginId = "org.eclipse.gemoc.executionframework.event.generator.ui"
+
+	override executeForSelectedLanguage(ExecutionEvent event, IProject updatedGemocLanguageProject,
+		String language) throws ExecutionException {
+		val IFile dslFile = getDslFileFromSelection(event);
+		val baseProjectName = MelangeXDSMLProjectHelper.baseProjectName(dslFile.project)
+
+		// If the base project name doesn't end with the language name, we suggest it		
+		val basePluginName = if (baseProjectName.endsWith(language.toLowerCase)) {
+				baseProjectName
+			} else {
+				baseProjectName + "." + language.toLowerCase
+			}
+
+		val Job j = new Job("Generating behavioral interface for " + dslFile.toString) {
+			override protected run(IProgressMonitor monitor) {
+				try {
+
+					BehavioralInterfaceGeneratorIntegration.generateAddon(dslFile, language, basePluginName, true,
+						monitor)
+
+				} catch (Exception e) {
+					return new Status(Status.ERROR, pluginId,
+						"An error occured while generating the behavioral interface. Please expand below for the complete error stack trace.",
+						e)
+					}
+					return new Status(Status.OK, pluginId, "Behavioral interface generated.")
+				}
+			}
+			// And we start the job
+			j.schedule
+
+			return null;
+		}
+
+		override getSelectionMessage() {
+			"This is the selection message"
+		}
+
 	}
 	
-	override getSelectionMessage() {
-		"This is the selection message"
-	}
-	
-}

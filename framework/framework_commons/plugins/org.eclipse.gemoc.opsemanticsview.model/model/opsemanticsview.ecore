@@ -36,4 +36,8 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="ASclass" lowerBound="1"
         eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EClass"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EventHandler" eSuperTypes="#//Rule">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="condition" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EOperation"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EventEmitter" eSuperTypes="#//Rule"/>
 </ecore:EPackage>

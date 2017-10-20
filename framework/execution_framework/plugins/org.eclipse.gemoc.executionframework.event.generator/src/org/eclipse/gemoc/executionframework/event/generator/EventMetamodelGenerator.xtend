@@ -1,19 +1,12 @@
 package org.eclipse.gemoc.executionframework.event.generator
 
-import fr.inria.diverse.k3.al.annotationprocessor.Aspect
-import fr.inria.diverse.k3.al.annotationprocessor.Step
 import java.io.IOException
-import java.lang.reflect.Method
-import java.net.URL
-import java.net.URLClassLoader
-import java.util.ArrayList
 import java.util.HashMap
 import java.util.HashSet
 import java.util.List
 import java.util.Map
 import java.util.Set
-import org.eclipse.core.resources.IProject
-import org.eclipse.core.runtime.Path
+import opsemanticsview.OperationalSemanticsView
 import org.eclipse.emf.codegen.ecore.genmodel.GenJDKLevel
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel
 import org.eclipse.emf.codegen.ecore.genmodel.GenModelFactory
@@ -26,7 +19,6 @@ import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.common.util.UniqueEList
 import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EClassifier
-import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EOperation
 import org.eclipse.emf.ecore.EPackage
 import org.eclipse.emf.ecore.EcoreFactory
@@ -36,12 +28,9 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl
-import org.eclipse.gemoc.dsl.Dsl
-import org.eclipse.gemoc.dsl.SimpleValue
 import org.eclipse.gemoc.executionframework.event.model.event.EventPackage
-import org.eclipse.jdt.core.IJavaProject
-import org.eclipse.jdt.core.JavaCore
-import org.eclipse.jdt.launching.JavaRuntime
+import opsemanticsview.EventHandler
+import opsemanticsview.EventEmitter
 
 class EventMetamodelGenerator {
 	
@@ -49,7 +38,7 @@ class EventMetamodelGenerator {
 	
 	private var Set<EPackage> basePkgs
 	
-	private var EPackage rootPackage
+	private val EPackage rootPackage
 
 	private var EClass eventSpecificClass
 	
@@ -61,124 +50,108 @@ class EventMetamodelGenerator {
 	
 	private var String genmodelURI
 	
-	private var Resource abstractSyntax
-	
-	private Set<GenModel> fixedGenModels = new HashSet
+	private val Set<GenModel> fixedGenModels = new HashSet
 	
 	private var Map<EClassifier, EClass> rtToSuperEvent
 	
-	private var IJavaProject javaProject
+	private val OperationalSemanticsView operationalSemanticsView
 	
-	private var ClassLoader loader
+	private val String dslName
 	
-	private def String getEventGenerationPath(Dsl dsl) {
-		return '''../«dsl.name».event/src/'''
+	private val String pluginName
+	
+	private val String eventEcoreUri
+	
+	private val String eventGenmodelUri
+	
+	private val String eventGenerationPath
+	
+	new(OperationalSemanticsView operationalSemanticsView, String pluginName) {
+		this.operationalSemanticsView = operationalSemanticsView
+		this.pluginName = pluginName
+		rootPackage = operationalSemanticsView.abstractSyntax
+		dslName = operationalSemanticsView.executionMetamodel.name
+		eventGenerationPath = '''../«this.pluginName».event/src/'''
+		eventEcoreUri = '''platform:/resource/«this.pluginName».event/model/«dslName»Event.ecore'''
+		eventGenmodelUri = '''platform:/resource/«this.pluginName».event/model/«dslName»Event.genmodel'''
 	}
 	
-	private def String getEventEcoreUri(Dsl dsl) {
-		return '''platform:/resource/«dsl.name».event/model/«dsl.displayName.value»Event.ecore'''
-	}
-
-	private def String getEventGenmodelUri(Dsl dsl) {
-		return '''platform:/resource/«dsl.name».event/model/«dsl.displayName.value»Event.genmodel'''
-	}
-	
-	private def EPackage getRootPackage(EPackage pkg) {
-		var EObject result = pkg
-		while (result.eContainer instanceof EPackage) {
-			result = result.eContainer
-		}
-		return result as EPackage
-	}
-	
-	def void generateBehavioralInterface(Dsl dsl, IProject project) {
-		javaProject = JavaCore.create(project)
-		loader = createClassLoader
+	def void generateBehavioralInterface() {
 		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
-		val resourceSet = new ResourceSetImpl
-		ecoreURI = (dsl.abstractSyntax.values.findFirst[it instanceof SimpleValue && name == "ecore"] as SimpleValue).values.head
-		genmodelURI = (dsl.abstractSyntax.values.findFirst[it instanceof SimpleValue && name == "genmodel"] as SimpleValue).values.head
-		abstractSyntax = resourceSet.getResource(URI.createURI(ecoreURI, true), true)
-		basePkgs = abstractSyntax.allContents.filter(EPackage).toSet
-		rootPackage = basePkgs.head.rootPackage;
+		basePkgs = rootPackage.eAllContents.filter(EPackage).toSet
 		rtToSuperEvent = new HashMap
-		projectHelper.createEMFEventProject(dsl)
-		dsl.createEcore
-		dsl.createGenmodelAndGenerateCode
+		projectHelper.createEMFEventProject(operationalSemanticsView.executionMetamodel.name)
+		createEcore
+		createGenmodelAndGenerateCode
 	}
 	
-	private def void createEcore(Dsl dsl) {
-		val allEOperations = new HashSet
-		allEOperations += abstractSyntax.allContents.filter(EOperation).toSet
+	private def void createEcore() {
+		val dslName = operationalSemanticsView.executionMetamodel.name
 		
 		eventPkg = EcoreFactory.eINSTANCE.createEPackage => [
-			name = (dsl.displayName.value + "event").toLowerCase
+			name = (dslName + "event").toLowerCase
 			nsPrefix = name
 			nsURI = rootPackage.nsURI+"event/"
 		]
 		
 		eventSpecificClass = EcoreFactory.eINSTANCE.createEClass => [c|
-			c.name = dsl.displayName.value + "DSLEvent"
+			c.name = dslName + "DSLEvent"
 			c.abstract = true
 			c.ESuperTypes += EventPackage.Literals.EVENT
 		]
 		
 		eventPkg.EClassifiers += eventSpecificClass
 		
-		val classNames = dsl.semantic.values
-				.filter[it instanceof SimpleValue && name == "k3"]
-				.map[(it as SimpleValue).values]
-				.flatten.toSet
-		classNames.map[fqn|
-			loader.loadClass(fqn)
-		].filter[isAspect].forEach[a|
-			a.methods.filter[isStep].forEach[op|
-				if (allEOperations.exists[it.name == op.name && it.EContainingClass.name == a.aspectedClass.simpleName]) {
-					if (op.eventHandler) {
-						val eventName = a.aspectedClass.simpleName.toFirstUpper + op.name.toFirstUpper + "Event"
+		operationalSemanticsView.rules
+				.forEach[r|
+					if (r instanceof EventHandler) {
+						val containingEClass = r.containingClass
+						val op = r.operation
+						val eventName = containingEClass.name.toFirstUpper + op.name.toFirstUpper + "Event"
 						op.generateInputEvent(eventName)
-					} else if (op.eventEmitter) {
-						val eventName = a.aspectedClass.simpleName.toFirstUpper + op.name.toFirstUpper + "Event"
+					}
+					if (r instanceof EventEmitter) {
+						val containingEClass = r.containingClass
+						val op = r.operation
+						val eventName = containingEClass.name.toFirstUpper + op.name.toFirstUpper + "Event"
 						op.generateOutputEvent(eventName)
 					}
-				}
-			]
-		]
+				]
 		
 		val resSet = new ResourceSetImpl
 		val usedGenpkgRes = resSet.getResource(URI::createURI(genmodelURI), true)
 		refGenPackages = (usedGenpkgRes.contents.head as GenModel).genPackages.toSet
 		
-		val res = resSet.createResource(URI.createPlatformResourceURI(dsl.name+".event/model/"+dsl.displayName.value+"Event.ecore", true))
+		val res = resSet.createResource(URI.createPlatformResourceURI(pluginName+".event/model/"+dslName+"Event.ecore", true))
 		res.contents += eventPkg
 		res.save(null)
 	}
 	
-	private def void createGenmodelAndGenerateCode(Dsl dsl) {
+	private def void createGenmodelAndGenerateCode() {
 		val resSet = new ResourceSetImpl
-		val pkgRes = resSet.getResource(URI::createURI(dsl.eventEcoreUri), true)
+		val pkgRes = resSet.getResource(URI::createURI(eventEcoreUri), true)
 		val pkgs = pkgRes.contents.map[it as EPackage]
 		val fileExtension = refGenPackages.findFirst[!fileExtension.nullOrEmpty]?.fileExtension
 
 		val genmodel = GenModelFactory.eINSTANCE.createGenModel => [
 			complianceLevel = GenJDKLevel.JDK70_LITERAL
-			modelDirectory = dsl.eventGenerationPath
+			modelDirectory = eventGenerationPath
 				.replaceFirst("platform:/resource", "").replaceFirst("..", "")
 			foreignModel += ecoreURI
-			modelName = dsl.displayName.value + "event"
-			modelPluginID = dsl.name + ".event"
+			modelName = dslName + "event"
+			modelPluginID = pluginName + ".event"
 			initialize(pkgs)
 			genPackages.forEach[gp|
-				gp.basePackage = dsl.name + ".event"
+				gp.basePackage = pluginName + ".event"
 				if (!fileExtension.nullOrEmpty) {
 					gp.fileExtensions = fileExtension + "e"
 				} else {
-					gp.fileExtensions = dsl.displayName.value.toLowerCase.toString + "e"
+					gp.fileExtensions = dslName.toLowerCase.toString + "e"
 				}
 			]
 		]
 		
-		val res = resSet.createResource(URI::createURI(dsl.eventGenmodelUri))
+		val res = resSet.createResource(URI::createURI(eventGenmodelUri))
 		res.contents += genmodel
 		
 		fixedGenModels.clear
@@ -194,19 +167,6 @@ class EventMetamodelGenerator {
 		pkgRes.load(null)
 		
 		genmodel.generateCode
-	}
-	
-	private def ClassLoader createClassLoader() {
-		val classPathEntries = JavaRuntime.computeDefaultRuntimeClassPath(javaProject)
-		val urlList = new ArrayList<URL>()
-		for (var i = 0; i < classPathEntries.length; i++) {
-			val entry = classPathEntries.get(i)
-			val path = new Path(entry)
-			val url = path.toFile().toURI().toURL()
-			urlList.add(url)
-		}
-		val parentClassLoader = Thread.currentThread().getContextClassLoader()
-		return new URLClassLoader(urlList, parentClassLoader)
 	}
 	
 	def void generateCode(GenModel genModel) {
@@ -234,45 +194,13 @@ class EventMetamodelGenerator {
 		)
 	}
 	
-	private def boolean isAspect(Class<?> cls) {
-		return cls.declaredAnnotations.exists[it instanceof Aspect]
-	}
-	
-	private def boolean isStep(Method m) {
-		return m.declaredAnnotations.exists[it instanceof Step]
-	}
-	
-	private def boolean isEventHandler(Method m) {
-		val annotation = m.declaredAnnotations.findFirst[it instanceof Step]
-		if (annotation != null) {
-			return (annotation as Step).eventHandler
-		}
-		return false
-	}
-	
-	private def boolean isEventEmitter(Method m) {
-		val annotation = m.declaredAnnotations.findFirst[it instanceof Step]
-		if (annotation != null) {
-			return (annotation as Step).eventEmitter
-		}
-		return false
-	}
-
-	private def Class<?> aspectedClass(Class<?> aspect) {
-		val annotation = aspect.declaredAnnotations.findFirst[it instanceof Aspect]
-		if (annotation != null) {
-			return (annotation as Aspect).className
-		}
-		return null
-	}
-	
-	def private void generateInputEvent(Method op, String eventName) {
-		val params = op.parameters
+	def private void generateInputEvent(EOperation op, String eventName) {
+		val params = op.EParameters
 		eventPkg.EClassifiers += EcoreFactory.eINSTANCE.createEClass => [c|
 			c.name = eventName
 			
 			params.head => [opParam|
-				val parameterTypeName = opParam.type.simpleName
+				val parameterTypeName = opParam.EType.name
 				val parameterClassifier = basePkgs.findFirst[getEClassifier(parameterTypeName) != null]?.getEClassifier(parameterTypeName)
 				if (parameterClassifier != null) {
 					c.ESuperTypes += parameterClassifier.superEventClass
@@ -280,7 +208,7 @@ class EventMetamodelGenerator {
 			]
 			
 			params.tail.forEach[opParam|
-				val parameterTypeName = opParam.type.simpleName
+				val parameterTypeName = opParam.EType.name
 				if (parameterTypeName == "String" || parameterTypeName == "Integer" || parameterTypeName == "Boolean") {
 					c.EStructuralFeatures += EcoreFactory.eINSTANCE.createEAttribute => [
 						name = opParam.name.toFirstLower
@@ -308,15 +236,15 @@ class EventMetamodelGenerator {
 		]
 	}
 	
-	def private void generateOutputEvent(Method op, String eventName) {
-		val params = op.parameters
+	def private void generateOutputEvent(EOperation op, String eventName) {
+		val params = op.EParameters
 		eventPkg.EClassifiers += EcoreFactory.eINSTANCE.createEClass => [c|
 			c.name = eventName
 			// Creating the generic super type of the property and binding it
 			c.ESuperTypes += eventSpecificClass
 			
 			params.head => [opParam|
-				val parameterTypeName = opParam.type.simpleName
+				val parameterTypeName = opParam.EType.name
 				val parameterClassifier = basePkgs.findFirst[getEClassifier(parameterTypeName) != null]?.getEClassifier(parameterTypeName)
 				if (parameterClassifier != null) {
 					c.EStructuralFeatures += EcoreFactory.eINSTANCE.createEReference => [
@@ -330,7 +258,7 @@ class EventMetamodelGenerator {
 			]
 			
 			params.tail.forEach[opParam|
-				val parameterTypeName = opParam.type.simpleName
+				val parameterTypeName = opParam.EType.name
 				if (parameterTypeName == "String" || parameterTypeName == "Integer" || parameterTypeName == "Boolean") {
 					c.EStructuralFeatures += EcoreFactory.eINSTANCE.createEAttribute => [
 						name = opParam.name.toFirstLower

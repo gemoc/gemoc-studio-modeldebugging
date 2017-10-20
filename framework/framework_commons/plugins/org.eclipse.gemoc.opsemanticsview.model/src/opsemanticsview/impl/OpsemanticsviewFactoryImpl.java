@@ -69,6 +69,8 @@ public class OpsemanticsviewFactoryImpl extends EFactoryImpl implements Opsemant
 			case OpsemanticsviewPackage.OPERATIONAL_SEMANTICS_VIEW: return createOperationalSemanticsView();
 			case OpsemanticsviewPackage.RULE: return createRule();
 			case OpsemanticsviewPackage.EXECUTION_TO_AS_ENTRY: return createExecutionToASEntry();
+			case OpsemanticsviewPackage.EVENT_HANDLER: return createEventHandler();
+			case OpsemanticsviewPackage.EVENT_EMITTER: return createEventEmitter();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -102,6 +104,26 @@ public class OpsemanticsviewFactoryImpl extends EFactoryImpl implements Opsemant
 	public ExecutionToASEntry createExecutionToASEntry() {
 		ExecutionToASEntryImpl executionToASEntry = new ExecutionToASEntryImpl();
 		return executionToASEntry;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EventHandler createEventHandler() {
+		EventHandlerImpl eventHandler = new EventHandlerImpl();
+		return eventHandler;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EventEmitter createEventEmitter() {
+		EventEmitterImpl eventEmitter = new EventEmitterImpl();
+		return eventEmitter;
 	}
 
 	/**

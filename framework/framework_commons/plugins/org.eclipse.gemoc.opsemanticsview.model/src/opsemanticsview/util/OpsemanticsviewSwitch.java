@@ -94,6 +94,20 @@ public class OpsemanticsviewSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case OpsemanticsviewPackage.EVENT_HANDLER: {
+				EventHandler eventHandler = (EventHandler)theEObject;
+				T result = caseEventHandler(eventHandler);
+				if (result == null) result = caseRule(eventHandler);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case OpsemanticsviewPackage.EVENT_EMITTER: {
+				EventEmitter eventEmitter = (EventEmitter)theEObject;
+				T result = caseEventEmitter(eventEmitter);
+				if (result == null) result = caseRule(eventEmitter);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			default: return defaultCase(theEObject);
 		}
 	}
@@ -140,6 +154,36 @@ public class OpsemanticsviewSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseExecutionToASEntry(ExecutionToASEntry object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Event Handler</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Event Handler</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseEventHandler(EventHandler object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Event Emitter</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Event Emitter</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseEventEmitter(EventEmitter object) {
 		return null;
 	}
 
