@@ -4,13 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
+ * 
  * Contributors:
  *     Inria - initial API and implementation
  *******************************************************************************/
 package org.eclipse.gemoc.opsemanticsview.gen.k3
- 
-import org.eclipse.gemoc.commons.eclipse.jdt.CallHierarchyHelper
+
 import java.util.ArrayList
 import java.util.HashMap
 import java.util.HashSet
@@ -25,12 +24,13 @@ import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EOperation
 import org.eclipse.emf.ecore.EPackage
 import org.eclipse.emf.ecore.EcoreFactory
+import org.eclipse.gemoc.commons.eclipse.jdt.CallHierarchyHelper
 import org.eclipse.jdt.core.IAnnotation
 import org.eclipse.jdt.core.IMethod
 import org.eclipse.jdt.core.IType
 
 class K3StepExtractor {
-	
+
 	// Input
 	private val Set<IType> allClasses
 	private val EPackage extendedMetamodel
@@ -45,6 +45,7 @@ class K3StepExtractor {
 	private val Set<IMethod> allSuperMethods = new HashSet
 	private val Set<IMethod> stepFunctions = new HashSet
 	private val Set<IMethod> eventFunctions = new HashSet
+	private val Map<IMethod, IMethod> eventFunctionToConditionFunction = new HashMap
 	private val Map<IMethod, Rule> functionToRule = new HashMap
 	private val Set<IType> inspectedClasses = new HashSet
 
@@ -69,28 +70,26 @@ class K3StepExtractor {
 	}
 
 	private def Rule getRuleOfFunction(IMethod function) {
-		if (functionToRule.containsKey(function))
+		if (functionToRule.containsKey(function)) {
 			return functionToRule.get(function)
-		else {
-			val Rule rule = OpsemanticsviewFactory.eINSTANCE.createRule;
+		} else {
+			val Rule rule = if (eventFunctions.contains(function)) {
+					val handler = OpsemanticsviewFactory.eINSTANCE.createEventHandler
+					val condition = eventFunctionToConditionFunction.get(function)
+					if (condition != null) {
+						handler.condition = condition.toEOperation
+					}
+					handler
+				} else {
+					OpsemanticsviewFactory.eINSTANCE.createRule;
+				}
 			this.ecoreExtension.rules.add(rule)
 
 			// We find the ecore class matching the aspected java class 
 			val containingClass = function.declaringType
 			rule.containingClass = stepAspectsClassToAspectedClasses.get(containingClass)
 
-			var EOperation candidate = null
-			if (rule.containingClass != null) {
-				candidate = rule.containingClass.EAllOperations.findFirst [ o |
-					o.name.equals(function.elementName)
-				]
-
-			}
-			if (candidate != null) {
-				rule.operation = candidate
-			} else {
-				rule.operation = xtendFunctionToEOperation(function)
-			}
+			rule.operation = function.toEOperation
 
 			rule.stepRule = stepFunctions.contains(function)
 			rule.main = isMain(function)
@@ -130,6 +129,21 @@ class K3StepExtractor {
 		}
 	}
 
+	private def EOperation toEOperation(IMethod method) {
+		val containingClass = stepAspectsClassToAspectedClasses.get(method.declaringType)
+		var EOperation candidate = null
+		if (containingClass != null) {
+			candidate = containingClass.EAllOperations.findFirst [ o |
+				o.name.equals(method.elementName)
+			]
+		}
+		if (candidate != null) {
+			return candidate
+		} else {
+			return method.xtendFunctionToEOperation
+		}
+	}
+
 	private def EOperation xtendFunctionToEOperation(IMethod function) {
 		val result = EcoreFactory.eINSTANCE.createEOperation
 		result.name = function.elementName
@@ -145,7 +159,7 @@ class K3StepExtractor {
 			allk3Methods.addAll(typeK3Methods)
 
 			// Gather the methods calling those k3 methods
-			val typeMethods = type.methods.filter [m|
+			val typeMethods = type.methods.filter [ m |
 				typeK3Methods.exists [ c |
 					c.elementName.substring(8).equals(m.elementName)
 				]
@@ -162,7 +176,7 @@ class K3StepExtractor {
 			candidateSupers.addAll(type.methods.filter[elementName.startsWith("super_")])
 
 			// Gather all k3 generated super methods
-			allSuperMethods.addAll(candidateSupers.filter [c|
+			allSuperMethods.addAll(candidateSupers.filter [ c |
 				type.methods.exists [ m |
 					c.elementName.substring(6).equals(m.elementName)
 				]
@@ -182,9 +196,22 @@ class K3StepExtractor {
 
 				// And we store all the functions with @EventProcessor
 				eventFunctions.addAll(type.methods.filter[isEvent])
+
+				eventFunctions.forEach[gatherConditionFromEvent]
 			}
 			inspectedClasses.add(type)
 		}
+	}
+	
+	private def void gatherConditionFromEvent(IMethod method) {
+		method.findAnnotation("Step")?.memberValuePairs
+				.filter[memberName == "precondition" && value instanceof String]
+				.map[value as String].forEach[s|
+			val condition = allMethods.findFirst[
+				elementName == s && parameterTypes.elementsEqual(method.parameterTypes)
+			]
+			eventFunctionToConditionFunction.put(method, condition)
+		]
 	}
 
 	private def void gatherCallsFromK3(IMethod function) {
@@ -193,8 +220,8 @@ class K3StepExtractor {
 			val f = function
 			val member = cl.member
 			val method = getContainingAspectMethod(member as IMethod)
-			allk3Methods// Filter out non-k3 methods
-			.filter[m|m == method]// And add 'function' to the called methods of each calling k3 method
+			allk3Methods // Filter out non-k3 methods
+			.filter[m|m == method] // And add 'function' to the called methods of each calling k3 method
 			.forEach [ m |
 				var calledMethods = k3MethodToCalledMethods.get(m)
 				if (calledMethods == null) {
@@ -209,9 +236,9 @@ class K3StepExtractor {
 	private def void gatherCallsFromSuper(IMethod function) {
 		val callingSites = CallHierarchyHelper.getCallLocationsOf(function)
 		callingSites.forEach [ cl |
-			allSuperMethods// TODO unfold lambdas
+			allSuperMethods // TODO unfold lambdas
 			// Filter out non-super methods
-			.filter[m|m == cl.member]// And set 'function' to be the called method of each calling super method
+			.filter[m|m == cl.member] // And set 'function' to be the called method of each calling super method
 			.forEach[m|superMethodTok3Method.put(m, function)]
 		]
 	}
@@ -407,6 +434,19 @@ class K3StepExtractor {
 		]
 	}
 
+	private def IAnnotation findAnnotation(IMethod method, String annotationSimpleName) {
+		// TODO compare with: fr.inria.diverse.k3.al.annotationprocessor.XXX
+		return method.annotations.findFirst [ annot |
+			val name = annot.elementName // may be qualified
+			val lastDotIndex = name.lastIndexOf('.')
+			var simpleName = name
+			if (lastDotIndex !== -1) {
+				simpleName = name.substring(lastDotIndex + 1)
+			}
+			return simpleName.equals(annotationSimpleName)
+		]
+	}
+
 	/**
 	 * Return true if 'method' is tagged with "@Step"
 	 */
@@ -418,15 +458,7 @@ class K3StepExtractor {
 	 * Return true if 'method' is tagged with "@EventProcessor"
 	 */
 	private def boolean isEvent(IMethod method) {
-		val annotation = method.annotations.findFirst [ a |
-			val name = a.elementName
-			val lastDotIndex = name.lastIndexOf('.')
-			var simpleName = name
-			if (lastDotIndex !== -1) {
-				simpleName = name.substring(lastDotIndex + 1)
-			}
-			return simpleName == "Step"
-		]
+		val annotation = method.findAnnotation("Step")
 		annotation != null && annotation.memberValuePairs.exists [ p |
 			p.memberName == "eventHandler" && p.value instanceof Boolean && p.value as Boolean
 		]
