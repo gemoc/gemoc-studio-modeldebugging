@@ -69,7 +69,7 @@ class EventMetamodelGenerator {
 	new(OperationalSemanticsView operationalSemanticsView, String pluginName) {
 		this.operationalSemanticsView = operationalSemanticsView
 		this.pluginName = pluginName
-		rootPackage = operationalSemanticsView.abstractSyntax
+		rootPackage = operationalSemanticsView.executionMetamodel
 		dslName = operationalSemanticsView.executionMetamodel.name
 		eventGenerationPath = '''../«this.pluginName».event/src/'''
 		eventEcoreUri = '''platform:/resource/«this.pluginName».event/model/«dslName»Event.ecore'''
@@ -95,7 +95,7 @@ class EventMetamodelGenerator {
 		]
 		
 		eventSpecificClass = EcoreFactory.eINSTANCE.createEClass => [c|
-			c.name = dslName + "DSLEvent"
+			c.name = dslName.toFirstUpper + "DSLEvent"
 			c.abstract = true
 			c.ESuperTypes += EventPackage.Literals.EVENT
 		]
