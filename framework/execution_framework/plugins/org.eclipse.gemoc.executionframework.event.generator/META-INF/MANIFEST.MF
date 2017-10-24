@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Generator
 Bundle-SymbolicName: org.eclipse.gemoc.executionframework.event.generator;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.gemoc.executionframework.event.generator
 Require-Bundle: com.google.guava,
@@ -12,7 +12,7 @@ Require-Bundle: com.google.guava,
  org.apache.log4j;bundle-version="1.2.15",
  org.eclipse.core.resources;bundle-version="3.11.1",
  org.eclipse.core.runtime;bundle-version="3.12.0",
- org.eclipse.gemoc.dsl;bundle-version="2.4.0",
+ org.eclipse.gemoc.dsl;bundle-version="3.0.0",
  org.eclipse.jdt.core;bundle-version="3.12.3",
  org.eclipse.pde.core;bundle-version="3.11.1",
  org.eclipse.emf.codegen;bundle-version="2.11.0",
@@ -21,7 +21,7 @@ Require-Bundle: com.google.guava,
  org.eclipse.jdt.launching;bundle-version="3.8.101",
  org.eclipse.xtext;bundle-version="2.10.0",
  org.eclipse.emf.mwe2.language;bundle-version="2.9.0",
- org.eclipse.gemoc.executionframework.event.model;bundle-version="2.4.0",
- org.eclipse.gemoc.opsemanticsview.model;bundle-version="2.4.0",
- org.eclipse.gemoc.opsemanticsview.gen;bundle-version="2.4.0"
+ org.eclipse.gemoc.executionframework.event.model;bundle-version="3.0.0",
+ org.eclipse.gemoc.opsemanticsview.model;bundle-version="3.0.0",
+ org.eclipse.gemoc.opsemanticsview.gen;bundle-version="3.0.0"
 
