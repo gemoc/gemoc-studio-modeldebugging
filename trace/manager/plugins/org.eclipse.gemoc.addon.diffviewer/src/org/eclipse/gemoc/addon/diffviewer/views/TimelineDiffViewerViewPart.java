@@ -24,6 +24,16 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
+import org.eclipse.gemoc.addon.diffviewer.Activator;
+import org.eclipse.gemoc.executionframework.ui.views.engine.actions.AbstractEngineAction;
+import org.eclipse.gemoc.trace.commons.model.trace.Dimension;
+import org.eclipse.gemoc.trace.commons.model.trace.State;
+import org.eclipse.gemoc.trace.commons.model.trace.Step;
+import org.eclipse.gemoc.trace.commons.model.trace.TracedObject;
+import org.eclipse.gemoc.trace.commons.model.trace.Value;
+import org.eclipse.gemoc.trace.gemoc.api.ITraceExtractor;
+import org.eclipse.gemoc.trace.gemoc.traceaddon.AbstractTraceAddon;
+import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -34,12 +44,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.gemoc.executionframework.ui.views.engine.actions.AbstractEngineAction;
-import org.eclipse.gemoc.addon.diffviewer.Activator;
-import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine;
 
-import org.eclipse.gemoc.trace.gemoc.api.ITraceExtractor;
-import org.eclipse.gemoc.trace.gemoc.traceaddon.AbstractTraceAddon;
 import javafx.embed.swt.FXCanvas;
 import javafx.scene.Scene;
 
@@ -51,8 +56,8 @@ public class TimelineDiffViewerViewPart extends ViewPart {
 
 	private TimelineDiffViewerRenderer diffViewer;
 
-	private ITraceExtractor extractor1;
-	private ITraceExtractor extractor2;
+	private ITraceExtractor<Step<?>, State<?,?>, TracedObject<?>, Dimension<?>, Value<?>> extractor1;
+	private ITraceExtractor<Step<?>, State<?,?>, TracedObject<?>, Dimension<?>, Value<?>> extractor2;
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -114,7 +119,7 @@ public class TimelineDiffViewerViewPart extends ViewPart {
 						try {
 							IExtensionRegistry extReg = Platform.getExtensionRegistry();
 							IExtensionPoint ep = extReg
-									.getExtensionPoint("org.gemoc.gemoc_language_workbench.engine_addon");
+									.getExtensionPoint("org.eclipse.gemoc.gemoc_language_workbench.engine_addon");
 							IExtension[] extensions = ep.getExtensions();
 							for (int i = 0; i < extensions.length && newTraceAddon == null; i++) {
 								IExtension ext = extensions[i];

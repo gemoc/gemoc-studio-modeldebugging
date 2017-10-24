@@ -5,47 +5,6 @@
 -->
 
 <plugin>
-
-   <extension point="org.eclipse.emf.ecore.generated_package">
-      <!-- @generated scenario -->
-      <package
-            uri="http://www.gemoc.org/scenario"
-            class="org.eclipse.gemoc.executionframework.event.model.scenario.ScenarioPackage"
-            genModel="model/scenario.genmodel"/>
-   </extension>
-
-   <extension point="org.eclipse.emf.ecore.generated_package">
-      <!-- @generated property -->
-      <package
-            uri="http://www.gemoc.org/property"
-            class="org.eclipse.gemoc.executionframework.event.model.property.PropertyPackage"
-            genModel="model/property.genmodel"/>
-   </extension>
-
-   <extension point="org.eclipse.emf.ecore.generated_package">
-      <!-- @generated report -->
-      <package
-            uri="http://www.gemoc.org/report"
-            class="org.eclipse.gemoc.executionframework.event.model.report.ReportPackage"
-            genModel="model/report.genmodel"/>
-   </extension>
-
-   <extension point="org.eclipse.emf.ecore.generated_package">
-      <!-- @generated monitor -->
-      <package
-            uri="http://www.gemoc.org/monitor"
-            class="org.eclipse.gemoc.executionframework.event.model.monitor.MonitorPackage"
-            genModel="model/monitor.genmodel"/>
-   </extension>
-
-   <extension point="org.eclipse.emf.ecore.generated_package">
-      <!-- @generated arbiter -->
-      <package
-            uri="http://www.gemoc.org/arbiter"
-            class="org.eclipse.gemoc.executionframework.event.model.arbiter.ArbiterPackage"
-            genModel="model/arbiter.genmodel"/>
-   </extension>
-
    <extension point="org.eclipse.emf.ecore.generated_package">
       <!-- @generated event -->
       <package
@@ -53,5 +12,4 @@
             class="org.eclipse.gemoc.executionframework.event.model.event.EventPackage"
             genModel="model/event.genmodel"/>
    </extension>
-
 </plugin>

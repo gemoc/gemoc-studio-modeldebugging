@@ -6,16 +6,9 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine;
 
 public class EventManager implements IEventManager {
-
-	private Resource executedModel;
 
 	private final Queue<EventInstance> eventQueue = new ConcurrentLinkedQueue<>();
 
@@ -88,8 +81,6 @@ public class EventManager implements IEventManager {
 
 	@Override
 	public void engineAboutToStart(IExecutionEngine engine) {
-		executedModel = engine.getExecutionContext().getResourceModel();
-
 		final Set<IBehavioralAPI> apis = engine.getAddonsTypedBy(IBehavioralAPI.class);
 		if (!apis.isEmpty()) {
 			api = apis.iterator().next();

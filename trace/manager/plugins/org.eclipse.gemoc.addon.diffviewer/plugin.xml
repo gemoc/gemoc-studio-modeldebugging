@@ -27,7 +27,7 @@
       </view>
    </extension>
    <extension
-         point="org.gemoc.gemoc_language_workbench.engine_addon_group">
+         point="org.eclipse.gemoc.gemoc_language_workbench.engine_addon_group">
       <AddonGroup
             Name="Sequential"
             id="Sequential.AddonGroup">
@@ -37,9 +37,6 @@
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
             targetID="org.eclipse.debug.ui.DebugPerspective">
-         <viewShortcut
-               id="org.eclipse.gemoc.addon.diffviewer.TimelineDiffView">
-         </viewShortcut>
       </perspectiveExtension>
       <perspectiveExtension
             targetID="org.eclipse.sirius.ui.tools.perspective.modeling">

@@ -40,3 +40,4 @@ node {
    }
    step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: '', sendToIndividuals: true])
 }
+
