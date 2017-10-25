@@ -10,20 +10,26 @@
  *******************************************************************************/
  package org.eclipse.gemoc.opsemanticsview.gen.k3
 
+import java.util.HashMap
+import java.util.Map
 import java.util.Set
 import opsemanticsview.OpsemanticsviewFactory
 import org.eclipse.core.resources.IProject
 import org.eclipse.emf.common.util.URI
+import org.eclipse.emf.ecore.EOperation
 import org.eclipse.emf.ecore.EPackage
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
 import org.eclipse.gemoc.dsl.Dsl
 import org.eclipse.gemoc.dsl.SimpleValue
 import org.eclipse.gemoc.opsemanticsview.gen.OperationalSemanticsViewGenerator
 import org.eclipse.jdt.core.IJavaProject
+import org.eclipse.jdt.core.IMethod
 import org.eclipse.jdt.core.IType
 import org.eclipse.jdt.core.JavaCore
 
 class K3OperationalSemanticsViewGenerator implements OperationalSemanticsViewGenerator {
+
+	private val Map<EOperation, IMethod> operationToFunction = new HashMap
 
 	override generate(Dsl language, IProject melangeProject) {
 		val aspectClasses = findAspects(language, melangeProject)
@@ -60,7 +66,9 @@ class K3OperationalSemanticsViewGenerator implements OperationalSemanticsViewGen
 		dynFinder.find();
 
 
-		val K3StepExtractor eventsgen = new K3StepExtractor(aspectClasses, selectedLanguage, executionMetamodel, result);
+		val K3StepExtractor eventsgen = new K3StepExtractor(aspectClasses, selectedLanguage,
+			executionMetamodel, result, operationToFunction
+		);
 		eventsgen.generate();
 
 		result.abstractSyntax = abstractSyntax
@@ -93,6 +101,10 @@ class K3OperationalSemanticsViewGenerator implements OperationalSemanticsViewGen
 			.filter[v | v.getName() == "k3"]
 			.head
 		return semantic !== null && !semantic.values.isEmpty
+	}
+	
+	override getOperationToMethod() {
+		return operationToFunction
 	}
 
 }

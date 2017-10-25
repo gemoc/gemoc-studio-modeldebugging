@@ -18,8 +18,8 @@ import java.util.Set;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.gemoc.executionframework.event.manager.EventInstance;
 import org.eclipse.gemoc.executionframework.event.manager.IEventManager;
+import org.eclipse.gemoc.executionframework.event.model.event.Event;
 import org.eclipse.gemoc.trace.commons.model.trace.Step;
 import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine;
 import org.eclipse.gemoc.xdsmlframework.api.engine_addon.IEngineAddon;
@@ -52,17 +52,17 @@ public class EventManagerRenderer extends Pane implements IEngineAddon {
 
 	private final ObservableList<EClass> eventList = FXCollections.observableArrayList();
 
-	private final ObservableList<EventInstance> pushedEvents = FXCollections.observableArrayList();
+	private final ObservableList<Event> pushedEvents = FXCollections.observableArrayList();
 
 	private final Map<EClass, EventTableView> eventTypeToEventTableView = new HashMap<>();
 
-	private final Map<EClass, List<EventInstance>> eventTypeToSelectedEvents = new HashMap<>();
+	private final Map<EClass, List<Event>> eventTypeToSelectedEvents = new HashMap<>();
 
 	private final ScrollPane scrollPane = new ScrollPane();
 
 	private final ListView<EClass> eventListView = new ListView<>(eventList);
 
-	private final ListView<EventInstance> pushedEventListView = new ListView<>(pushedEvents);
+	private final ListView<Event> pushedEventListView = new ListView<>(pushedEvents);
 
 	private final BorderPane borderPane = new BorderPane();
 
@@ -131,10 +131,10 @@ public class EventManagerRenderer extends Pane implements IEngineAddon {
 				c.getAddedSubList().stream().forEach(e -> {
 					final EventTableView tableView = new EventTableView(e, executedModel, eventManager);
 					eventTypeToEventTableView.put(e, tableView);
-					final List<EventInstance> selectedEvents = new ArrayList<>();
+					final List<Event> selectedEvents = new ArrayList<>();
 					eventTypeToSelectedEvents.put(e, selectedEvents);
 
-					final ListChangeListener<EventInstance> selectedEventsChangeListener = c1 -> {
+					final ListChangeListener<Event> selectedEventsChangeListener = c1 -> {
 						while (c1.next()) {
 							selectedEvents.removeAll(c1.getRemoved());
 							selectedEvents.addAll(c1.getAddedSubList());

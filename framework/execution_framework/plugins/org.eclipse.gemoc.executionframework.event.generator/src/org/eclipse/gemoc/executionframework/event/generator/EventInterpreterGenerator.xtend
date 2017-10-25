@@ -12,7 +12,7 @@ package org.eclipse.gemoc.executionframework.event.generator
 
 import java.util.ArrayList
 import java.util.HashMap
-import java.util.List
+import java.util.HashSet
 import java.util.Map
 import java.util.Set
 import opsemanticsview.EventEmitter
@@ -27,6 +27,7 @@ import org.eclipse.emf.ecore.EPackage
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
 import org.eclipse.emf.mwe2.language.scoping.QualifiedNameProvider
 import org.eclipse.jdt.core.IJavaProject
+import org.eclipse.jdt.core.IMethod
 import org.eclipse.jdt.core.JavaCore
 import org.eclipse.pde.internal.core.project.PDEProject
 import org.eclipse.xtext.naming.IQualifiedNameProvider
@@ -39,19 +40,15 @@ class EventInterpreterGenerator {
 	
 	private val EcoreExtensions ecoreExt = new EcoreExtensions
 
-	private Map<EClass, EOperation> inputEventToHandler = new HashMap
+	private Map<EClass, EventHandler> inputEventToHandler = new HashMap
 
-	private Map<EClass, EOperation> outputEventToEmitter = new HashMap
+	private Map<EClass, EventEmitter> outputEventToEmitter = new HashMap
 
-	private Map<EOperation, EOperation> eventMethodToCondition
+	private Map<EOperation, EOperation> eventMethodToCondition = new HashMap
 
 	private IJavaProject targetProject
 
-	private String projectName
-
 	private String behavioralAPIClassName
-
-	private String packageName
 
 	private EPackage ePackage
 
@@ -59,39 +56,39 @@ class EventInterpreterGenerator {
 
 	private String languagePackageString
 	
-	private List<EOperation> initializeMethods
+	private Set<EClassifier> eventParameterTypes = new HashSet
 	
-	private Set<EClassifier> eventParameterTypes
+	private Set<String> otherTypes = new HashSet
 	
-	private Set<String> elementReferences
+	private Set<String> elementReferences = new HashSet
 	
 	private val String dslName
 	
 	private val OperationalSemanticsView operationalSemanticsView
 	
+	private val String basePluginName
+	
 	private val String pluginName
+	
+	private val String eventPluginName
 	
 	private val String eventEcoreUri
 	
-	new(OperationalSemanticsView operationalSemanticsView, String pluginName) {
+	private val Map<EOperation, IMethod> operationToMethod
+	
+	new(OperationalSemanticsView operationalSemanticsView, Map<EOperation, IMethod> operationToMethod, String basePluginName) {
 		this.operationalSemanticsView = operationalSemanticsView
-		this.pluginName = pluginName
+		this.basePluginName = basePluginName
+		this.operationToMethod = operationToMethod
+		eventPluginName = basePluginName + ".event"
+		pluginName = basePluginName + ".eventinterpreter"
 		dslName = operationalSemanticsView.executionMetamodel.name
-		eventEcoreUri = '''platform:/resource/«this.pluginName».event/model/«dslName»Event.ecore'''
+		behavioralAPIClassName = '''«dslName.toFirstUpper»BehavioralAPI'''
+		eventEcoreUri = '''platform:/resource/«eventPluginName»/model/«dslName»Event.ecore'''
 	}
 	
 	public def void generateEventInterpreter() {
-		// clean before start
-		targetProject = JavaCore.create(projectHelper.createEventInterpreterProject(pluginName))
-		eventMethodToCondition = newHashMap
-		inputEventToHandler = newHashMap
-		outputEventToEmitter = newHashMap
-		initializeMethods = newArrayList
-		eventParameterTypes = newHashSet
-		elementReferences = newHashSet
-		projectName = '''«pluginName».eventinterpreter'''
-		behavioralAPIClassName = '''«dslName»BehavioralAPI'''
-		packageName = '''«pluginName».eventinterpreter'''
+		targetProject = JavaCore.create(projectHelper.createEventInterpreterProject(basePluginName))
 
 		processLanguage
 		
@@ -99,12 +96,12 @@ class EventInterpreterGenerator {
 		val changer = new PluginXmlChanger
 		changer.load(pluginXml.location.toString)
 		
-		val extensionPoint = changer.addExtension("org.gemoc.gemoc_language_workbench.engine_addon")
+		val extensionPoint = changer.addExtension("org.eclipse.gemoc.gemoc_language_workbench.engine_addon")
 		val element = changer.addChild(extensionPoint, "Addon")
 		
-		changer.addAttribute(element, "Class", packageName + "." + behavioralAPIClassName)
+		changer.addAttribute(element, "Class", pluginName + "." + behavioralAPIClassName)
 		changer.addAttribute(element, "Default", "false")
-		changer.addAttribute(element, "id", packageName)
+		changer.addAttribute(element, "id", pluginName)
 		changer.addAttribute(element, "Default", "false")
 		changer.addAttribute(element, "Name", dslName + " Event Manager")
 		changer.addAttribute(element, "ShortDescription", "Handles events for the " + dslName + " language")
@@ -129,53 +126,45 @@ class EventInterpreterGenerator {
 		if (!inputEventToHandler.empty || !outputEventToEmitter.empty) {
 			val qNameSegments = new ArrayList(fqnProvider.getFullyQualifiedName(inputEventToHandler.keySet.filterNull.head).segments)
 			qNameSegments.remove(qNameSegments.size - 1)
-			eventPackageString = pluginName + ".event." + qNameSegments.join(".")
-			languagePackageString = pluginName
+			eventPackageString = eventPluginName + "." + qNameSegments.join(".")
+			languagePackageString = basePluginName
 			val sourceFolder = targetProject.allPackageFragmentRoots.findFirst [p|
 				if (p.resource instanceof IFolder) {
 					val folder = p.resource as IFolder
 					val path = folder.fullPath.toString
-					return path == ("/" + projectName + "/src")
+					return path == ("/" + pluginName + "/src")
 				}
 				return false
 			]
 			
-			sourceFolder.createPackageFragment(packageName, true, null)
+			sourceFolder.createPackageFragment(pluginName, true, null)
 				.createCompilationUnit(behavioralAPIClassName + ".java", generateCode, true, null)
 		}
 	}
 	
 	private def void processEventHandler(EventHandler handler) {
-		val containingEClass = handler.containingClass
-		val op = handler.operation
-		val condition = handler.condition
-		
-		if (condition != null) {
-			eventMethodToCondition.put(op, condition)
-		}
-		
-		val eventName = '''«containingEClass.name.toFirstUpper»«op.name.toFirstUpper»Event'''
+		val eventName = '''«handler.containingClass.name.toFirstUpper»«handler.operation.name.toFirstUpper»Event'''
 		val eventClass = ecoreExt.findClassifier(ePackage, eventName)
-		if (eventClass != null) {
-			inputEventToHandler.put(eventClass as EClass, op)
+		if (eventClass !== null) {
+			if (handler.condition !== null) {
+				eventMethodToCondition.put(handler.operation, handler.condition)
+			}
+			inputEventToHandler.put(eventClass as EClass, handler)
 		}
 	}
 	
 	private def void processEventEmitter(EventEmitter emitter) {
-		val containingEClass = emitter.containingClass
-		val op = emitter.operation
-		val eventName = '''«containingEClass.name.toFirstUpper»«op.name.toFirstUpper»Event'''
+		val eventName = '''«emitter.containingClass.name.toFirstUpper»«emitter.operation.name.toFirstUpper»Event'''
 		val eventClass = ecoreExt.findClassifier(ePackage, eventName)
-		if (eventClass != null) {
-			outputEventToEmitter.put(eventClass as EClass, op)
+		if (eventClass !== null) {
+			outputEventToEmitter.put(eventClass as EClass, emitter)
 		}
 	}
 
 	private def String generateCode() {
 		val body = generateBody
-		
 		'''
-			package «packageName»;
+			package «pluginName»;
 			
 			«generateImports»
 			
@@ -192,8 +181,8 @@ class EventInterpreterGenerator {
 			import java.util.Set;
 			
 			import org.eclipse.emf.ecore.EClass;
-			import org.eclipse.gemoc.executionframework.event.interpreter.IBehavioralAPI;
-			import org.eclipse.gemoc.executionframework.event.interpreter.EventInstance;
+			import org.eclipse.gemoc.executionframework.event.manager.IBehavioralAPI;
+			import org.eclipse.gemoc.executionframework.event.model.event.Event;
 			«IF !outputEventToEmitter.empty»
 			import org.eclipse.gemoc.trace.commons.model.trace.Step;
 			import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine;
@@ -214,6 +203,9 @@ class EventInterpreterGenerator {
 			«FOR parameterType : eventParameterTypes»
 			import «languagePackageString».«fqnProvider.getFullyQualifiedName(parameterType)»;
 			«ENDFOR»
+			«FOR otherType : otherTypes»
+			import «otherType»;
+			«ENDFOR»
 		'''
 	}
 
@@ -233,17 +225,17 @@ class EventInterpreterGenerator {
 	private def String generateCanSendEventMethod() {
 		'''
 			@Override
-			public boolean canSendEvent(EventInstance event) {
+			public boolean canSendEvent(Event _event) {
 				«FOR entry : inputEventToHandler.entrySet SEPARATOR " else"»
 				«val eventClass = entry.key»
 				«val eventHandler = entry.value»
 				«val eventClassName = eventClass.name»
-				if (event.getOriginalEvent() instanceof «eventClassName») {
-					«val eventCondition = eventMethodToCondition.get(eventHandler)»
-					«IF eventCondition == null»
+				if (_event instanceof «eventClassName») {
+					«val eventCondition = eventHandler.condition»
+					«IF eventCondition === null»
 					return true;
 					«ELSE»
-					return canSend«eventClassName»(event);
+					return canSend«eventClassName»((«eventClassName») _event);
 					«ENDIF»
 				}
 				«ENDFOR»
@@ -252,14 +244,43 @@ class EventInterpreterGenerator {
 		'''
 	}
 
+	private def String generateEventConditions() {
+		'''
+			«FOR entry : inputEventToHandler.entrySet»
+				«val eventClass = entry.key»
+				«val eventCondition = entry.value.condition»
+				«IF eventCondition !== null»
+					
+					«generateEventCondition(eventClass as EClass, entry.value)»
+				«ENDIF»
+			«ENDFOR»
+		'''
+	}
+
+	// FIXME wrong eventConditionClass
+	private def String generateEventCondition(EClass eventClass, EventHandler handler) {
+		val method = operationToMethod.get(handler.condition)
+		val eventClassName = eventClass.name
+		val eventConditionName = handler.condition.name
+		val eventConditionClass = method.declaringTypeName
+		val eventParametersDeclaration = eventClass.eventHandlerParametersDeclaration
+		val eventParameters = eventClass.eventHandlerParameters
+		'''
+			private boolean canSend«eventClassName»(«eventClassName» _event) {
+				«eventParametersDeclaration»
+				return «eventConditionClass».«eventConditionName»(«eventParameters»);
+			}
+		'''
+	}
+
 	private def String generateDispatch() {
 		'''
 			@Override
-			public void dispatchEvent(EventInstance event) {
+			public void dispatchEvent(Event _event) {
 				«FOR eventHandler : inputEventToHandler.entrySet SEPARATOR " else"»
 					«val eventClassName = eventHandler.key.name»
-					if (event.getOriginalEvent() instanceof «eventClassName») {
-						handle«eventClassName»(event);
+					if (_event instanceof «eventClassName») {
+						handle«eventClassName»((«eventClassName») _event);
 					}
 				«ENDFOR»
 			}
@@ -277,17 +298,19 @@ class EventInterpreterGenerator {
 		'''
 	}
 
-	private def String generateEventHandler(EClass eventClass, EOperation eventHandler) {
+	private def String generateEventHandler(EClass eventClass, EventHandler eventHandler) {
+		val method = operationToMethod.get(eventHandler.operation)
 		val eventClassName = eventClass.name
-		val eventHandlerName = eventHandler.name
-		val eventHandlingClass = eventHandler.EContainingClass.name
+		val eventHandlerOperation = eventHandler.operation
+		val eventHandlerName = eventHandlerOperation.name
+		val eventHandlingClass = method.declaringTypeName
 		val eventParametersDeclaration = eventClass.eventHandlerParametersDeclaration
 		val eventParameters = eventClass.eventHandlerParameters
-		val eventCondition = eventMethodToCondition.get(eventHandler)
-		return '''
-			private void handle«eventClassName»(EventInstance _event) {
+		val eventCondition = eventHandler.condition
+		'''
+			private void handle«eventClassName»(«eventClassName» _event) {
 				«eventParametersDeclaration»
-				«IF eventCondition != null»
+				«IF eventCondition !== null»
 				if («eventHandlingClass».«eventCondition.name»(«eventParameters»)) {
 					«eventHandlingClass».«eventHandlerName»(«eventParameters»);
 				}
@@ -297,32 +320,10 @@ class EventInterpreterGenerator {
 			}
 		'''
 	}
-
-	private def String generateEventConditions() {
-		'''
-			«FOR entry : inputEventToHandler.entrySet»
-				«val eventClass = entry.key»
-				«val eventCondition = eventMethodToCondition.get(entry.value)»
-				«IF eventCondition != null»
-					
-					«generateEventCondition(eventClass as EClass, eventCondition)»
-				«ENDIF»
-			«ENDFOR»
-		'''
-	}
-
-	private def String generateEventCondition(EClass eventClass, EOperation eventCondition) {
-		val eventClassName = eventClass.name
-		val eventHandlerName = eventCondition.name
-		val eventHandlingClass = eventCondition.EContainingClass.name
-		val eventParametersDeclaration = eventClass.eventHandlerParametersDeclaration
-		val eventParameters = eventClass.eventHandlerParameters
-		return '''
-			private boolean canSend«eventClassName»(EventInstance _event) {
-				«eventParametersDeclaration»
-				return «eventHandlingClass».«eventHandlerName»(«eventParameters»);
-			}
-		'''
+	
+	private def String getDeclaringTypeName(IMethod method) {
+		otherTypes.add(method.declaringType.fullyQualifiedName)
+		return method.declaringType.elementName
 	}
 
 	private def EClassifier addType(EClassifier type) {
@@ -342,7 +343,7 @@ class EventInterpreterGenerator {
 				} else {
 					f.EType.instanceClass.simpleName
 				}»
-			final «parameterType» «name» = («parameterType») _event.getParameters().get(_event.getOriginalEvent().eClass().getEAllStructuralFeatures().get(«i»));
+			final «parameterType» «name» = _event.get«name.toFirstUpper»();
 			«ENDFOR»
 			«ENDIF»
 		'''

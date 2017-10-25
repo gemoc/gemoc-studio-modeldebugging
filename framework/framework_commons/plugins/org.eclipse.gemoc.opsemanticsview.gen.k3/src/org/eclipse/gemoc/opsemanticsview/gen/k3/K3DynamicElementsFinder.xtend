@@ -35,7 +35,7 @@ class K3DynamicElementsFinder {
 
 	def void find() {
 		findDynamicParts
-		if (abstractSyntax != null)
+		if (abstractSyntax !== null)
 			findMappingAsToExe
 	}
 
@@ -47,7 +47,7 @@ class K3DynamicElementsFinder {
 			if (!DynamicAnnotationHelper.isDynamic(c)) {
 
 				val mutableProperties = c.EStructuralFeatures.filter[p|DynamicAnnotationHelper.isDynamic(p)]
-				if (mutableProperties != null && !mutableProperties.empty) {
+				if (mutableProperties !== null && !mutableProperties.empty) {
 					for (p : mutableProperties) {
 						view.dynamicProperties.add(p)
 					}

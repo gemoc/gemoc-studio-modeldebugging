@@ -11,9 +11,9 @@
 package org.eclipse.gemoc.executionframework.event.generator
 
 import java.io.IOException
+import java.util.Map
 import opsemanticsview.OperationalSemanticsView
 import org.eclipse.core.resources.IFile
-import org.eclipse.core.resources.IProject
 import org.eclipse.core.resources.IResource
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.resources.WorkspaceJob
@@ -22,11 +22,13 @@ import org.eclipse.core.runtime.IProgressMonitor
 import org.eclipse.core.runtime.IStatus
 import org.eclipse.core.runtime.Platform
 import org.eclipse.core.runtime.Status
-import org.eclipse.gemoc.opsemanticsview.gen.OperationalSemanticsViewGenerator
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
-import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.common.util.URI
+import org.eclipse.emf.ecore.EOperation
+import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
 import org.eclipse.gemoc.dsl.Dsl
+import org.eclipse.gemoc.opsemanticsview.gen.OperationalSemanticsViewGenerator
+import org.eclipse.jdt.core.IMethod
 
 /**
  * Plenty of ways to call the generator in an eclipse context.
@@ -34,7 +36,7 @@ import org.eclipse.gemoc.dsl.Dsl
  */
 class BehavioralInterfaceGeneratorIntegration {
 
-	static def void generateAddon(IFile dslFile, String selectedLanguage, String pluginName, boolean replace,
+	static def void generateAddon(IFile dslFile, String selectedLanguage, String basePluginName, boolean replace,
 		IProgressMonitor monitor) {
 
 		// Loading
@@ -52,9 +54,9 @@ class BehavioralInterfaceGeneratorIntegration {
 		]
 
 		// If we find one, we generate
-		if (validViewGenerator != null) {
+		if (validViewGenerator !== null) {
 			val OperationalSemanticsView mmextension = validViewGenerator.generate(selection, dslFile.project);
-			generateAddon(selectedLanguage, pluginName, replace, monitor, mmextension)
+			generateAddon(selectedLanguage, basePluginName, replace, monitor, mmextension, validViewGenerator.operationToMethod)
 
 		} // Otherwise, we error
 		else {
@@ -72,42 +74,45 @@ class BehavioralInterfaceGeneratorIntegration {
 	/**
 	 * Central operation of the class, that calls business operations
 	 */
-	public static def void generateAddon(String mmName, String pluginName, boolean replace, IProgressMonitor monitor,
-		OperationalSemanticsView executionExtension) throws CoreException {
+	public static def void generateAddon(String mmName, String basePluginName, boolean replace, IProgressMonitor monitor,
+		OperationalSemanticsView executionExtension, Map<EOperation, IMethod> operationToMethod) throws CoreException {
 
 		// We look for an existing project with this name
-		val IProject existingProject = ResourcesPlugin.getWorkspace().getRoot().getProject(pluginName);
-		if (existingProject.exists()) {
-
-			// If we replace, we delete most of its content 
-			// (we keep the original project in order to be able to replace the project even if it was imported in the workspace)
-			if (replace) {
-				// existingProject.delete(true, monitor);
-				val WorkspaceJob job = new WorkspaceJob("deleting project " + existingProject.name + " content") {
-					override public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
-						for (IResource iRes : existingProject.members) {
-							if (!(iRes.name.equals(".project") || iRes.name.equals(".classpath"))) {
-								iRes.delete(true, monitor);
+		#[
+			ResourcesPlugin.getWorkspace().getRoot().getProject(basePluginName + ".event"),
+			ResourcesPlugin.getWorkspace().getRoot().getProject(basePluginName + ".eventinterpreter")
+		].forEach[p|
+			if (p.exists()) {
+				// If we replace, we delete most of its content
+				// (we keep the original project in order to be able to replace the project even if it was imported in the workspace)
+				if (replace) {
+					// existingProject.delete(true, monitor);
+					val WorkspaceJob job = new WorkspaceJob("deleting project " + p.name + " content") {
+						override public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
+							for (IResource iRes : p.members) {
+								if (!(iRes.name.equals(".project") || iRes.name.equals(".classpath"))) {
+									iRes.delete(true, monitor);
+								}
 							}
+							return Status.OK_STATUS;
 						}
-						return Status.OK_STATUS;
-					}
-				};
-				job.setRule(existingProject);
-				job.schedule();
-			} // Else, error
-			else {
-				throw new CoreException(
-					new Status(Status.ERROR, "org.eclipse.gemoc.trace.gemoc.generator",
-						"Impossible to create the behavioral interface: at least one project already exists with this name."));
+					};
+					job.setRule(p);
+					job.schedule();
+				} // Else, error
+				else {
+					throw new CoreException(
+						new Status(Status.ERROR, "org.eclipse.gemoc.executionframework.event.generator",
+							"Impossible to create the behavioral interface: at least one project already exists with this name."));
+				}
 			}
-		}
+		]
 		
 		try {
 			// Then we call all our business operations
 			// TODO handle languages defined with multiple ecores
-			val EventMetamodelGenerator eventMetamodelGenerator = new EventMetamodelGenerator(executionExtension, pluginName)
-			val EventInterpreterGenerator eventInterpreterGenerator = new EventInterpreterGenerator(executionExtension, pluginName)
+			val EventMetamodelGenerator eventMetamodelGenerator = new EventMetamodelGenerator(executionExtension, basePluginName)
+			val EventInterpreterGenerator eventInterpreterGenerator = new EventInterpreterGenerator(executionExtension, operationToMethod, basePluginName)
 			eventMetamodelGenerator.generateBehavioralInterface
 			eventInterpreterGenerator.generateEventInterpreter
 		} catch (IOException e) {

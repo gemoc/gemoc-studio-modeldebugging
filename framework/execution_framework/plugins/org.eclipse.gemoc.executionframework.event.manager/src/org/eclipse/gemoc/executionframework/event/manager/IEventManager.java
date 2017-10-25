@@ -1,10 +1,11 @@
 package org.eclipse.gemoc.executionframework.event.manager;
 
+import org.eclipse.gemoc.executionframework.event.model.event.Event;
 import org.eclipse.gemoc.xdsmlframework.api.engine_addon.IEngineAddon;
 
 public interface IEventManager extends IEngineAddon {
 
-	void queueEvent(EventInstance event);
+	void queueEvent(Event event);
 
 	void processEvents();
 
@@ -14,5 +15,5 @@ public interface IEventManager extends IEngineAddon {
 
 	void removeListener(IEventManagerListener listener);
 
-	boolean canSendEvent(EventInstance event);
+	boolean canSendEvent(Event event);
 }

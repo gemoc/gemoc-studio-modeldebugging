@@ -17,20 +17,20 @@ class GenerateBehavioralInterfaceHandler extends AbstractDslSelectHandler {
 	override executeForSelectedLanguage(ExecutionEvent event, IProject updatedGemocLanguageProject,
 		String language) throws ExecutionException {
 		val IFile dslFile = getDslFileFromSelection(event);
-		val baseProjectName = MelangeXDSMLProjectHelper.baseProjectName(dslFile.project)
+		val baseProjectName = dslFile.project.name
 
-		// If the base project name doesn't end with the language name, we suggest it		
-		val basePluginName = if (baseProjectName.endsWith(language.toLowerCase)) {
-				baseProjectName
-			} else {
-				baseProjectName + "." + language.toLowerCase
-			}
+//		// If the base project name doesn't end with the language name, we suggest it		
+//		val basePluginName = if (baseProjectName.endsWith(language.toLowerCase)) {
+//				baseProjectName
+//			} else {
+//				baseProjectName + "." + language.toLowerCase
+//			}
 
 		val Job j = new Job("Generating behavioral interface for " + dslFile.toString) {
 			override protected run(IProgressMonitor monitor) {
 				try {
 
-					BehavioralInterfaceGeneratorIntegration.generateAddon(dslFile, language, basePluginName, true,
+					BehavioralInterfaceGeneratorIntegration.generateAddon(dslFile, language, baseProjectName, true,
 						monitor)
 
 				} catch (Exception e) {

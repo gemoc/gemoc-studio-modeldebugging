@@ -13,5 +13,4 @@
 
 <plugin>
    <extension-point id="org.eclipse.gemoc.opsemanticsview.gen" name="org.eclipse.gemoc.opsemanticsview.gen" schema="schema/org.eclipse.gemoc.opsemanticsview.gen.exsd"/>
-
 </plugin>

@@ -6,11 +6,15 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.eclipse.gemoc.executionframework.event.model.event.Event;
+import org.eclipse.gemoc.trace.commons.model.trace.Step;
 import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine;
 
 public class EventManager implements IEventManager {
 
-	private final Queue<EventInstance> eventQueue = new ConcurrentLinkedQueue<>();
+	private final Queue<Event> inputEventQueue = new ConcurrentLinkedQueue<>();
+
+	private final Queue<Event> outputEventQueue = new ConcurrentLinkedQueue<>();
 
 	private boolean canManageEvents = true;
 
@@ -21,8 +25,8 @@ public class EventManager implements IEventManager {
 	private IBehavioralAPI api;
 
 	@Override
-	public void queueEvent(EventInstance input) {
-		eventQueue.add((EventInstance) input);
+	public void queueEvent(Event input) {
+		inputEventQueue.add((Event) input);
 		if (t != null) {
 			synchronized (t) {
 				t.notify();
@@ -32,7 +36,7 @@ public class EventManager implements IEventManager {
 	}
 
 	@Override
-	public boolean canSendEvent(EventInstance event) {
+	public boolean canSendEvent(Event event) {
 		return api == null ? false : api.canSendEvent(event);
 	}
 
@@ -53,7 +57,7 @@ public class EventManager implements IEventManager {
 		if (api != null) {
 			if (canManageEvents) {
 				canManageEvents = false;
-				if (waitForEvents && eventQueue.isEmpty()) {
+				if (waitForEvents && inputEventQueue.isEmpty()) {
 					t = Thread.currentThread();
 					synchronized (t) {
 						try {
@@ -64,10 +68,10 @@ public class EventManager implements IEventManager {
 					}
 					waitForEvents = false;
 				}
-				EventInstance event = eventQueue.poll();
+				Event event = inputEventQueue.poll();
 				while (event != null) {
 					api.dispatchEvent(event);
-					event = eventQueue.poll();
+					event = inputEventQueue.poll();
 				}
 				canManageEvents = true;
 			}
@@ -85,5 +89,10 @@ public class EventManager implements IEventManager {
 		if (!apis.isEmpty()) {
 			api = apis.iterator().next();
 		}
+	}
+	
+	@Override
+	public void stepExecuted(IExecutionEngine engine, Step<?> stepExecuted) {
+//		outputEventQueue.add();
 	}
 }

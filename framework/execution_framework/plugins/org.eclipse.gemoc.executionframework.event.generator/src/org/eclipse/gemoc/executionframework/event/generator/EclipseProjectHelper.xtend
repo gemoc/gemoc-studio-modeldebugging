@@ -48,14 +48,14 @@ class EclipseProjectHelper
 		}
 	}
 	
-	def IProject createEMFEventProject(String dslName) {
+	def IProject createEMFEventProject(String projectName) {
 		try {
 			// FIXME: Everything's hardcoded...
 			val project = createEclipseProject(
-				dslName + ".event",
+				projectName,
 				#[JavaCore::NATURE_ID, PDE::PLUGIN_NATURE],
 				#[JavaCore::BUILDER_ID,	PDE::MANIFEST_BUILDER_ID, PDE::SCHEMA_BUILDER_ID],
-				#["src"],
+				#["src-gen"],
 				#[],
 				#[],
 				#[],
@@ -76,19 +76,20 @@ class EclipseProjectHelper
 		return null
 	}
 	
-	def IProject createEventInterpreterProject(String dslName) {
+	def IProject createEventInterpreterProject(String basePluginName) {
 		try {
-			val projectName = dslName + ".eventinterpreter"
+			val projectName = basePluginName + ".eventinterpreter"
 			val project = createEclipseProject(
 				projectName,
 				#[JavaCore::NATURE_ID, PDE::PLUGIN_NATURE],
 				#[JavaCore::BUILDER_ID,	PDE::MANIFEST_BUILDER_ID, PDE::SCHEMA_BUILDER_ID],
 				#["src"],
 				#[],
-				#["org.eclipse.gemoc.executionframework.event.interpreter",
+				#["org.eclipse.gemoc.executionframework.event.manager",
 					"org.eclipse.gemoc.trace.commons.model",
 					"org.eclipse.gemoc.xdsmlframework.api",
-					dslName + ".event"],
+					basePluginName,
+					basePluginName + ".event"],
 				#[projectName],
 				#[],
 				new NullProgressMonitor
