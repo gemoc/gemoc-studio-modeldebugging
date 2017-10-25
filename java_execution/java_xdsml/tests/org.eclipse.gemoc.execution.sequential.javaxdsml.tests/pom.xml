@@ -42,7 +42,7 @@
 				<configuration>
 					<argLine>-Xmx2048m</argLine>
 					<useUIHarness>true</useUIHarness>
-					<useUIThread>true</useUIThread>
+					<useUIThread>false</useUIThread>
 				</configuration>
 			</plugin>
 		
@@ -119,6 +119,11 @@
 			               <id>org.eclipse.sdk</id>
 			               <versionRange>1.0.0</versionRange>
 			            </requirement>
+			            <requirement>
+	                        <type>eclipse-feature</type>
+	                        <id>org.eclipse.xtext.sdk</id>
+	                        <versionRange>1.0.0</versionRange>
+	                     </requirement>
 			            <!-- GEMOC components -->
 			            <requirement>
 			               <type>eclipse-feature</type>
@@ -148,6 +153,11 @@
 			            <requirement>
 			               <type>eclipse-feature</type>
 			               <id>org.eclipse.gemoc.modeldebugging.framework.commons.feature</id>
+			               <versionRange>1.0.0</versionRange>
+			            </requirement>
+			            <requirement>
+			               <type>eclipse-feature</type>
+			               <id>org.eclipse.gemoc.commons.feature</id>
 			               <versionRange>1.0.0</versionRange>
 			            </requirement>
 			         </extraRequirements>
