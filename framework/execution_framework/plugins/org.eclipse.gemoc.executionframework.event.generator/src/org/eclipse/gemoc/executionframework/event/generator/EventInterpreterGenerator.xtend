@@ -178,9 +178,13 @@ class EventInterpreterGenerator {
 	private def String generateImports() {
 		'''
 			import java.util.HashSet;
+			import java.util.List;
 			import java.util.Set;
 			
 			import org.eclipse.emf.ecore.EClass;
+			import org.eclipse.emf.ecore.EObject;
+			import org.eclipse.emf.ecore.EOperation;
+			import org.eclipse.emf.ecore.EPackage;
 			import org.eclipse.gemoc.executionframework.event.manager.IBehavioralAPI;
 			import org.eclipse.gemoc.executionframework.event.model.event.Event;
 			«IF !outputEventToEmitter.empty»
@@ -203,6 +207,7 @@ class EventInterpreterGenerator {
 			«FOR parameterType : eventParameterTypes»
 			import «languagePackageString».«fqnProvider.getFullyQualifiedName(parameterType)»;
 			«ENDFOR»
+			import «languagePackageString».«operationalSemanticsView.executionMetamodel.name».«operationalSemanticsView.executionMetamodel.name.toFirstUpper»Package;
 			«FOR otherType : otherTypes»
 			import «otherType»;
 			«ENDFOR»
@@ -218,6 +223,20 @@ class EventInterpreterGenerator {
 			«generateDispatch»
 			«generateEventHandlers»
 			«generateEventConditions»
+			
+			«generateGetOutputEvent»
+			«generateEventEmitters»
+			
+			«generateCanHandleMethod»
+		'''
+	}
+	
+	private def generateCanHandleMethod() {
+		'''
+			@Override
+			public boolean canHandle(EPackage pkg) {
+				return pkg == «operationalSemanticsView.executionMetamodel.name.toFirstUpper»Package.eINSTANCE;
+			}
 			
 		'''
 	}
@@ -319,6 +338,66 @@ class EventInterpreterGenerator {
 				«ENDIF»
 			}
 		'''
+	}
+	
+	private def generateGetOutputEvent() {
+		'''
+			@Override
+			public Event getOutputEvent(EOperation operation, EObject caller, List<Object> parameters) {
+				«FOR entry : outputEventToEmitter.entrySet SEPARATOR " else"»
+					«val eventClassName = entry.key.name»
+					«val eventEmitter = entry.value»
+					«val op = eventEmitter.operation»
+					if (operation.getName().equals("«op.name»") && caller instanceof «eventEmitter.containingClass.name») {
+						return get«eventClassName»(«generateEventEmitterParameters(eventEmitter)»);
+					}
+				«ENDFOR»
+				return null;
+			}
+		'''
+	}
+	
+	private def generateEventEmitterParameters(EventEmitter e) {
+		val caller = '''(«e.containingClass.name») caller, '''
+		val parameters = e.operation.EParameters.map[EType.instanceClass.simpleName]
+		'''«caller»«FOR i : 0..(parameters.size - 1) SEPARATOR ", "»(«parameters.get(i)») parameters.get(«i»)«ENDFOR»'''
+	}
+	
+	private def generateEventEmitters() {
+		'''
+			«FOR entry : outputEventToEmitter.entrySet»
+				«val eventClass = entry.key»
+				«val eventEmitter = entry.value»
+				
+				«generateEventEmitter(eventClass as EClass, eventEmitter)»
+			«ENDFOR»
+		'''
+		
+	}
+	
+	private def generateEventEmitter(EClass eventClass, EventEmitter emitter) {
+		'''
+			private Event get«eventClass.name»(«generateEventEmitterParametersDeclaration(emitter)») {
+				final «eventClass.name» _event = «ePackage.name.toFirstUpper»Factory.eINSTANCE.create«eventClass.name»();
+				«FOR i : 0..eventClass.EAllStructuralFeatures.size() - 1»
+					«val f = eventClass.EAllStructuralFeatures.get(i)»
+					«val name = f.name»
+					«IF i == 0»
+					_event.set«name.toFirstUpper»(caller);
+					«ELSE»
+					_event.set«name.toFirstUpper»(«name»);
+					«ENDIF»
+				«ENDFOR»
+				return _event;
+			}
+		'''
+	}
+	
+	private def generateEventEmitterParametersDeclaration(EventEmitter e) {
+		val caller = '''«e.containingClass.name» caller, '''
+		val parameterTypes = e.operation.EParameters.map[EType.instanceClass.simpleName]
+		val parameterNames = e.operation.EParameters.map[name]
+		'''«caller»«FOR i : 0..(parameterTypes.size - 1) SEPARATOR ", "»«parameterTypes.get(i)» «parameterNames.get(i)»«ENDFOR»'''
 	}
 	
 	private def String getDeclaringTypeName(IMethod method) {

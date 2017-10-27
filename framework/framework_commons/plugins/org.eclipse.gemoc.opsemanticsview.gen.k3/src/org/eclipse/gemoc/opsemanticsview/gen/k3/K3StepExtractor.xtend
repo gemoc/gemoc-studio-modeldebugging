@@ -77,15 +77,19 @@ class K3StepExtractor {
 			return functionToRule.get(function)
 		} else {
 			val Rule rule = if (eventFunctions.contains(function)) {
-				val handler = OpsemanticsviewFactory.eINSTANCE.createEventHandler
-				val condition = eventFunctionToConditionFunction.get(function)
-				if (condition !== null) {
-					handler.condition = condition.toEOperation
-					operationToFunction.put(handler.condition, condition)
+				if (function.isEventHandler) {
+					val handler = OpsemanticsviewFactory.eINSTANCE.createEventHandler
+					val condition = eventFunctionToConditionFunction.get(function)
+					if (condition !== null) {
+						handler.condition = condition.toEOperation
+						operationToFunction.put(handler.condition, condition)
+					}
+					handler
+				} else {
+					OpsemanticsviewFactory.eINSTANCE.createEventEmitter
 				}
-				handler
 			} else {
-				OpsemanticsviewFactory.eINSTANCE.createRule;
+				OpsemanticsviewFactory.eINSTANCE.createRule
 			}
 			this.ecoreExtension.rules.add(rule)
 
@@ -200,7 +204,9 @@ class K3StepExtractor {
 				stepFunctions.addAll(type.methods.filter[isStep])
 
 				// And we store all the functions with @EventProcessor
-				eventFunctions.addAll(type.methods.filter[isEvent])
+				eventFunctions.addAll(type.methods.filter[isEventHandler])
+				
+				eventFunctions.addAll(type.methods.filter[isEventEmitter])
 
 				eventFunctions.forEach[gatherConditionFromEvent]
 			}
@@ -455,10 +461,17 @@ class K3StepExtractor {
 	/**
 	 * Return true if 'method' is tagged with "@EventProcessor"
 	 */
-	private def boolean isEvent(IMethod method) {
+	private def boolean isEventHandler(IMethod method) {
 		val annotation = method.findAnnotation("Step")
 		annotation !== null && annotation.memberValuePairs.exists [ p |
 			p.memberName == "eventHandler" && p.value instanceof Boolean && p.value as Boolean
+		]
+	}
+	
+	private def boolean isEventEmitter(IMethod method) {
+		val annotation = method.findAnnotation("Step")
+		annotation !== null && annotation.memberValuePairs.exists [ p |
+			p.memberName == "eventEmitter" && p.value instanceof Boolean && p.value as Boolean
 		]
 	}
 

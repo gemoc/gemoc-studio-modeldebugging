@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension-point id="org.eclipse.gemoc.executionframework.event.api" name="Behavioral API" schema="schema/org.eclipse.gemoc.executionframework.event.api.exsd"/>
   <extension point="org.eclipse.gemoc.gemoc_language_workbench.engine_addon">
     <Addon Class="org.eclipse.gemoc.executionframework.event.manager.property.PropertyMonitor" Default="false" id="fr.inria.diverse.property.propertymonitor" Name="Property Monitor" ShortDescription="Monitoring addon for properties on executed models" AddonGroupId="Sequential.AddonGroup" />
   </extension>

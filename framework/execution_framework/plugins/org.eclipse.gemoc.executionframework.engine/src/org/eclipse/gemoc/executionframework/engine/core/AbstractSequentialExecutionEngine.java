@@ -18,6 +18,7 @@ import java.util.Set;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EOperation;
+import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.util.TransactionUtil;
@@ -73,7 +74,9 @@ public abstract class AbstractSequentialExecutionEngine extends AbstractExecutio
 		if (!traceManagers.isEmpty()) {
 			this.traceAddon = traceManagers.iterator().next();
 		}
-		eventManager = new EventManager();
+		final EPackage languageRootPackage = executionContext.getResourceModel().getContents()
+				.stream().findFirst().map(o -> o.eClass().getEPackage()).orElse(null);
+		eventManager = new EventManager(languageRootPackage);
 		getExecutionContext().getExecutionPlatform().addEngineAddon(eventManager);
 		prepareEntryPoint(executionContext);
 		prepareInitializeModel(executionContext);

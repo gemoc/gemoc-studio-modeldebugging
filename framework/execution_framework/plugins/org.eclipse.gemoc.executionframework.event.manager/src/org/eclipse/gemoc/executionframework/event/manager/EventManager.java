@@ -1,12 +1,21 @@
 package org.eclipse.gemoc.executionframework.event.manager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
-import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.emf.ecore.EClassifier;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.gemoc.executionframework.event.model.event.Event;
+import org.eclipse.gemoc.trace.commons.model.trace.MSE;
+import org.eclipse.gemoc.trace.commons.model.trace.MSEOccurrence;
 import org.eclipse.gemoc.trace.commons.model.trace.Step;
 import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine;
 
@@ -23,6 +32,22 @@ public class EventManager implements IEventManager {
 	private Thread t = null;
 
 	private IBehavioralAPI api;
+
+	public EventManager(EPackage languageRootPackage) {
+		IConfigurationElement[] confElts = Platform.getExtensionRegistry().getConfigurationElementsFor("org.eclipse.gemoc.executionframework.event.api");
+		for (IConfigurationElement confElt : confElts) {
+			try {
+				final IBehavioralAPI candidate = (IBehavioralAPI) confElt.createExecutableExtension("class");
+				if (candidate.canHandle(languageRootPackage)) {
+					api = candidate;
+					break;
+				}
+				break;
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
 	@Override
 	public void queueEvent(Event input) {
@@ -82,17 +107,20 @@ public class EventManager implements IEventManager {
 	public void waitForEvents() {
 		waitForEvents = true;
 	}
-
-	@Override
-	public void engineAboutToStart(IExecutionEngine engine) {
-		final Set<IBehavioralAPI> apis = engine.getAddonsTypedBy(IBehavioralAPI.class);
-		if (!apis.isEmpty()) {
-			api = apis.iterator().next();
-		}
-	}
 	
 	@Override
 	public void stepExecuted(IExecutionEngine engine, Step<?> stepExecuted) {
-//		outputEventQueue.add();
+		final MSEOccurrence mseOcc = stepExecuted.getMseoccurrence();
+		final MSE mse = mseOcc.getMse();
+		final Event event = api.getOutputEvent(mse.getAction(), mse.getCaller(), mseOcc.getParameters());
+		if (event != null) {
+			/* 
+			 * TODO choose between one output event queue per listener or
+			 * notifying each listener, letting them store events (or not)
+			 * 
+			 * outputEventQueue.add(event);
+			 * listeners.forEach(l -> l.eventReceived(event));
+			 */
+		}
 	}
 }

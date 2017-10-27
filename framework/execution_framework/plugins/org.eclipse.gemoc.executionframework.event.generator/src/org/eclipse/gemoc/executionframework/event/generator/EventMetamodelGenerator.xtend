@@ -6,7 +6,10 @@ import java.util.HashSet
 import java.util.List
 import java.util.Map
 import java.util.Set
+import opsemanticsview.EventEmitter
+import opsemanticsview.EventHandler
 import opsemanticsview.OperationalSemanticsView
+import opsemanticsview.Rule
 import org.eclipse.emf.codegen.ecore.genmodel.GenJDKLevel
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel
 import org.eclipse.emf.codegen.ecore.genmodel.GenModelFactory
@@ -19,8 +22,8 @@ import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.common.util.UniqueEList
 import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EClassifier
-import org.eclipse.emf.ecore.EOperation
 import org.eclipse.emf.ecore.EPackage
+import org.eclipse.emf.ecore.EParameter
 import org.eclipse.emf.ecore.EcoreFactory
 import org.eclipse.emf.ecore.EcorePackage
 import org.eclipse.emf.ecore.plugin.EcorePlugin
@@ -29,8 +32,6 @@ import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl
 import org.eclipse.gemoc.executionframework.event.model.event.EventPackage
-import opsemanticsview.EventHandler
-import opsemanticsview.EventEmitter
 
 class EventMetamodelGenerator {
 	
@@ -104,12 +105,12 @@ class EventMetamodelGenerator {
 		
 		operationalSemanticsView.rules
 				.forEach[r|
-					if (r instanceof EventHandler) {
-						r.generateInputEvent
+					if (r instanceof EventHandler || r instanceof EventEmitter) {
+						r.generateEvent
 					}
-					if (r instanceof EventEmitter) {
-						r.generateOutputEvent
-					}
+//					if (r instanceof EventEmitter) {
+//						r.generateOutputEvent
+//					}
 				]
 		
 		val resSet = new ResourceSetImpl
@@ -188,35 +189,31 @@ class EventMetamodelGenerator {
 		)
 	}
 	
-	def private void generateInputEvent(EventHandler handler) {
+	def private void generateEvent(Rule handler) {
 		val containingEClass = handler.containingClass
 		val op = handler.operation
 		val eventName = containingEClass.name.toFirstUpper + op.name.toFirstUpper + "Event"
-		val List<EClassifier> params = newArrayList
-		params += containingEClass
-		params += op.EParameters.map[EType]
+		val List<EParameter> params = op.EParameters
 		eventPkg.EClassifiers += EcoreFactory.eINSTANCE.createEClass => [c|
 			c.name = eventName
 			
-			params.head => [opParam|
-				val parameterTypeName = opParam.name
-				val parameterClassifier = basePkgs.findFirst[getEClassifier(parameterTypeName) !== null]?.getEClassifier(parameterTypeName)
-				if (parameterClassifier !== null) {
-					c.ESuperTypes += parameterClassifier.superEventClass
-				}
-			]
+			val callerTypeName = containingEClass.name
+			val callerClassifier = basePkgs.findFirst[getEClassifier(callerTypeName) !== null]?.getEClassifier(callerTypeName)
+			if (callerClassifier !== null) {
+				c.ESuperTypes += callerClassifier.superEventClass
+			}
 			
-			params.tail.forEach[opParam|
-				val parameterTypeName = opParam.name
-				if (parameterTypeName == "String" || parameterTypeName == "Integer" || parameterTypeName == "Boolean") {
+			params.forEach[opParam|
+				val parameterTypeName = opParam.EType.instanceClassName
+				if (parameterTypeName == "java.lang.String" || parameterTypeName == "java.lang.Integer" || parameterTypeName == "java.lang.Boolean") {
 					c.EStructuralFeatures += EcoreFactory.eINSTANCE.createEAttribute => [
 						name = opParam.name.toFirstLower
-						lowerBound = 0
+						lowerBound = 1
 						upperBound = 1
 						EType = switch (parameterTypeName) {
-							case "String": EcorePackage.Literals.ESTRING
-							case "Integer": EcorePackage.Literals.EINT
-							case "Boolean": EcorePackage.Literals.EBOOLEAN
+							case "java.lang.String": EcorePackage.Literals.ESTRING
+							case "java.lang.Integer": EcorePackage.Literals.EINT
+							case "java.lang.Boolean": EcorePackage.Literals.EBOOLEAN
 						}
 					]
 				} else {
@@ -235,61 +232,48 @@ class EventMetamodelGenerator {
 		]
 	}
 	
-	// FIXME handle source at super level
-	def private void generateOutputEvent(EventEmitter emitter) {
-		val containingEClass = emitter.containingClass
-		val op = emitter.operation
-		val eventName = containingEClass.name.toFirstUpper + op.name.toFirstUpper + "Event"
-		val List<EClassifier> params = newArrayList
-		params += containingEClass
-		params += op.EParameters.map[EType]
-		eventPkg.EClassifiers += EcoreFactory.eINSTANCE.createEClass => [c|
-			c.name = eventName
-			// Creating the generic super type of the property and binding it
-			c.ESuperTypes += eventSpecificClass
-			
-			params.head => [opParam|
-				val parameterTypeName = opParam.name
-				val parameterClassifier = basePkgs.findFirst[getEClassifier(parameterTypeName) !== null]?.getEClassifier(parameterTypeName)
-				if (parameterClassifier !== null) {
-					c.EStructuralFeatures += EcoreFactory.eINSTANCE.createEReference => [
-						name = "source"
-						upperBound = 1
-						lowerBound = 1
-						EType = parameterClassifier
-						containment = false
-					]
-				}
-			]
-			
-			params.tail.forEach[opParam|
-				val parameterTypeName = opParam.name
-				if (parameterTypeName == "String" || parameterTypeName == "Integer" || parameterTypeName == "Boolean") {
-					c.EStructuralFeatures += EcoreFactory.eINSTANCE.createEAttribute => [
-						name = opParam.name.toFirstLower
-						lowerBound = 0
-						upperBound = 1
-						EType = switch (parameterTypeName) {
-							case "String": EcorePackage.Literals.ESTRING
-							case "Integer": EcorePackage.Literals.EINT
-							case "Boolean": EcorePackage.Literals.EBOOLEAN
-						}
-					]
-				} else {
-					val parameterClassifier = basePkgs.findFirst[getEClassifier(parameterTypeName) !== null]?.getEClassifier(parameterTypeName)
-					if (parameterClassifier !== null) {
-						c.EStructuralFeatures += EcoreFactory.eINSTANCE.createEReference => [
-							name = opParam.name.toFirstLower
-							upperBound = 1
-							lowerBound = 1
-							EType = parameterClassifier
-							containment = false
-						]
-					}
-				}
-			]
-		]
-	}
+//	def private void generateOutputEvent(EventEmitter emitter) {
+//		val containingEClass = emitter.containingClass
+//		val op = emitter.operation
+//		val eventName = containingEClass.name.toFirstUpper + op.name.toFirstUpper + "Event"
+//		val List<EParameter> params = op.EParameters
+//		eventPkg.EClassifiers += EcoreFactory.eINSTANCE.createEClass => [c|
+//			c.name = eventName
+//			
+//			val callerTypeName = containingEClass.name
+//			val callerClassifier = basePkgs.findFirst[getEClassifier(callerTypeName) !== null]?.getEClassifier(callerTypeName)
+//			if (callerClassifier !== null) {
+//				c.ESuperTypes += callerClassifier.superEventClass
+//			}
+//			
+//			params.tail.forEach[opParam|
+//				val parameterTypeName = opParam.EType.instanceClassName
+//				if (parameterTypeName == "java.lang.String" || parameterTypeName == "java.lang.Integer" || parameterTypeName == "java.lang.Boolean") {
+//					c.EStructuralFeatures += EcoreFactory.eINSTANCE.createEAttribute => [
+//						name = opParam.name.toFirstLower
+//						lowerBound = 1
+//						upperBound = 1
+//						EType = switch (parameterTypeName) {
+//							case "java.lang.String": EcorePackage.Literals.ESTRING
+//							case "java.lang.Integer": EcorePackage.Literals.EINT
+//							case "java.lang.Boolean": EcorePackage.Literals.EBOOLEAN
+//						}
+//					]
+//				} else {
+//					val parameterClassifier = basePkgs.findFirst[getEClassifier(parameterTypeName) !== null]?.getEClassifier(parameterTypeName)
+//					if (parameterClassifier !== null) {
+//						c.EStructuralFeatures += EcoreFactory.eINSTANCE.createEReference => [
+//							name = opParam.name.toFirstLower
+//							upperBound = 1
+//							lowerBound = 1
+//							EType = parameterClassifier
+//							containment = false
+//						]
+//					}
+//				}
+//			]
+//		]
+//	}
 	
 	def private EClass getSuperEventClass(EClassifier c) {
 		rtToSuperEvent.computeIfAbsent(c, [cls|
