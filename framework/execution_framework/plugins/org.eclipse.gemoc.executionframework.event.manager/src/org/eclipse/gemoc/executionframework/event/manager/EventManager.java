@@ -1,18 +1,14 @@
 package org.eclipse.gemoc.executionframework.event.manager;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.gemoc.executionframework.event.model.event.Event;
 import org.eclipse.gemoc.trace.commons.model.trace.MSE;
 import org.eclipse.gemoc.trace.commons.model.trace.MSEOccurrence;
@@ -23,7 +19,7 @@ public class EventManager implements IEventManager {
 
 	private final Queue<Event> inputEventQueue = new ConcurrentLinkedQueue<>();
 
-	private final Queue<Event> outputEventQueue = new ConcurrentLinkedQueue<>();
+//	private final Queue<Event> outputEventQueue = new ConcurrentLinkedQueue<>();
 
 	private boolean canManageEvents = true;
 
