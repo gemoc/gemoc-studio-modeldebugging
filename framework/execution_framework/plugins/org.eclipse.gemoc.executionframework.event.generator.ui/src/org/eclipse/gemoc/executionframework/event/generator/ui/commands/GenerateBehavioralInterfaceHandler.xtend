@@ -9,7 +9,6 @@ import org.eclipse.core.runtime.Status
 import org.eclipse.core.runtime.jobs.Job
 import org.eclipse.gemoc.executionframework.event.generator.BehavioralInterfaceGeneratorIntegration
 import org.eclipse.gemoc.xdsmlframework.ide.ui.commands.AbstractDslSelectHandler
-import org.eclipse.gemoc.xdsmlframework.ide.ui.xdsml.wizards.MelangeXDSMLProjectHelper
 
 class GenerateBehavioralInterfaceHandler extends AbstractDslSelectHandler {
 	val static String pluginId = "org.eclipse.gemoc.executionframework.event.generator.ui"
