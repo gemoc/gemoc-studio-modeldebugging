@@ -96,16 +96,10 @@ class EventInterpreterGenerator {
 		val changer = new PluginXmlChanger
 		changer.load(pluginXml.location.toString)
 		
-		val extensionPoint = changer.addExtension("org.eclipse.gemoc.gemoc_language_workbench.engine_addon")
-		val element = changer.addChild(extensionPoint, "Addon")
+		val extensionPoint = changer.addExtension("org.eclipse.gemoc.executionframework.event.api")
+		val element = changer.addChild(extensionPoint, "org.eclipse.gemoc.event.api")
 		
-		changer.addAttribute(element, "Class", pluginName + "." + behavioralAPIClassName)
-		changer.addAttribute(element, "Default", "false")
-		changer.addAttribute(element, "id", pluginName)
-		changer.addAttribute(element, "Default", "false")
-		changer.addAttribute(element, "Name", dslName + " Event Manager")
-		changer.addAttribute(element, "ShortDescription", "Handles events for the " + dslName + " language")
-		changer.addAttribute(element, "AddonGroupId", "Sequential.AddonGroup")
+		changer.addAttribute(element, "class", pluginName + "." + behavioralAPIClassName)
 		
 		changer.save(2)
 	}
@@ -349,7 +343,7 @@ class EventInterpreterGenerator {
 					«val eventEmitter = entry.value»
 					«val op = eventEmitter.operation»
 					if (operation.getName().equals("«op.name»") && caller instanceof «eventEmitter.containingClass.name») {
-						return get«eventClassName»(«generateEventEmitterParameters(eventEmitter)»);
+«««						return get«eventClassName»(«generateEventEmitterParameters(eventEmitter)»);
 					}
 				«ENDFOR»
 				return null;
