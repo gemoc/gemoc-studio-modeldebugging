@@ -20,6 +20,8 @@
         <module>plugins/org.eclipse.gemoc.executionframework.debugger</module>
         <module>plugins/org.eclipse.gemoc.executionframework.debugger.ui</module>
         
+        <module>plugins/org.eclipse.gemoc.executionframework.event.generator</module>
+        <module>plugins/org.eclipse.gemoc.executionframework.event.generator.ui</module>
         <module>plugins/org.eclipse.gemoc.executionframework.event.manager</module>
         <module>plugins/org.eclipse.gemoc.executionframework.event.model</module>
         <module>plugins/org.eclipse.gemoc.executionframework.event.model.edit</module>
