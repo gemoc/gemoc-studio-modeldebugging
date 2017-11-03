@@ -46,6 +46,7 @@ import org.eclipse.gemoc.trace.commons.model.launchconfiguration.LaunchConfigura
 import org.eclipse.gemoc.trace.commons.model.launchconfiguration.LaunchConfigurationParameter;
 import org.eclipse.gemoc.trace.commons.model.launchconfiguration.LaunchconfigurationPackage;
 import org.eclipse.gemoc.trace.commons.model.trace.MSEOccurrence;
+import org.eclipse.gemoc.trace.gemoc.api.IModelAccessor;
 import org.eclipse.gemoc.trace.gemoc.api.IMultiDimensionalTraceAddon;
 import org.eclipse.gemoc.dsl.debug.ide.IDSLDebugger;
 import org.eclipse.gemoc.dsl.debug.ide.event.DSLDebugEventDispatcher;
@@ -111,6 +112,13 @@ public class Launcher extends AbstractSequentialGemocLauncher {
 		}
 
 		_executionEngine.getExecutionContext().getExecutionPlatform().addEngineAddon(res);
+		
+		for(IMultiDimensionalTraceAddon addon : traceAddons) {
+			if(addon instanceof IModelAccessor) {
+				((IModelAccessor)addon).setIMutableFieldExtractor(new AnnotationMutableFieldExtractor());
+			}
+		}
+		
 		return res;
 	}
 
