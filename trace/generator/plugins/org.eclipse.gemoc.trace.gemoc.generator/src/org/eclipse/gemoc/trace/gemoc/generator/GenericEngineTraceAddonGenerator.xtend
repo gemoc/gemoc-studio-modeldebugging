@@ -210,6 +210,7 @@ class GenericEngineTraceAddonGenerator {
 		ManifestUtil.addToPluginManifest(project, m, "org.eclipse.gemoc.trace.commons")
 		ManifestUtil.addToPluginManifest(project, m, "org.eclipse.gemoc.xdsmlframework.api")
 		ManifestUtil.addToPluginManifest(project, m, "org.eclipse.gemoc.trace.commons.model")
+		ManifestUtil.addToPluginManifest(project, m, "org.eclipse.gemoc.executionframework.debugger")
 		ManifestUtil.setRequiredExecutionEnvironmentToPluginManifest(project, m, "JavaSE-1.8")
 	}
 	
@@ -281,19 +282,24 @@ import org.eclipse.gemoc.trace.gemoc.api.IStepFactory;
 import org.eclipse.gemoc.trace.commons.model.trace.TracedObject;
 import org.eclipse.gemoc.trace.gemoc.api.ITraceConstructor;
 import org.eclipse.gemoc.trace.gemoc.traceaddon.AbstractTraceAddon;
+import org.eclipse.gemoc.trace.gemoc.api.IModelAccessor;
+import org.eclipse.gemoc.executionframework.debugger.IMutableFieldExtractor;
+import org.eclipse.gemoc.executionframework.debugger.MutableField;
 
-public class «className» extends AbstractTraceAddon {
+public class «className» extends AbstractTraceAddon implements IModelAccessor {
 	
 	private «stepFactoryClassName» factory = null;
 
+	private IMutableFieldExtractor extractor;
+
 	@Override
 	public ITraceConstructor constructTraceConstructor(Resource modelResource, Resource traceResource, Map<EObject, TracedObject<?>> exeToTraced) {
-		return new «traceConstructorClassName»(modelResource, traceResource, exeToTraced);
+		return new «traceConstructorClassName»(modelResource, traceResource, exeToTraced, this);
 	}
 	
 	@Override
 	public IStateManager<State<?, ?>> constructStateManager(Resource modelResource, Map<TracedObject<?>, EObject> tracedToExe) {
-		return new «stateManagerClassName»(modelResource, tracedToExe);
+		return new «stateManagerClassName»(modelResource, tracedToExe, this);
 	}
 	
 	@Override
@@ -306,6 +312,31 @@ public class «className» extends AbstractTraceAddon {
 	@Override
 	public boolean isAddonForTrace(EObject root) {
 		return root instanceof «getJavaFQN(traceability.traceMMExplorer.getSpecificTraceClass)»;
+	}
+	
+	@Override
+	public void setIMutableFieldExtractor(IMutableFieldExtractor extractor) {
+		this.extractor = extractor;
+	}
+	
+	@Override
+	public Object getValue(EObject object, String featureName) {
+		Object res = null;
+		for(MutableField field : extractor.extractMutableField(object)) {
+			if(field.getMutableProperty().getName().equals(featureName)) {
+				return field.getValue();
+			}
+		}
+		return res;
+	}
+	
+	@Override
+	public void setValue(EObject object, String featureName, Object value) {
+		for(MutableField field : extractor.extractMutableField(object)) {
+			if(field.getMutableProperty().getName().equals(featureName)) {
+				field.setValue(value);
+			}
+		}
 	}
 
 }'''

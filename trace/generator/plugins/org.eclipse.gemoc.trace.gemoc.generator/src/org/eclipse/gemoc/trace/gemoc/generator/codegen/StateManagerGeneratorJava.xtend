@@ -111,6 +111,7 @@ class StateManagerGeneratorJava {
 					import org.eclipse.gemoc.trace.commons.model.trace.State;
 					import org.eclipse.gemoc.trace.commons.model.trace.TracedObject;
 					import org.eclipse.gemoc.trace.gemoc.api.IStateManager;
+					import org.eclipse.gemoc.trace.gemoc.api.IModelAccessor;
 				'''
 	}
 	
@@ -120,15 +121,18 @@ class StateManagerGeneratorJava {
 					private final Resource modelResource;
 					
 					private final Map<TracedObject<?>, EObject> tracedToExe;
+					
+					IModelAccessor modelAccessor;
 				'''
 	}
 	
 	private def String generateConstructors() {
 		return
 				'''
-					public «className»(Resource modelResource, Map<TracedObject<?>, EObject> tracedToExe) {
+					public «className»(Resource modelResource, Map<TracedObject<?>, EObject> tracedToExe, IModelAccessor modelAccessor) {
 						this.modelResource = modelResource;
 						this.tracedToExe = tracedToExe;
+						this.modelAccessor = modelAccessor;
 					}
 				'''
 	}
@@ -193,14 +197,14 @@ class StateManagerGeneratorJava {
 								«val containingClass = p.getEContainingClass»
 								«getJavaFQN(containingClass)» exeObject = («getJavaFQN(containingClass)») «getTracedToExeMethodName»(tracedObject);
 								«IF p.many»
-								exeObject.«EcoreCraftingUtil.stringGetter(p)».clear();
+								((List)modelAccessor.getValue(exeObject, "«p.name»")).clear();
 								«IF p instanceof EReference»
-								exeObject.«EcoreCraftingUtil.stringGetter(p)».addAll((Collection<? extends «getJavaFQN(p.getEType,true)»>) «getTracedToExeMethodName»(((«getJavaFQN(valueClass)») value).«EcoreCraftingUtil.stringGetter(p)»));
+								((List)modelAccessor.getValue(exeObject, "«p.name»")).addAll((Collection<? extends «getJavaFQN(p.getEType,true)»>) «getTracedToExeMethodName»(((«getJavaFQN(valueClass)») value).«EcoreCraftingUtil.stringGetter(p)»));
 								«ELSE»
-								exeObject.«EcoreCraftingUtil.stringGetter(p)».addAll((Collection<? extends «getJavaFQN(p.getEType,true)»>) ((«getJavaFQN(valueClass)») value).«EcoreCraftingUtil.stringGetter(p)»);
+								((List)modelAccessor.getValue(exeObject, "«p.name»")).addAll((Collection<? extends «getJavaFQN(p.getEType,true)»>) ((«getJavaFQN(valueClass)») value).«EcoreCraftingUtil.stringGetter(p)»);
 								«ENDIF»
 								«ELSE»
-								exeObject.«EcoreCraftingUtil.stringSetter(p, stringGetterExeValue("value", p, valueClass), refGenPackages)»;
+								modelAccessor.setValue(exeObject, "«p.name»", «stringGetterExeValue("value", p, valueClass)»);
 								«ENDIF»
 								«ENDIF»
 							}
