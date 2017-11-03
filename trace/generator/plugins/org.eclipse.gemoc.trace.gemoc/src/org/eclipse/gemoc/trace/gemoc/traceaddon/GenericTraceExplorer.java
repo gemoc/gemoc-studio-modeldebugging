@@ -333,7 +333,7 @@ public class GenericTraceExplorer implements ITraceExplorer<Step<?>, State<?,?>,
 				steps.addAll(subSteps);
 			}
 		}
-		jumpBeforeStep(lastStep);
+		jump(lastStep.getEndingState());
 	}
 
 	@Override
