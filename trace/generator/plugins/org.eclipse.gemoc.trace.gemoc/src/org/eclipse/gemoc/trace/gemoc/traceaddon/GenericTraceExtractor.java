@@ -475,7 +475,7 @@ public class GenericTraceExtractor
 			final List<? extends State<?, ?>> states = v.getStates();
 			final State<?, ?> firstState = states.get(0);
 			final State<?, ?> lastState = states.get(states.size() - 1);
-			return getStateIndex(firstState) < to && getStateIndex(lastState) > from;
+			return getStateIndex(firstState) < to && getStateIndex(lastState) >= from;
 		}).collect(Collectors.toList());
 		return values;
 	}
