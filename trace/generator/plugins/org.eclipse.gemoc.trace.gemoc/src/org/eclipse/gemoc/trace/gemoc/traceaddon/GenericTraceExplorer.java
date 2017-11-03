@@ -416,30 +416,30 @@ public class GenericTraceExplorer implements ITraceExplorer<Step<?>, State<?,?>,
 
 	@Override
 	public boolean canStepValue(Dimension<?> dimension) {
-		final Boolean cachedValue = canStepValueCache.get(dimension);
-		if (cachedValue != null) {
-			return cachedValue;
-		} else {
+//		final Boolean cachedValue = canStepValueCache.get(dimension);
+//		if (cachedValue != null) {
+//			return cachedValue;
+//		} else {
 			final Value<?> currentValue = getCurrentValue(dimension);
 			final boolean result;
 			if (currentValue != null) {
 				final List<? extends Value<?>> values = dimension.getValues();
 				final int idx = values.indexOf(currentValue);
-				result = idx < values.size();
+				result = idx < values.size() - 1;
 			} else {
 				result = false;
 			}
 			canStepValueCache.put(dimension, result);
 			return result;
-		}
+//		}
 	}
 
 	@Override
 	public boolean canBackValue(Dimension<?> dimension) {
-		final Boolean cachedValue = canBackValueCache.get(dimension);
-		if (cachedValue != null) {
-			return cachedValue;
-		} else {
+//		final Boolean cachedValue = canBackValueCache.get(dimension);
+//		if (cachedValue != null) {
+//			return cachedValue;
+//		} else {
 			final Value<?> currentValue = getCurrentValue(dimension);
 			final boolean result;
 			if (currentValue != null) {
@@ -451,7 +451,7 @@ public class GenericTraceExplorer implements ITraceExplorer<Step<?>, State<?,?>,
 			}
 			canBackValueCache.put(dimension, result);
 			return result;
-		}
+//		}
 	}
 
 	@Override
