@@ -280,7 +280,7 @@ public class OmniscientGenericSequentialModelDebugger extends GenericSequentialM
 				if(!callerStack.empty){
 					updateData(threadName, callerStack.findFirst[true])
 				} else {
-					
+					updateData(threadName, executedModelRoot)
 				}
 			} catch (IllegalStateException e) {
 				// Shhh
