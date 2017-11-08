@@ -32,6 +32,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl
 import org.eclipse.gemoc.executionframework.event.model.event.EventPackage
+import org.eclipse.emf.ecore.EDataType
 
 class EventMetamodelGenerator {
 	
@@ -108,9 +109,6 @@ class EventMetamodelGenerator {
 					if (r instanceof EventHandler || r instanceof EventEmitter) {
 						r.generateEvent
 					}
-//					if (r instanceof EventEmitter) {
-//						r.generateOutputEvent
-//					}
 				]
 		
 		val resSet = new ResourceSetImpl
@@ -189,6 +187,17 @@ class EventMetamodelGenerator {
 		)
 	}
 	
+	private val Map<String, EDataType> typeNameToType =
+		#{
+			"java.lang.Boolean" -> EcorePackage.Literals.EBOOLEAN,
+			"java.lang.Float" -> EcorePackage.Literals.EFLOAT,
+			"java.lang.Integer" -> EcorePackage.Literals.EINT,
+			"bool" -> EcorePackage.Literals.EBOOLEAN,
+			"float" -> EcorePackage.Literals.EFLOAT,
+			"int" -> EcorePackage.Literals.EINT,
+			"java.lang.String" -> EcorePackage.Literals.ESTRING
+		}
+	
 	def private void generateEvent(Rule handler) {
 		val containingEClass = handler.containingClass
 		val op = handler.operation
@@ -205,16 +214,13 @@ class EventMetamodelGenerator {
 			
 			params.forEach[opParam|
 				val parameterTypeName = opParam.EType.instanceClassName
-				if (parameterTypeName == "java.lang.String" || parameterTypeName == "java.lang.Integer" || parameterTypeName == "java.lang.Boolean") {
+				val parameterDataType = typeNameToType.get(parameterTypeName)
+				if (parameterDataType !== null) {
 					c.EStructuralFeatures += EcoreFactory.eINSTANCE.createEAttribute => [
 						name = opParam.name.toFirstLower
 						lowerBound = 1
 						upperBound = 1
-						EType = switch (parameterTypeName) {
-							case "java.lang.String": EcorePackage.Literals.ESTRING
-							case "java.lang.Integer": EcorePackage.Literals.EINT
-							case "java.lang.Boolean": EcorePackage.Literals.EBOOLEAN
-						}
+						EType = parameterDataType
 					]
 				} else {
 					val parameterClassifier = basePkgs.findFirst[getEClassifier(parameterTypeName) !== null]?.getEClassifier(parameterTypeName)
