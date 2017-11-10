@@ -14,6 +14,7 @@ import org.eclipse.emf.ecore.EOperation;
  * </p>
  * <ul>
  *   <li>{@link opsemanticsview.EventHandler#getCondition <em>Condition</em>}</li>
+ *   <li>{@link opsemanticsview.EventHandler#isInterruptible <em>Interruptible</em>}</li>
  * </ul>
  *
  * @see opsemanticsview.OpsemanticsviewPackage#getEventHandler()
@@ -22,29 +23,55 @@ import org.eclipse.emf.ecore.EOperation;
  */
 public interface EventHandler extends Rule {
 	/**
-	 * Returns the value of the '<em><b>Condition</b></em>' reference.
+	 * Returns the value of the '<em><b>Condition</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Condition</em>' reference isn't clear,
+	 * If the meaning of the '<em>Condition</em>' containment reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Condition</em>' reference.
+	 * @return the value of the '<em>Condition</em>' containment reference.
 	 * @see #setCondition(EOperation)
 	 * @see opsemanticsview.OpsemanticsviewPackage#getEventHandler_Condition()
-	 * @model
+	 * @model containment="true"
 	 * @generated
 	 */
 	EOperation getCondition();
 
 	/**
-	 * Sets the value of the '{@link opsemanticsview.EventHandler#getCondition <em>Condition</em>}' reference.
+	 * Sets the value of the '{@link opsemanticsview.EventHandler#getCondition <em>Condition</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Condition</em>' reference.
+	 * @param value the new value of the '<em>Condition</em>' containment reference.
 	 * @see #getCondition()
 	 * @generated
 	 */
 	void setCondition(EOperation value);
+
+	/**
+	 * Returns the value of the '<em><b>Interruptible</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Interruptible</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Interruptible</em>' attribute.
+	 * @see #setInterruptible(boolean)
+	 * @see opsemanticsview.OpsemanticsviewPackage#getEventHandler_Interruptible()
+	 * @model
+	 * @generated
+	 */
+	boolean isInterruptible();
+
+	/**
+	 * Sets the value of the '{@link opsemanticsview.EventHandler#isInterruptible <em>Interruptible</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Interruptible</em>' attribute.
+	 * @see #isInterruptible()
+	 * @generated
+	 */
+	void setInterruptible(boolean value);
 
 } // EventHandler

@@ -18,6 +18,7 @@ import java.util.Set
 import opsemanticsview.EventEmitter
 import opsemanticsview.EventHandler
 import opsemanticsview.OperationalSemanticsView
+import opsemanticsview.StartEventHandler
 import org.eclipse.core.resources.IFolder
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EClass
@@ -112,8 +113,7 @@ class EventInterpreterGenerator {
 				.forEach[r|
 					if (r instanceof EventHandler) {
 						r.processEventHandler
-					}
-					if (r instanceof EventEmitter) {
+					} else if (r instanceof EventEmitter) {
 						r.processEventEmitter
 					}
 				]
@@ -182,8 +182,6 @@ class EventInterpreterGenerator {
 			import org.eclipse.gemoc.executionframework.event.manager.IBehavioralAPI;
 			import org.eclipse.gemoc.executionframework.event.model.event.Event;
 			«IF !outputEventToEmitter.empty»
-			import org.eclipse.gemoc.trace.commons.model.trace.Step;
-			import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine;
 			«ENDIF»
 			«FOR elementReference : elementReferences»
 			import «languagePackageString».«elementReference»;
@@ -210,9 +208,17 @@ class EventInterpreterGenerator {
 
 	private def String generateBody() {
 		'''
+			«generateFields»
+			
+			«generateConstructor»
+			
 			«generateCanSendEventMethod»
 			
 			«generateEventClassesGetter»
+			
+			«generateStartEventClassesGetter»
+			
+			«generateIsInterruptible»
 			
 			«generateDispatch»
 			«generateEventHandlers»
@@ -222,6 +228,33 @@ class EventInterpreterGenerator {
 			«generateEventEmitters»
 			
 			«generateCanHandleMethod»
+		'''
+	}
+	
+	private def generateFields() {
+		'''
+			private final Set<EClass> eventClasses = new HashSet<>();
+			private final Set<EClass> startEventClasses = new HashSet<>();
+			private final Set<EClass> interruptibleEventClasses = new HashSet<>();
+		'''
+	}
+	
+	private def generateConstructor() {
+		'''
+			public «behavioralAPIClassName»() {
+				«FOR entry : inputEventToHandler.entrySet»
+					«val eventClass = entry.key as EClass»
+					eventClasses.add(«ePackage.name.toFirstUpper»Package.eINSTANCE.get«eventClass.name»());
+				«ENDFOR»
+				«FOR entry : inputEventToHandler.entrySet.filter[e|e.value instanceof StartEventHandler]»
+					«val eventClass = entry.key as EClass»
+					startEventClasses.add(«ePackage.name.toFirstUpper»Package.eINSTANCE.get«eventClass.name»());
+				«ENDFOR»
+				«FOR entry : inputEventToHandler.entrySet.filter[e|e.value.interruptible].toSet»
+					«val eventClass = entry.key as EClass»
+					interruptibleEventClasses.add(«ePackage.name.toFirstUpper»Package.eINSTANCE.get«eventClass.name»());
+				«ENDFOR»
+			}
 		'''
 	}
 	
@@ -264,17 +297,17 @@ class EventInterpreterGenerator {
 				«val eventCondition = entry.value.condition»
 				«IF eventCondition !== null»
 					
-					«generateEventCondition(eventClass as EClass, entry.value)»
+					«generateEventCondition(eventClass as EClass, entry.value.condition)»
 				«ENDIF»
 			«ENDFOR»
 		'''
 	}
 
 	// FIXME wrong eventConditionClass
-	private def String generateEventCondition(EClass eventClass, EventHandler handler) {
-		val method = operationToMethod.get(handler.condition)
+	private def String generateEventCondition(EClass eventClass, EOperation condition) {
+		val method = operationToMethod.get(condition)
 		val eventClassName = eventClass.name
-		val eventConditionName = handler.condition.name
+		val eventConditionName = condition.name
 		val eventConditionClass = method.declaringTypeName
 		val eventParametersDeclaration = eventClass.eventHandlerParametersDeclaration
 		val eventParameters = eventClass.eventHandlerParameters
@@ -290,8 +323,8 @@ class EventInterpreterGenerator {
 		'''
 			@Override
 			public void dispatchEvent(Event _event) {
-				«FOR eventHandler : inputEventToHandler.entrySet SEPARATOR " else"»
-					«val eventClassName = eventHandler.key.name»
+				«FOR handler : inputEventToHandler.entrySet SEPARATOR " else"»
+					«val eventClassName = handler.key.name»
 					if (_event instanceof «eventClassName») {
 						handle«eventClassName»((«eventClassName») _event);
 					}
@@ -343,7 +376,7 @@ class EventInterpreterGenerator {
 					«val eventEmitter = entry.value»
 					«val op = eventEmitter.operation»
 					if (operation.getName().equals("«op.name»") && caller instanceof «eventEmitter.containingClass.name») {
-«««						return get«eventClassName»(«generateEventEmitterParameters(eventEmitter)»);
+						return get«eventClassName»(«generateEventEmitterParameters(eventEmitter)»);
 					}
 				«ENDFOR»
 				return null;
@@ -434,12 +467,32 @@ class EventInterpreterGenerator {
 		'''
 			@Override
 			public Set<EClass> getEventClasses() {
+				return eventClasses;
+			}
+		'''
+	}
+
+	private def String generateStartEventClassesGetter() {
+		'''
+			@Override
+			public Set<EClass> getStartEventClasses() {
 				final Set<EClass> eventClasses = new HashSet<>();
-				«FOR entry : inputEventToHandler.entrySet»
+				«FOR entry : inputEventToHandler.entrySet.filter[e|e.value instanceof StartEventHandler]»
 					«val eventClass = entry.key as EClass»
 					eventClasses.add(«ePackage.name.toFirstUpper»Package.eINSTANCE.get«eventClass.name»());
 				«ENDFOR»
 				return eventClasses;
+			}
+		'''
+	}
+
+	private def String generateIsInterruptible() {
+		val rules = new HashSet
+		rules.addAll(inputEventToHandler.entrySet.filter[e|e.value.interruptible].toSet)
+		'''
+			@Override
+			public boolean isInterruptible(EClass eventClass) {
+				return interruptibleEventClasses.contains(eventClass);
 			}
 		'''
 	}

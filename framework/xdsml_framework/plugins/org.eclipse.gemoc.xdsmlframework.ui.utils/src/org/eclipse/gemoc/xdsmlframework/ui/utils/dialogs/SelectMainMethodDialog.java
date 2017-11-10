@@ -12,8 +12,7 @@ package org.eclipse.gemoc.xdsmlframework.ui.utils.dialogs;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.emf.ecore.EObject;
@@ -59,7 +58,7 @@ public class SelectMainMethodDialog extends ElementListSelectionDialog  {
 			target = modelElem.eClass().getInstanceClass();
 		}
 		
-		List<Method> selection = new ArrayList<Method>();
+		Set<Method> selection = new HashSet<Method>();
 		
 		for (Class<?> asp : _aspects)
 		{

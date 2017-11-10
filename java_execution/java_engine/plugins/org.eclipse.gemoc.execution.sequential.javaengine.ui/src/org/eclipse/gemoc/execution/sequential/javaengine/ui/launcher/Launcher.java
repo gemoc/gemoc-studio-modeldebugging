@@ -26,6 +26,7 @@ import org.eclipse.gemoc.executionframework.debugger.AnnotationMutableFieldExtra
 import org.eclipse.gemoc.executionframework.debugger.IntrospectiveMutableFieldExtractor;
 import org.eclipse.gemoc.commons.eclipse.ui.ViewHelper;
 import org.eclipse.gemoc.execution.sequential.javaengine.PlainK3ExecutionEngine;
+import org.eclipse.gemoc.execution.sequential.javaengine.PlainK3ExecutionEngine;
 import org.eclipse.gemoc.execution.sequential.javaengine.SequentialModelExecutionContext;
 import org.eclipse.gemoc.execution.sequential.javaengine.ui.Activator;
 import org.eclipse.gemoc.execution.sequential.javaengine.ui.debug.GenericSequentialModelDebugger;
@@ -58,6 +59,7 @@ public class Launcher extends AbstractSequentialGemocLauncher {
 	protected IExecutionEngine createExecutionEngine(RunConfiguration runConfiguration, ExecutionMode executionMode)
 			throws CoreException, EngineContextException {
 		// create and initialize engine
+//		IExecutionEngine executionEngine = new PlainK3ExecutionEngine();
 		IExecutionEngine executionEngine = new PlainK3ExecutionEngine();
 		ModelExecutionContext executioncontext = new SequentialModelExecutionContext(runConfiguration, executionMode);
 		executioncontext.getExecutionPlatform().getModelLoader().setProgressMonitor(this.launchProgressMonitor);

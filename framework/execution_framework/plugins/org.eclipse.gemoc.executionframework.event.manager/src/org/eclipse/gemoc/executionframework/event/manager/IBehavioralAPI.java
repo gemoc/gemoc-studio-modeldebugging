@@ -16,8 +16,12 @@ public interface IBehavioralAPI {
 	boolean canSendEvent(Event event);
 	
 	Set<EClass> getEventClasses();
-
+	
+	Set<EClass> getStartEventClasses();
+	
 	Event getOutputEvent(EOperation operation, EObject caller, List<Object> parameters);
 	
 	boolean canHandle(EPackage pkg);
+	
+	boolean isInterruptible(EClass event);
 }

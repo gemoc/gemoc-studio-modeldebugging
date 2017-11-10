@@ -77,8 +77,13 @@ class K3StepExtractor {
 			return functionToRule.get(function)
 		} else {
 			val Rule rule = if (eventFunctions.contains(function)) {
-				if (function.isEventHandler) {
+				if (function.isStart) {
+					val handler = OpsemanticsviewFactory.eINSTANCE.createStartEventHandler
+					handler.interruptible = function.isInterruptible(true)
+					handler
+				} else if (function.isEventHandler) {
 					val handler = OpsemanticsviewFactory.eINSTANCE.createEventHandler
+					handler.interruptible = function.isInterruptible(false)
 					val condition = eventFunctionToConditionFunction.get(function)
 					if (condition !== null) {
 						handler.condition = condition.toEOperation
@@ -205,6 +210,7 @@ class K3StepExtractor {
 
 				// And we store all the functions with @EventProcessor
 				eventFunctions.addAll(type.methods.filter[isEventHandler])
+				eventFunctions.addAll(type.methods.filter[isStart])
 				
 				eventFunctions.addAll(type.methods.filter[isEventEmitter])
 
@@ -215,14 +221,19 @@ class K3StepExtractor {
 	}
 	
 	private def void gatherConditionFromEvent(IMethod method) {
-		method.findAnnotation("Step")?.memberValuePairs
-				.filter[memberName == "precondition" && value instanceof String]
+		var annotation = method.findAnnotation("EventHandler")
+		if (annotation === null) {
+			return
+		}
+		val pairs = annotation.memberValuePairs
+		if (pairs === null) {
+			return
+		}
+		pairs.filter[memberName == "precondition" && value instanceof String]
 				.map[value as String].forEach[s|
-			val condition = allMethods.findFirst[
-				elementName == s && parameterTypes.elementsEqual(method.parameterTypes)
-			]
-			eventFunctionToConditionFunction.put(method, condition)
-		]
+					val condition = allMethods.findFirst[elementName == s && parameterTypes.elementsEqual(method.parameterTypes)]
+					eventFunctionToConditionFunction.put(method, condition)
+				]
 	}
 
 	private def void gatherCallsFromK3(IMethod function) {
@@ -455,38 +466,52 @@ class K3StepExtractor {
 	 * Return true if 'method' is tagged with "@Step"
 	 */
 	private def boolean isStep(IMethod method) {
-		testAnnotation(method, "Step")
+		method.testAnnotation("Step")
 	}
 
 	/**
 	 * Return true if 'method' is tagged with "@EventProcessor"
 	 */
 	private def boolean isEventHandler(IMethod method) {
-		val annotation = method.findAnnotation("Step")
-		annotation !== null && annotation.memberValuePairs.exists [ p |
-			p.memberName == "eventHandler" && p.value instanceof Boolean && p.value as Boolean
-		]
+		method.testAnnotation("EventHandler")
 	}
 	
 	private def boolean isEventEmitter(IMethod method) {
-		val annotation = method.findAnnotation("Step")
-		annotation !== null && annotation.memberValuePairs.exists [ p |
-			p.memberName == "eventEmitter" && p.value instanceof Boolean && p.value as Boolean
-		]
+		method.testAnnotation("EventEmitter")
 	}
 
 	/**
 	 * Return true if 'method' is tagged with "@OverrideAspectMethod"
 	 */
 	private def boolean isOverride(IMethod method) {
-		testAnnotation(method, "OverrideAspectMethod")
+		method.testAnnotation("OverrideAspectMethod")
 	}
 
 	/**
 	 * Return true if 'method' is tagged with "@Main"
 	 */
 	private def boolean isMain(IMethod method) {
-		testAnnotation(method, "Main")
+		method.testAnnotation("Main")
+	}
+
+	/**
+	 * Return true if 'method' is tagged with "@Start"
+	 */
+	private def boolean isStart(IMethod method) {
+		method.testAnnotation("Start")
+	}
+	
+	private def boolean isInterruptible(IMethod method, boolean defaultValue) {
+		var annotation = method.findAnnotation("EventHandler")
+		if (annotation === null) {
+			annotation = method.findAnnotation("Start")
+		}
+		val pairs = annotation.memberValuePairs
+		if (pairs === null) {
+			return defaultValue
+		}
+		val value = pairs.findFirst[memberName == "interruptible" && value instanceof Boolean]?.value
+		return if (value === null) defaultValue else value as Boolean
 	}
 
 	/**

@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
@@ -283,14 +284,39 @@ public class MelangeHelper {
 	 * @throws NoSuchMethodException 
 	 */
 	public static Method findMethod(Class<?> aspect, EObject caller, String calledMethodName) throws NoSuchMethodException{
-		String callerClassName = caller.eClass().getName(); 
+		Set<String> callerClassNames = new HashSet<>();
+		callerClassNames.add(caller.eClass().getName());
+		callerClassNames.addAll(caller.eClass().getEAllSuperTypes().stream().map(t -> t.getName()).collect(Collectors.toList()));
 		for(Method method : aspect.getMethods()){
 			String methodName = method.getName();
 			Class<?>[] paramTypes = method.getParameterTypes();
 			if(methodName.equals(calledMethodName) 
 					&& paramTypes.length == 1 
-					&& paramTypes[0].getSimpleName().equals(callerClassName)){
+					&& callerClassNames.stream().anyMatch(s -> paramTypes[0].getSimpleName().equals(s))){
 				return method;
+			}
+		}
+		
+		throw new java.lang.NoSuchMethodException();
+	}
+	
+	public static Method findMethod(Class<?> aspect, EObject caller, Class<?>[] parameterTypes, String calledMethodName) throws NoSuchMethodException{
+		Set<String> callerClassNames = new HashSet<>();
+		callerClassNames.add(caller.eClass().getName());
+		callerClassNames.addAll(caller.eClass().getEAllSuperTypes().stream().map(t -> t.getName()).collect(Collectors.toList()));
+		for(Method method : aspect.getMethods()){
+			String methodName = method.getName();
+			Class<?>[] paramTypes = method.getParameterTypes();
+			if(methodName.equals(calledMethodName) 
+					&& paramTypes.length == parameterTypes.length + 1
+					&& callerClassNames.stream().anyMatch(s -> paramTypes[0].getSimpleName().equals(s))){
+				boolean found = true;
+				for (int i = 0; found && i < parameterTypes.length; i++) {
+					found = found && parameterTypes[i].equals(paramTypes[i+1]);
+				}
+				if (found) {
+					return method;
+				}
 			}
 		}
 		

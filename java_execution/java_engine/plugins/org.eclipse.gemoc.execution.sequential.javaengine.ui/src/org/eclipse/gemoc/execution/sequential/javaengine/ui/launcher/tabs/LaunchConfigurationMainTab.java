@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.gemoc.commons.eclipse.emf.URIHelper;
@@ -37,7 +38,6 @@ import org.eclipse.gemoc.executionframework.engine.commons.MelangeHelper;
 import org.eclipse.gemoc.executionframework.engine.ui.commons.RunConfiguration;
 import org.eclipse.gemoc.executionframework.ui.utils.ENamedElementQualifiedNameLabelProvider;
 import org.eclipse.gemoc.xdsmlframework.ui.utils.dialogs.SelectAIRDIFileDialog;
-import org.eclipse.gemoc.xdsmlframework.ui.utils.dialogs.SelectAnyEObjectDialog;
 import org.eclipse.gemoc.xdsmlframework.ui.utils.dialogs.SelectMainMethodDialog;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -56,21 +56,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.xtext.naming.DefaultDeclarativeQualifiedNameProvider;
 import org.eclipse.xtext.naming.QualifiedName;
-import org.eclipse.gemoc.commons.eclipse.emf.URIHelper;
-import org.eclipse.gemoc.commons.eclipse.ui.dialogs.SelectAnyIFileDialog;
-import org.eclipse.gemoc.execution.sequential.javaengine.PlainK3ExecutionEngine;
-import org.eclipse.gemoc.execution.sequential.javaengine.ui.Activator;
-import org.eclipse.gemoc.execution.sequential.javaengine.ui.launcher.LauncherMessages;
-import org.eclipse.gemoc.executionframework.engine.commons.DslHelper;
-import org.eclipse.gemoc.executionframework.engine.commons.MelangeHelper;
-import org.eclipse.gemoc.executionframework.engine.ui.commons.RunConfiguration;
-import org.eclipse.gemoc.executionframework.ui.utils.ENamedElementQualifiedNameLabelProvider;
-import org.eclipse.gemoc.xdsmlframework.ui.utils.dialogs.SelectAIRDIFileDialog;
-import org.eclipse.gemoc.xdsmlframework.ui.utils.dialogs.SelectAnyEObjectDialog;
-import org.eclipse.gemoc.xdsmlframework.ui.utils.dialogs.SelectMainMethodDialog;
 import org.osgi.framework.Bundle;
 
 /**
@@ -95,6 +82,7 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 	protected Text _entryPointModelElementText;
 	protected Label _entryPointModelElementLabel;
 	protected Text _entryPointMethodText;
+	protected Text _startEventText;
 
 	protected Combo _languageCombo;
 
@@ -253,27 +241,6 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 				}
 			}
 		});
-		createTextLabelLayout(parent, "Model initialization method");
-		_modelInitializationMethodText = new Text(parent, SWT.SINGLE | SWT.BORDER);
-		_modelInitializationMethodText.setLayoutData(createStandardLayout());
-		_modelInitializationMethodText.setFont(font);
-		_modelInitializationMethodText.setEditable(false);
-		createTextLabelLayout(parent, "");
-		createTextLabelLayout(parent, "Model initialization arguments");
-		_modelInitializationArgumentsText = new Text(parent, SWT.MULTI | SWT.BORDER |  SWT.WRAP | SWT.V_SCROLL);
-		_modelInitializationArgumentsText.setToolTipText("one argument per line");
-		GridData gridData = new GridData(GridData.FILL_BOTH);
-		gridData.heightHint = 40;
-		_modelInitializationArgumentsText.setLayoutData(gridData);
-		//_modelInitializationArgumentsText.setLayoutData(createStandardLayout());
-		_modelInitializationArgumentsText.setFont(font);
-		_modelInitializationArgumentsText.setEditable(true);
-		_modelInitializationArgumentsText.addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent e) {
-				updateLaunchConfigurationDialog();
-			}
-		});
 		createTextLabelLayout(parent, "");
 		
 		return parent;
@@ -376,14 +343,14 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 	}
 
 	private Composite createK3Layout(Composite parent, Font font) {
-		createTextLabelLayout(parent, "Main method");
-		_entryPointMethodText = new Text(parent, SWT.SINGLE | SWT.BORDER);
-		_entryPointMethodText.setLayoutData(createStandardLayout());
-		_entryPointMethodText.setFont(font);
-		_entryPointMethodText.setEditable(false);
-		_entryPointMethodText.addModifyListener(fBasicModifyListener);
-		Button mainMethodBrowseButton = createPushButton(parent, "Browse", null);
-		mainMethodBrowseButton.addSelectionListener(new SelectionAdapter() {
+		createTextLabelLayout(parent, "Start event");
+		_startEventText = new Text(parent, SWT.SINGLE | SWT.BORDER);
+		_startEventText.setLayoutData(createStandardLayout());
+		_startEventText.setFont(font);
+		_startEventText.setEditable(false);
+		_startEventText.addModifyListener(fBasicModifyListener);
+		Button startEventBrowseButton = createPushButton(parent, "Browse", null);
+		startEventBrowseButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				if(_languageCombo.getText() == null){
 					setErrorMessage("Please select a language.");
@@ -395,57 +362,88 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 					int res = dialog.open();
 					if (res == WizardDialog.OK) {
 						Method selection = (Method) dialog.getFirstResult();
-						_entryPointMethodText.setText(selection.toString());
+						_startEventText.setText(selection.toString());
 					}
 				}
 			}
 		});
 		
-		createTextLabelLayout(parent, "Main model element path");
-		_entryPointModelElementText = new Text(parent, SWT.SINGLE | SWT.BORDER);
-		_entryPointModelElementText.setLayoutData(createStandardLayout());
-		_entryPointModelElementText.setFont(font);
-		_entryPointModelElementText.setEditable(false);
-		_entryPointModelElementText.addModifyListener(event -> updateMainElementName());
-		_entryPointModelElementText.addModifyListener(fBasicModifyListener);
-		Button mainModelElemBrowseButton = createPushButton(parent, "Browse",
-				null);
-		mainModelElemBrowseButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				Resource model = getModel();
-				if( model == null){
-					setErrorMessage("Please select a model to execute.");
-				}
-				else if(_entryPointMethodText.getText() == null || _entryPointMethodText.getText().equals("")){
-					setErrorMessage("Please select a main method.");
-				}
-				else {
-					SelectAnyEObjectDialog dialog = new SelectAnyEObjectDialog(
-							PlatformUI.getWorkbench()
-									.getActiveWorkbenchWindow().getShell(),
-							model.getResourceSet(),
-							new ENamedElementQualifiedNameLabelProvider()){
-						protected boolean select(EObject obj) {
-							String methodSignature = _entryPointMethodText.getText();
-							String firstParamType = MelangeHelper.getParametersType(methodSignature)[0];
-							String simpleParamType =  MelangeHelper.lastSegment(firstParamType);
-							return obj.eClass().getName().equals(simpleParamType);
-						}
-					};
-					int res = dialog.open();
-					if (res == WizardDialog.OK) {
-						EObject selection = (EObject) dialog.getFirstResult();
-						String uriFragment = selection.eResource()
-								.getURIFragment(selection);
-						_entryPointModelElementText.setText(uriFragment);
-					}
-				}
-			}
-		});
-		
-		createTextLabelLayout(parent, "Main model element name");
-		_entryPointModelElementLabel = new Label(parent, SWT.HORIZONTAL);
-		_entryPointModelElementLabel.setText("");
+//		createTextLabelLayout(parent, "Main method");
+//		_entryPointMethodText = new Text(parent, SWT.SINGLE | SWT.BORDER);
+//		_entryPointMethodText.setLayoutData(createStandardLayout());
+//		_entryPointMethodText.setFont(font);
+//		_entryPointMethodText.setEditable(false);
+//		_entryPointMethodText.addModifyListener(fBasicModifyListener);
+//		Button mainMethodBrowseButton = createPushButton(parent, "Browse", null);
+//		mainMethodBrowseButton.addSelectionListener(new SelectionAdapter() {
+//			public void widgetSelected(SelectionEvent e) {
+//				if(_languageCombo.getText() == null){
+//					setErrorMessage("Please select a language.");
+//				}
+//				else{
+//					Set<Class<?>> candidateAspects = MelangeHelper.getAspects(_languageCombo.getText());
+//					SelectMainMethodDialog dialog = new SelectMainMethodDialog(
+//							candidateAspects, new ENamedElementQualifiedNameLabelProvider());
+//					int res = dialog.open();
+//					if (res == WizardDialog.OK) {
+//						Method selection = (Method) dialog.getFirstResult();
+//						_entryPointMethodText.setText(selection.toString());
+//					}
+//				}
+//			}
+//		});
+//		
+//		createTextLabelLayout(parent, "Main model element path");
+//		_entryPointModelElementText = new Text(parent, SWT.SINGLE | SWT.BORDER);
+//		_entryPointModelElementText.setLayoutData(createStandardLayout());
+//		_entryPointModelElementText.setFont(font);
+//		_entryPointModelElementText.setEditable(false);
+//		_entryPointModelElementText.addModifyListener(event -> updateMainElementName());
+//		_entryPointModelElementText.addModifyListener(fBasicModifyListener);
+//		Button mainModelElemBrowseButton = createPushButton(parent, "Browse",
+//				null);
+//		mainModelElemBrowseButton.addSelectionListener(new SelectionAdapter() {
+//			public void widgetSelected(SelectionEvent e) {
+//				Resource model = getModel();
+//				if( model == null){
+//					setErrorMessage("Please select a model to execute.");
+//				}
+//				else if(_entryPointMethodText.getText() == null || _entryPointMethodText.getText().equals("")){
+//					setErrorMessage("Please select a main method.");
+//				}
+//				else {
+//					SelectAnyEObjectDialog dialog = new SelectAnyEObjectDialog(
+//							PlatformUI.getWorkbench()
+//									.getActiveWorkbenchWindow().getShell(),
+//							model.getResourceSet(),
+//							new ENamedElementQualifiedNameLabelProvider()){
+//						protected boolean select(EObject obj) {
+//							String methodSignature = _entryPointMethodText.getText();
+//							String firstParamType = MelangeHelper.getParametersType(methodSignature)[0];
+//							String simpleParamType =  MelangeHelper.lastSegment(firstParamType);
+//							if (obj.eClass().getName().equals(simpleParamType)) {
+//								return true;
+//							} else {
+//								return obj.eClass().getEAllSuperTypes().stream()
+//										.filter(t -> t.getName().equals(simpleParamType))
+//										.findFirst().map(s -> true).orElse(false);
+//							}
+//						}
+//					};
+//					int res = dialog.open();
+//					if (res == WizardDialog.OK) {
+//						EObject selection = (EObject) dialog.getFirstResult();
+//						String uriFragment = selection.eResource()
+//								.getURIFragment(selection);
+//						_entryPointModelElementText.setText(uriFragment);
+//					}
+//				}
+//			}
+//		});
+//		
+//		createTextLabelLayout(parent, "Main model element name");
+//		_entryPointModelElementLabel = new Label(parent, SWT.HORIZONTAL);
+//		_entryPointModelElementLabel.setText("");
 		
 		return parent;
 	}
@@ -578,12 +576,20 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 			return false;
 		}
 		
-		String[] params =MelangeHelper.getParametersType(mainMethod);
-		String firstParam = MelangeHelper.lastSegment(params[0]);
-		String rootEClass = getModel().getEObject(rootElement).eClass().getName();
-		if( !(params.length == 1 && firstParam.equals(rootEClass)) ){
+		String[] params = MelangeHelper.getParametersType(mainMethod);
+		if (params.length != 1) {
 			setErrorMessage(LauncherMessages.SequentialMainTab_Language_incompatible_root_and_main); 
 			return false;
+		}
+		String firstParam = MelangeHelper.lastSegment(params[0]);
+		EClass rootEClass = getModel().getEObject(rootElement).eClass();
+		if (!rootEClass.getName().equals(firstParam)) {
+			if (rootEClass.getEAllSuperTypes().stream()
+					.filter(t -> t.getName().equals(firstParam))
+					.findFirst().map(s -> false).orElse(true)) {
+				setErrorMessage(LauncherMessages.SequentialMainTab_Language_incompatible_root_and_main); 
+				return false;
+			}
 		}
 		
 		return true;

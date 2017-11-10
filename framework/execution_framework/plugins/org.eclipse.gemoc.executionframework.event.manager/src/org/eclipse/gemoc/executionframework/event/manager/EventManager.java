@@ -1,13 +1,16 @@
 package org.eclipse.gemoc.executionframework.event.manager;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.gemoc.executionframework.event.model.event.Event;
 import org.eclipse.gemoc.trace.commons.model.trace.MSE;
@@ -77,7 +80,7 @@ public class EventManager implements IEventManager {
 	public void processEvents() {
 		if (api != null) {
 			if (canManageEvents) {
-				canManageEvents = false;
+//				canManageEvents = false;
 				if (waitForEvents && inputEventQueue.isEmpty()) {
 					t = Thread.currentThread();
 					synchronized (t) {
@@ -91,10 +94,17 @@ public class EventManager implements IEventManager {
 				}
 				Event event = inputEventQueue.poll();
 				while (event != null) {
-					api.dispatchEvent(event);
+					final boolean interruptible = api.isInterruptible(event.eClass());
+					if (interruptible) {
+						canManageEvents = false;
+						api.dispatchEvent(event);
+						canManageEvents = true;
+					} else {
+						api.dispatchEvent(event);
+					}
 					event = inputEventQueue.poll();
 				}
-				canManageEvents = true;
+//				canManageEvents = true;
 			}
 		}
 	}
@@ -117,6 +127,22 @@ public class EventManager implements IEventManager {
 			 * outputEventQueue.add(event);
 			 * listeners.forEach(l -> l.eventReceived(event));
 			 */
+			listeners.forEach(l -> l.eventReceived(event));
 		}
+	}
+
+	@Override
+	public Set<EClass> getEventClasses() {
+		return api == null ? Collections.emptySet() : api.getEventClasses();
+	}
+
+	@Override
+	public Set<EClass> getStartEventClasses() {
+		return api == null ? Collections.emptySet() : api.getStartEventClasses();
+	}
+
+	@Override
+	public List<Event> getInputEventQueue() {
+		return new ArrayList<>(inputEventQueue);
 	}
 }

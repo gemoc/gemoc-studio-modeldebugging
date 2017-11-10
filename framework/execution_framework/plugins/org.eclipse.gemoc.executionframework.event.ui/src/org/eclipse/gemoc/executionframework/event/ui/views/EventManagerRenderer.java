@@ -159,7 +159,7 @@ public class EventManagerRenderer extends Pane implements IEngineAddon {
 			this.eventManager = eventManager;
 			eventList.clear();
 			if (eventManager != null) {
-//				eventList.addAll(this.eventManager.getEventClasses());
+				eventList.addAll(this.eventManager.getEventClasses());
 			}
 		};
 		if (!Platform.isFxApplicationThread()) {

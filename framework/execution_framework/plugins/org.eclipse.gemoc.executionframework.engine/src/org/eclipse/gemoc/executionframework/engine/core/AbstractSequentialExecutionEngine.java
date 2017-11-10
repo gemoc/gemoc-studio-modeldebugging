@@ -13,6 +13,7 @@ package org.eclipse.gemoc.executionframework.engine.core;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Set;
 
 import org.eclipse.emf.ecore.EClass;
@@ -51,22 +52,6 @@ public abstract class AbstractSequentialExecutionEngine extends AbstractExecutio
 
 	protected abstract void executeEntryPoint();
 
-	/**
-	 * if it exists, calls the method tagged as @Initialize
-	 */
-	protected abstract void initializeModel();
-
-	/**
-	 * search for an applicable entry point for the simulation, this is typically a method having the @Main annotation
-	 * @param executionContext the execution context of the simulation
-	 */
-	protected abstract void prepareEntryPoint(IExecutionContext executionContext);
-
-	/**
-	 * search for an applicable method tagged as @Initialize
-	 */
-	protected abstract void prepareInitializeModel(IExecutionContext executionContext);
-
 	@Override
 	public final void performInitialize(IExecutionContext executionContext) {
 		@SuppressWarnings("rawtypes")
@@ -78,13 +63,10 @@ public abstract class AbstractSequentialExecutionEngine extends AbstractExecutio
 				.stream().findFirst().map(o -> o.eClass().getEPackage()).orElse(null);
 		eventManager = new EventManager(languageRootPackage);
 		getExecutionContext().getExecutionPlatform().addEngineAddon(eventManager);
-		prepareEntryPoint(executionContext);
-		prepareInitializeModel(executionContext);
 	}
 
 	@Override
 	protected final void performStart() {
-		initializeModel();
 		notifyEngineInitialized();
 		executeEntryPoint();
 		Activator.getDefault().info("Execution finished");
@@ -92,7 +74,7 @@ public abstract class AbstractSequentialExecutionEngine extends AbstractExecutio
 
 	private void manageEvents() {
 		if (eventManager != null) {
-			eventManager.processEvents();
+//			eventManager.processEvents();
 		}
 	}
 
@@ -124,19 +106,21 @@ public abstract class AbstractSequentialExecutionEngine extends AbstractExecutio
 	 * the step was done through a RecordingCommand, it can be given.
 	 */
 	protected final void beforeExecutionStep(Object caller, String className, String operationName, RecordingCommand rc) {
+		beforeExecutionStep(caller, className, operationName, new Object[] {}, rc);
+	}
+	
+	protected final void beforeExecutionStep(Object caller, String className, String operationName, Object[] parameters, RecordingCommand rc) {
 		if (caller != null && caller instanceof EObject && editingDomain != null) {
 			// Call expected to be done from an EMF model, hence EObjects
 			EObject callerCast = (EObject) caller;
 			// We create a step
-			Step<?> step = createStep(callerCast, className, operationName);
-
-			manageEvents();
+			Step<?> step = createStep(callerCast, className, parameters, operationName);
 
 			beforeExecutionStep(step, rc);
 		}
 	}
 
-	private Step<?> createStep(EObject caller, String className, String methodName) {
+	private Step<?> createStep(EObject caller, String className, Object[] parameters, String methodName) {
 		MSE mse = findOrCreateMSE(caller, className, methodName);
 		Step<?> result;
 		if (traceAddon == null) {
@@ -149,7 +133,7 @@ public abstract class AbstractSequentialExecutionEngine extends AbstractExecutio
 		} else {
 			result = traceAddon.getFactory().createStep(mse, new ArrayList<Object>(), new ArrayList<Object>());
 		}
-
+		result.getMseoccurrence().getParameters().addAll(Arrays.asList(parameters));
 		return result;
 	}
 

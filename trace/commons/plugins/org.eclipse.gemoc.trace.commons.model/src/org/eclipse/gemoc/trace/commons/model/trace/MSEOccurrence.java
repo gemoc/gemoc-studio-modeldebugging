@@ -72,7 +72,7 @@ public interface MSEOccurrence extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Parameters</em>' attribute list.
 	 * @see org.eclipse.gemoc.trace.commons.model.trace.TracePackage#getMSEOccurrence_Parameters()
-	 * @model
+	 * @model unique="false"
 	 * @generated
 	 */
 	EList<Object> getParameters();

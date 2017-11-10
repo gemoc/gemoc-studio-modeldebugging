@@ -28,6 +28,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
+import org.eclipse.emf.ecore.util.EDataTypeEList;
 import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
 
 /**
@@ -140,7 +141,7 @@ public class MSEOccurrenceImpl extends MinimalEObjectImpl.Container implements M
 	 */
 	public EList<Object> getParameters() {
 		if (parameters == null) {
-			parameters = new EDataTypeUniqueEList<Object>(Object.class, this, TracePackage.MSE_OCCURRENCE__PARAMETERS);
+			parameters = new EDataTypeEList<Object>(Object.class, this, TracePackage.MSE_OCCURRENCE__PARAMETERS);
 		}
 		return parameters;
 	}

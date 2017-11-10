@@ -20,8 +20,8 @@ import java.util.stream.Collectors;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EFactory;
-import org.eclipse.emf.ecore.EGenericType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -41,6 +41,9 @@ import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.Callback;
+import javafx.util.converter.BooleanStringConverter;
+import javafx.util.converter.FloatStringConverter;
+import javafx.util.converter.IntegerStringConverter;
 
 public class EventTableView extends TableView<Event> {
 
@@ -49,8 +52,6 @@ public class EventTableView extends TableView<Event> {
 	private final EFactory factory;
 
 	private final Resource executedModel;
-
-	private final List<EClass> eventParameterClasses = new ArrayList<>();
 
 	private final Map<EReference, EClass> referenceToParameterClass = new HashMap<>();
 
@@ -67,34 +68,76 @@ public class EventTableView extends TableView<Event> {
 		extractEventParameters();
 		setItems(events);
 		setEditable(true);
-		
+
 		canDisplayEventFunction = (event) -> {
 			return eventManager.canSendEvent(event);
 		};
 
 		final List<TableColumn<Event, ?>> columns = new ArrayList<>();
 		eventClass.getEAllStructuralFeatures().stream().forEach(f -> {
+			final String name = f.getName();
 			if (f instanceof EReference) {
-				final String name = f.getName().substring(0, f.getName().indexOf("Provider"));
 				final TableColumn<Event, String> col = new TableColumn<Event, String>(name);
 				col.setCellValueFactory(new EventReferencePropertyValueFactory((EReference) f));
 				columns.add(col);
 			} else {
-				final String name = f.getName();
-				final TableColumn<Event, String> col = new TableColumn<Event, String>(name);
-				col.setEditable(true);
-				col.setCellValueFactory(new EventAttributePropertyValueFactory((EAttribute) f));
-				col.setCellFactory(TextFieldTableCell.forTableColumn());
-				col.setOnEditCommit(editEvent -> {
-					Event event = editEvent.getRowValue();
-					event.eSet(f, editEvent.getNewValue());
-				});
-				columns.add(col);
+				EClassifier classifier = f.getEType();
+				switch (classifier.getInstanceClassName()) {
+				case "java.lang.Boolean":
+				case "boolean": {
+					final TableColumn<Event, Boolean> col = new TableColumn<Event, Boolean>(name);
+					col.setEditable(true);
+					col.setCellValueFactory(new EventAttributePropertyValueFactory<Boolean>((EAttribute) f));
+					col.setCellFactory(TextFieldTableCell.forTableColumn(new BooleanStringConverter()));
+					col.setOnEditCommit(editEvent -> {
+						Event event = editEvent.getRowValue();
+						event.eSet(f, editEvent.getNewValue());
+					});
+					columns.add(col);
+				}
+					break;
+				case "java.lang.Float":
+				case "float": {
+					final TableColumn<Event, Float> col = new TableColumn<Event, Float>(name);
+					col.setEditable(true);
+					col.setCellValueFactory(new EventAttributePropertyValueFactory<Float>((EAttribute) f));
+					col.setCellFactory(TextFieldTableCell.forTableColumn(new FloatStringConverter()));
+					col.setOnEditCommit(editEvent -> {
+						Event event = editEvent.getRowValue();
+						event.eSet(f, editEvent.getNewValue());
+					});
+					columns.add(col);
+				}
+					break;
+				case "java.lang.Integer":
+				case "int": {
+					final TableColumn<Event, Integer> col = new TableColumn<Event, Integer>(name);
+					col.setEditable(true);
+					col.setCellValueFactory(new EventAttributePropertyValueFactory<Integer>((EAttribute) f));
+					col.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+					col.setOnEditCommit(editEvent -> {
+						Event event = editEvent.getRowValue();
+						event.eSet(f, editEvent.getNewValue());
+					});
+					columns.add(col);
+				}
+					break;
+				case "java.lang.String": {
+					final TableColumn<Event, String> col = new TableColumn<Event, String>(name);
+					col.setEditable(true);
+					col.setCellValueFactory(new EventAttributePropertyValueFactory<String>((EAttribute) f));
+					col.setCellFactory(TextFieldTableCell.forTableColumn());
+					col.setOnEditCommit(editEvent -> {
+						Event event = editEvent.getRowValue();
+						event.eSet(f, editEvent.getNewValue());
+					});
+					columns.add(col);
+				}
+					break;
+				}
 			}
 		});
-
 		getColumns().setAll(columns);
-
 	}
 
 	public void refreshEvents() {
@@ -112,9 +155,9 @@ public class EventTableView extends TableView<Event> {
 					});
 				});
 			}).map(m -> {
-				//TODO
+				// TODO ?
 				final Event event = (Event) factory.create(eventClass);
-				m.forEach((f,v) -> {
+				m.forEach((f, v) -> {
 					event.eSet(f, v);
 				});
 				return event;
@@ -128,12 +171,9 @@ public class EventTableView extends TableView<Event> {
 	}
 
 	private void extractEventParameters() {
-		eventClass.getEReferences().forEach(f -> {
-			final List<EGenericType> genericTypes = ((EClass) f.getEType()).getEGenericSuperTypes();
-			final List<EGenericType> typeArguments = genericTypes.get(0).getETypeArguments();
-			final EClass correspondingClass = (EClass) typeArguments.get(0).getEClassifier();
-			eventParameterClasses.add(correspondingClass);
-			referenceToParameterClass.put(f, correspondingClass);
+		eventClass.getEAllReferences().forEach(f -> {
+			final EClass type = (EClass) f.getEType();
+			referenceToParameterClass.put(f, type);
 		});
 	}
 
@@ -145,8 +185,7 @@ public class EventTableView extends TableView<Event> {
 				final EClass parameterClass = referenceToParameterClass.get(r);
 				return elementClass.getClassifierID() == parameterClass.getClassifierID()
 						|| elementClass.getEAllSuperTypes().contains(parameterClass);
-			})
-			.forEach(r -> {
+			}).forEach(r -> {
 				List<EObject> elements = referenceToMatchingModelElements.get(r);
 				if (elements == null) {
 					elements = new ArrayList<>();
@@ -209,8 +248,8 @@ public class EventTableView extends TableView<Event> {
 		}
 	}
 
-	static class EventAttributePropertyValueFactory
-			implements Callback<CellDataFeatures<Event, String>, ObservableValue<String>> {
+	static class EventAttributePropertyValueFactory<T>
+			implements Callback<CellDataFeatures<Event, T>, ObservableValue<T>> {
 
 		private final EAttribute attribute;
 
@@ -218,12 +257,13 @@ public class EventTableView extends TableView<Event> {
 			this.attribute = attribute;
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
-		public ObservableValue<String> call(CellDataFeatures<Event, String> p) {
+		public ObservableValue<T> call(CellDataFeatures<Event, T> p) {
 			Event event = p.getValue();
 			Object refValue = event.eGet(attribute);
 			if (refValue != null) {
-				ObservableValue<String> result = new ReadOnlyObjectWrapper<String>(refValue.toString());
+				ObservableValue<T> result = new ReadOnlyObjectWrapper<T>((T) refValue);
 				return result;
 			}
 			return null;

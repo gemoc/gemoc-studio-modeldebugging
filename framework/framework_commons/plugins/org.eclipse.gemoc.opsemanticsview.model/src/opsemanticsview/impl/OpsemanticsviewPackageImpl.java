@@ -1,13 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2017 Inria and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     Inria - initial API and implementation
- *******************************************************************************/
 /**
  */
 package opsemanticsview.impl;
@@ -19,6 +9,7 @@ import opsemanticsview.OperationalSemanticsView;
 import opsemanticsview.OpsemanticsviewFactory;
 import opsemanticsview.OpsemanticsviewPackage;
 import opsemanticsview.Rule;
+import opsemanticsview.StartEventHandler;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -68,6 +59,13 @@ public class OpsemanticsviewPackageImpl extends EPackageImpl implements Opsemant
 	 * @generated
 	 */
 	private EClass eventEmitterEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass startEventHandlerEClass = null;
 
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
@@ -324,8 +322,26 @@ public class OpsemanticsviewPackageImpl extends EPackageImpl implements Opsemant
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getEventHandler_Interruptible() {
+		return (EAttribute)eventHandlerEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getEventEmitter() {
 		return eventEmitterEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getStartEventHandler() {
+		return startEventHandlerEClass;
 	}
 
 	/**
@@ -380,8 +396,11 @@ public class OpsemanticsviewPackageImpl extends EPackageImpl implements Opsemant
 
 		eventHandlerEClass = createEClass(EVENT_HANDLER);
 		createEReference(eventHandlerEClass, EVENT_HANDLER__CONDITION);
+		createEAttribute(eventHandlerEClass, EVENT_HANDLER__INTERRUPTIBLE);
 
 		eventEmitterEClass = createEClass(EVENT_EMITTER);
+
+		startEventHandlerEClass = createEClass(START_EVENT_HANDLER);
 	}
 
 	/**
@@ -414,6 +433,7 @@ public class OpsemanticsviewPackageImpl extends EPackageImpl implements Opsemant
 		// Add supertypes to classes
 		eventHandlerEClass.getESuperTypes().add(this.getRule());
 		eventEmitterEClass.getESuperTypes().add(this.getRule());
+		startEventHandlerEClass.getESuperTypes().add(this.getEventHandler());
 
 		// Initialize classes, features, and operations; add parameters
 		initEClass(operationalSemanticsViewEClass, OperationalSemanticsView.class, "OperationalSemanticsView", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -439,9 +459,12 @@ public class OpsemanticsviewPackageImpl extends EPackageImpl implements Opsemant
 		initEReference(getExecutionToASEntry_ASclass(), ecorePackage.getEClass(), null, "ASclass", null, 1, 1, ExecutionToASEntry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(eventHandlerEClass, EventHandler.class, "EventHandler", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getEventHandler_Condition(), ecorePackage.getEOperation(), null, "condition", null, 0, 1, EventHandler.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getEventHandler_Condition(), ecorePackage.getEOperation(), null, "condition", null, 0, 1, EventHandler.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getEventHandler_Interruptible(), ecorePackage.getEBoolean(), "interruptible", null, 0, 1, EventHandler.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(eventEmitterEClass, EventEmitter.class, "EventEmitter", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(startEventHandlerEClass, StartEventHandler.class, "StartEventHandler", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		// Create resource
 		createResource(eNS_URI);

@@ -13,6 +13,7 @@ package org.eclipse.gemoc.xdsmlframework.api.core;
 import java.util.Collection;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.gemoc.executionframework.event.model.event.Event;
 import org.eclipse.gemoc.xdsmlframework.api.extensions.engine_addon.EngineAddonSpecificationExtension;
 
 public interface IRunConfiguration {
@@ -27,6 +28,7 @@ public interface IRunConfiguration {
 	public static final String LAUNCH_INITIALIZATION_METHOD = "GEMOC_LAUNCH_INITIALIZATION_METHOD";
 	public static final String LAUNCH_INITIALIZATION_ARGUMENTS = "GEMOC_LAUNCH_INITIALIZATION_ARGUMENTS";
 	public static final String LAUNCH_BREAK_START = "GEMOC_LAUNCH_BREAK_START";
+	public static final String LAUNCH_START_EVENT = "GEMOC_LAUNCH_START_EVENT";
 	public static final String DEBUG_MODEL_ID = "GEMOC_DEBUG_MODEL_ID";
 
 	// parameters that should be derived from the language in future version
@@ -60,5 +62,7 @@ public interface IRunConfiguration {
 
 	boolean getBreakStart();
 
-	
+	default Event getStartEvent() {return null;}
+
+	default boolean getStopAfterStartEvent() {return true;}
 }

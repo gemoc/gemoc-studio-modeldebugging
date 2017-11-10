@@ -6,6 +6,7 @@ import opsemanticsview.EventHandler;
 import opsemanticsview.OpsemanticsviewPackage;
 
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EOperation;
@@ -22,13 +23,14 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * </p>
  * <ul>
  *   <li>{@link opsemanticsview.impl.EventHandlerImpl#getCondition <em>Condition</em>}</li>
+ *   <li>{@link opsemanticsview.impl.EventHandlerImpl#isInterruptible <em>Interruptible</em>}</li>
  * </ul>
  *
  * @generated
  */
 public class EventHandlerImpl extends RuleImpl implements EventHandler {
 	/**
-	 * The cached value of the '{@link #getCondition() <em>Condition</em>}' reference.
+	 * The cached value of the '{@link #getCondition() <em>Condition</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getCondition()
@@ -36,6 +38,26 @@ public class EventHandlerImpl extends RuleImpl implements EventHandler {
 	 * @ordered
 	 */
 	protected EOperation condition;
+
+	/**
+	 * The default value of the '{@link #isInterruptible() <em>Interruptible</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isInterruptible()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean INTERRUPTIBLE_EDEFAULT = false;
+
+	/**
+	 * The cached value of the '{@link #isInterruptible() <em>Interruptible</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isInterruptible()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean interruptible = INTERRUPTIBLE_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -62,14 +84,6 @@ public class EventHandlerImpl extends RuleImpl implements EventHandler {
 	 * @generated
 	 */
 	public EOperation getCondition() {
-		if (condition != null && condition.eIsProxy()) {
-			InternalEObject oldCondition = (InternalEObject)condition;
-			condition = (EOperation)eResolveProxy(oldCondition);
-			if (condition != oldCondition) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, OpsemanticsviewPackage.EVENT_HANDLER__CONDITION, oldCondition, condition));
-			}
-		}
 		return condition;
 	}
 
@@ -78,8 +92,14 @@ public class EventHandlerImpl extends RuleImpl implements EventHandler {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EOperation basicGetCondition() {
-		return condition;
+	public NotificationChain basicSetCondition(EOperation newCondition, NotificationChain msgs) {
+		EOperation oldCondition = condition;
+		condition = newCondition;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, OpsemanticsviewPackage.EVENT_HANDLER__CONDITION, oldCondition, newCondition);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
 	}
 
 	/**
@@ -88,10 +108,52 @@ public class EventHandlerImpl extends RuleImpl implements EventHandler {
 	 * @generated
 	 */
 	public void setCondition(EOperation newCondition) {
-		EOperation oldCondition = condition;
-		condition = newCondition;
+		if (newCondition != condition) {
+			NotificationChain msgs = null;
+			if (condition != null)
+				msgs = ((InternalEObject)condition).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - OpsemanticsviewPackage.EVENT_HANDLER__CONDITION, null, msgs);
+			if (newCondition != null)
+				msgs = ((InternalEObject)newCondition).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - OpsemanticsviewPackage.EVENT_HANDLER__CONDITION, null, msgs);
+			msgs = basicSetCondition(newCondition, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, OpsemanticsviewPackage.EVENT_HANDLER__CONDITION, newCondition, newCondition));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean isInterruptible() {
+		return interruptible;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setInterruptible(boolean newInterruptible) {
+		boolean oldInterruptible = interruptible;
+		interruptible = newInterruptible;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, OpsemanticsviewPackage.EVENT_HANDLER__CONDITION, oldCondition, condition));
+			eNotify(new ENotificationImpl(this, Notification.SET, OpsemanticsviewPackage.EVENT_HANDLER__INTERRUPTIBLE, oldInterruptible, interruptible));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case OpsemanticsviewPackage.EVENT_HANDLER__CONDITION:
+				return basicSetCondition(null, msgs);
+		}
+		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
@@ -103,8 +165,9 @@ public class EventHandlerImpl extends RuleImpl implements EventHandler {
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case OpsemanticsviewPackage.EVENT_HANDLER__CONDITION:
-				if (resolve) return getCondition();
-				return basicGetCondition();
+				return getCondition();
+			case OpsemanticsviewPackage.EVENT_HANDLER__INTERRUPTIBLE:
+				return isInterruptible();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -119,6 +182,9 @@ public class EventHandlerImpl extends RuleImpl implements EventHandler {
 		switch (featureID) {
 			case OpsemanticsviewPackage.EVENT_HANDLER__CONDITION:
 				setCondition((EOperation)newValue);
+				return;
+			case OpsemanticsviewPackage.EVENT_HANDLER__INTERRUPTIBLE:
+				setInterruptible((Boolean)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -135,6 +201,9 @@ public class EventHandlerImpl extends RuleImpl implements EventHandler {
 			case OpsemanticsviewPackage.EVENT_HANDLER__CONDITION:
 				setCondition((EOperation)null);
 				return;
+			case OpsemanticsviewPackage.EVENT_HANDLER__INTERRUPTIBLE:
+				setInterruptible(INTERRUPTIBLE_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -149,8 +218,26 @@ public class EventHandlerImpl extends RuleImpl implements EventHandler {
 		switch (featureID) {
 			case OpsemanticsviewPackage.EVENT_HANDLER__CONDITION:
 				return condition != null;
+			case OpsemanticsviewPackage.EVENT_HANDLER__INTERRUPTIBLE:
+				return interruptible != INTERRUPTIBLE_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public String toString() {
+		if (eIsProxy()) return super.toString();
+
+		StringBuffer result = new StringBuffer(super.toString());
+		result.append(" (interruptible: ");
+		result.append(interruptible);
+		result.append(')');
+		return result.toString();
 	}
 
 } //EventHandlerImpl

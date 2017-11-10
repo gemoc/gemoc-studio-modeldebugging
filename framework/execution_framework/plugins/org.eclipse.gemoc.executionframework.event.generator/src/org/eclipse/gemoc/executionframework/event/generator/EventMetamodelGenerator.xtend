@@ -22,6 +22,7 @@ import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.common.util.UniqueEList
 import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EClassifier
+import org.eclipse.emf.ecore.EDataType
 import org.eclipse.emf.ecore.EPackage
 import org.eclipse.emf.ecore.EParameter
 import org.eclipse.emf.ecore.EcoreFactory
@@ -32,7 +33,6 @@ import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl
 import org.eclipse.gemoc.executionframework.event.model.event.EventPackage
-import org.eclipse.emf.ecore.EDataType
 
 class EventMetamodelGenerator {
 	
@@ -42,7 +42,7 @@ class EventMetamodelGenerator {
 	
 	private val EPackage rootPackage
 
-	private var EClass eventSpecificClass
+	private var EClass dslSpecificEventClass
 	
 	private var EPackage eventPkg
 	
@@ -96,13 +96,13 @@ class EventMetamodelGenerator {
 			nsURI = rootPackage.nsURI+"event/"
 		]
 		
-		eventSpecificClass = EcoreFactory.eINSTANCE.createEClass => [c|
+		dslSpecificEventClass = EcoreFactory.eINSTANCE.createEClass => [c|
 			c.name = dslName.toFirstUpper + "DSLEvent"
 			c.abstract = true
 			c.ESuperTypes += EventPackage.Literals.EVENT
 		]
 		
-		eventPkg.EClassifiers += eventSpecificClass
+		eventPkg.EClassifiers += dslSpecificEventClass
 		
 		operationalSemanticsView.rules
 				.forEach[r|
@@ -171,7 +171,6 @@ class EventMetamodelGenerator {
 		generator.generate(
 			genModel,
 			GenBaseGeneratorAdapter::MODEL_PROJECT_TYPE,
-			// NullMonitor
 			new Monitor() {
 				override beginTask(String name, int totalWork) {}
 				override clearBlocked() {}
@@ -192,10 +191,10 @@ class EventMetamodelGenerator {
 			"java.lang.Boolean" -> EcorePackage.Literals.EBOOLEAN,
 			"java.lang.Float" -> EcorePackage.Literals.EFLOAT,
 			"java.lang.Integer" -> EcorePackage.Literals.EINT,
+			"java.lang.String" -> EcorePackage.Literals.ESTRING,
 			"bool" -> EcorePackage.Literals.EBOOLEAN,
 			"float" -> EcorePackage.Literals.EFLOAT,
-			"int" -> EcorePackage.Literals.EINT,
-			"java.lang.String" -> EcorePackage.Literals.ESTRING
+			"int" -> EcorePackage.Literals.EINT
 		}
 	
 	def private void generateEvent(Rule handler) {
@@ -238,56 +237,13 @@ class EventMetamodelGenerator {
 		]
 	}
 	
-//	def private void generateOutputEvent(EventEmitter emitter) {
-//		val containingEClass = emitter.containingClass
-//		val op = emitter.operation
-//		val eventName = containingEClass.name.toFirstUpper + op.name.toFirstUpper + "Event"
-//		val List<EParameter> params = op.EParameters
-//		eventPkg.EClassifiers += EcoreFactory.eINSTANCE.createEClass => [c|
-//			c.name = eventName
-//			
-//			val callerTypeName = containingEClass.name
-//			val callerClassifier = basePkgs.findFirst[getEClassifier(callerTypeName) !== null]?.getEClassifier(callerTypeName)
-//			if (callerClassifier !== null) {
-//				c.ESuperTypes += callerClassifier.superEventClass
-//			}
-//			
-//			params.tail.forEach[opParam|
-//				val parameterTypeName = opParam.EType.instanceClassName
-//				if (parameterTypeName == "java.lang.String" || parameterTypeName == "java.lang.Integer" || parameterTypeName == "java.lang.Boolean") {
-//					c.EStructuralFeatures += EcoreFactory.eINSTANCE.createEAttribute => [
-//						name = opParam.name.toFirstLower
-//						lowerBound = 1
-//						upperBound = 1
-//						EType = switch (parameterTypeName) {
-//							case "java.lang.String": EcorePackage.Literals.ESTRING
-//							case "java.lang.Integer": EcorePackage.Literals.EINT
-//							case "java.lang.Boolean": EcorePackage.Literals.EBOOLEAN
-//						}
-//					]
-//				} else {
-//					val parameterClassifier = basePkgs.findFirst[getEClassifier(parameterTypeName) !== null]?.getEClassifier(parameterTypeName)
-//					if (parameterClassifier !== null) {
-//						c.EStructuralFeatures += EcoreFactory.eINSTANCE.createEReference => [
-//							name = opParam.name.toFirstLower
-//							upperBound = 1
-//							lowerBound = 1
-//							EType = parameterClassifier
-//							containment = false
-//						]
-//					}
-//				}
-//			]
-//		]
-//	}
-	
 	def private EClass getSuperEventClass(EClassifier c) {
 		rtToSuperEvent.computeIfAbsent(c, [cls|
 			val superEvent = EcoreFactory.eINSTANCE.createEClass => [
 				name = cls.name + "Event"
 				abstract = true
 				EGenericSuperTypes += EcoreFactory.eINSTANCE.createEGenericType => [
-					EClassifier = eventSpecificClass
+					EClassifier = dslSpecificEventClass
 				]
 				EStructuralFeatures += EcoreFactory.eINSTANCE.createEReference => [
 					name = cls.name.toFirstLower
