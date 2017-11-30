@@ -7,10 +7,10 @@ Bundle-ClassPath: .
 Require-Bundle: fr.inria.diverse.k3.al.annotationprocessor.plugin;bundle-version="3.0.0";visibility:=reexport,
  org.eclipse.gemoc.executionframework.event.model;bundle-version="0.0.0";visibility:=private,
  org.eclipse.emf.transaction;bundle-version="1.9.0",
- org.eclipse.gemoc.xdsmlframework.api;bundle-version="2.4.0",
  org.eclipse.gemoc.trace.commons.model,
  org.eclipse.ocl.ecore,
  org.eclipse.gemoc.dsl,
- org.eclipse.gemoc.opsemanticsview.model;bundle-version="3.0.0"
+ org.eclipse.gemoc.opsemanticsview.model;bundle-version="3.0.0",
+ org.eclipse.gemoc.xdsmlframework.api;bundle-version="3.0.0"
 Bundle-ManifestVersion: 2
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

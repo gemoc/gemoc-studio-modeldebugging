@@ -182,4 +182,9 @@ public class PlainK3ExecutionEngine extends AbstractCommandBasedSequentialExecut
 		});
 		return launchConfiguration;
 	}
+	
+	@Override
+	public void executeStep(Object caller, StepCommand command, String className, String methodName) {
+		executeStep(caller, new Object[] {}, command, className, methodName);
+	}
 }
