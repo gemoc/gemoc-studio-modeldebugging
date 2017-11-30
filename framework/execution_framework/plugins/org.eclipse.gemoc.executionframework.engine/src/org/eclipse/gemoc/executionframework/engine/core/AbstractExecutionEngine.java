@@ -34,17 +34,17 @@ import org.eclipse.gemoc.xdsmlframework.api.engine_addon.IEngineAddon;
 import org.eclipse.gemoc.trace.commons.model.trace.MSEOccurrence;
 import org.eclipse.gemoc.trace.commons.model.trace.Step;
 
-
-
 /**
- * Common implementation of {@link IExecutionEngine}.
- * It provides the following services:
+ * Common implementation of {@link IExecutionEngine}. It provides the following
+ * services:
  * <ul>
- * <li>a basic implementation of the notification for the engine addons ({@link IEngineAddon}).</li>
+ * <li>a basic implementation of the notification for the engine addons
+ * ({@link IEngineAddon}).</li>
  * <li>registration into the engine registry.</li>
  * <li>basic step service (with transaction)</li>
  * </ul>
  * This class is intended to be subclassed.
+ * 
  * @author Didier Vojtisek<didier.vojtisek@inria.fr>
  *
  */
@@ -58,6 +58,8 @@ public abstract class AbstractExecutionEngine implements IExecutionEngine, IDisp
 
 	protected boolean _started = false;
 	protected boolean _isStopped = false;
+
+	protected String _name;
 
 	public Thread thread;
 	public boolean stopOnAddonError = false;
@@ -73,7 +75,7 @@ public abstract class AbstractExecutionEngine implements IExecutionEngine, IDisp
 	abstract protected void performInitialize(IExecutionContext executionContext);
 
 	abstract protected void beforeStart();
-	
+
 	abstract protected void finishDispose();
 
 	@Override
@@ -100,9 +102,8 @@ public abstract class AbstractExecutionEngine implements IExecutionEngine, IDisp
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.gemoc.executionframework.engine.core.IExecutionEngine#getEngineStatus
-	 * ()
+	 * @see org.eclipse.gemoc.executionframework.engine.core.IExecutionEngine#
+	 * getEngineStatus ()
 	 */
 	@Override
 	public final EngineStatus getEngineStatus() {
@@ -122,11 +123,8 @@ public abstract class AbstractExecutionEngine implements IExecutionEngine, IDisp
 		}
 	}
 
-	
-	
-
 	public String getName() {
-		return engineKindName() + " " + _executionContext.getRunConfiguration().getExecutedModelURI();
+		return _name == null ? engineKindName() + " " + _executionContext.getRunConfiguration().getExecutedModelURI() : _name;
 	}
 
 	private void addonError(IEngineAddon addon, Exception e) {
@@ -158,7 +156,7 @@ public abstract class AbstractExecutionEngine implements IExecutionEngine, IDisp
 			}
 		}
 	}
-	
+
 	protected void notifyEngineInitialized() {
 		for (IEngineAddon addon : getExecutionContext().getExecutionPlatform().getEngineAddons()) {
 			try {
@@ -241,8 +239,8 @@ public abstract class AbstractExecutionEngine implements IExecutionEngine, IDisp
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.gemoc.executionframework.engine.core.IExecutionEngine#hasAddon(java.
-	 * lang.Class)
+	 * org.eclipse.gemoc.executionframework.engine.core.IExecutionEngine#hasAddon(
+	 * java. lang.Class)
 	 */
 	@Override
 	public final <T extends IEngineAddon> boolean hasAddon(Class<T> type) {
@@ -257,8 +255,8 @@ public abstract class AbstractExecutionEngine implements IExecutionEngine, IDisp
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.gemoc.executionframework.engine.core.IExecutionEngine#getAddon(java.
-	 * lang.Class)
+	 * org.eclipse.gemoc.executionframework.engine.core.IExecutionEngine#getAddon(
+	 * java. lang.Class)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -320,12 +318,12 @@ public abstract class AbstractExecutionEngine implements IExecutionEngine, IDisp
 			thread.start();
 		}
 	}
-	
+
 	@Override
 	public final void startSynchronous() {
 		try {
 			notifyEngineAboutToStart();
-			Activator.getDefault().gemocRunningEngineRegistry.registerEngine(getName(), AbstractExecutionEngine.this);
+			_name = Activator.getDefault().gemocRunningEngineRegistry.registerEngine(getName(), AbstractExecutionEngine.this);
 			setEngineStatus(EngineStatus.RunStatus.Running);
 			beforeStart();
 			notifyEngineStarted();
@@ -336,12 +334,10 @@ public abstract class AbstractExecutionEngine implements IExecutionEngine, IDisp
 				// transaction
 				commitCurrentTransaction();
 			}
-
 		} catch (EngineStoppedException stopException) {
 			// not really an error, simply print the stop exception
 			// message
 			Activator.getDefault().info("Engine stopped by the user : " + stopException.getMessage());
-
 		} catch (Throwable e) {
 			error = e;
 			e.printStackTrace();
@@ -404,9 +400,11 @@ public abstract class AbstractExecutionEngine implements IExecutionEngine, IDisp
 		return new EMFCommandTransaction(command, editingDomain, null);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine#getCurrentMSEOccurrence()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine#
+	 * getCurrentMSEOccurrence()
 	 */
 	@Override
 	public final MSEOccurrence getCurrentMSEOccurrence() {
@@ -454,8 +452,8 @@ public abstract class AbstractExecutionEngine implements IExecutionEngine, IDisp
 	}
 
 	/**
-	 * To be called just after each execution step by an implementing engine. If
-	 * the step was done through a RecordingCommand, it can be given.
+	 * To be called just after each execution step by an implementing engine. If the
+	 * step was done through a RecordingCommand, it can be given.
 	 */
 	protected final void beforeExecutionStep(Step<?> step, RecordingCommand rc) {
 

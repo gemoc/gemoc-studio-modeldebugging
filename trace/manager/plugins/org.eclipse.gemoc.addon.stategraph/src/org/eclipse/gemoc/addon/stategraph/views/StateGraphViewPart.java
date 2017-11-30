@@ -157,6 +157,11 @@ public class StateGraphViewPart extends EngineSelectionDependentViewPart {
 			public void run() {
 				renderer.setCycleColorationEnabled(isChecked());
 			}
+
+			@Override
+			public void updateButton() {
+				// TODO Auto-generated method stub
+			}
 		});
 
 		addActionToToolbar(new AbstractEngineAction(Action.AS_PUSH_BUTTON) {
@@ -178,6 +183,11 @@ public class StateGraphViewPart extends EngineSelectionDependentViewPart {
 			@Override
 			public void run() {
 				renderer.forceLayout();
+			}
+
+			@Override
+			public void updateButton() {
+				// TODO Auto-generated method stub
 			}
 		});
 
@@ -250,6 +260,11 @@ public class StateGraphViewPart extends EngineSelectionDependentViewPart {
 						stateGraph.update();
 					}
 				}
+			}
+
+			@Override
+			public void updateButton() {
+				// TODO Auto-generated method stub
 			}
 		});
 	}

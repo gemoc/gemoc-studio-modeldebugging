@@ -4,8 +4,7 @@ Bundle-Name: Gemoc MultiDimensional Timeline Addon
 Bundle-SymbolicName: org.eclipse.gemoc.addon.multidimensional.timeline;singleton:=true
 Bundle-Version: 3.0.0.qualifier
 Bundle-Activator: org.eclipse.gemoc.addon.multidimensional.timeline.Activator
-Require-Bundle: org.eclipse.gemoc.timeline;bundle-version="1.0.0",
- org.eclipse.gemoc.executionframework.engine,
+Require-Bundle: org.eclipse.gemoc.executionframework.engine,
  org.eclipse.emf.edit.ui,
  org.eclipse.sirius.ui,
  org.eclipse.gef,
@@ -13,16 +12,13 @@ Require-Bundle: org.eclipse.gemoc.timeline;bundle-version="1.0.0",
  org.eclipse.gemoc.executionframework.ui,
  org.eclipse.gemoc.trace.gemoc;bundle-version="1.0.0",
  org.eclipse.gemoc.trace.gemoc.api,
- org.eclipse.gemoc.commons.eclipse.ui,
- org.eclipse.debug.core,
  org.eclipse.emf.compare,
  org.eclipse.debug.ui,
  org.eclipse.gemoc.executionframework.engine.ui,
- org.eclipse.gemoc.dsl.debug.ide.sirius.ui;bundle-version="1.0.0",
- org.eclipse.gemoc.dsl.debug.ide,
  org.eclipse.gemoc.xdsmlframework.api,
  org.eclipse.gemoc.executionframework.debugger,
- org.eclipse.fx.core
+ org.eclipse.gemoc.dsl.debug.ide.sirius.ui;bundle-version="3.0.0",
+ org.eclipse.gemoc.dsl.debug.ide;bundle-version="3.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.gemoc.addon.multidimensional.timeline,

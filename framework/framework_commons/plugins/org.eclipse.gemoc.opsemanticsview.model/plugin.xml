@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?eclipse version="3.0"?>
+<?eclipse version="3.4"?>
 
 <!--
     Copyright (c) 2017 Inria and others.
@@ -24,5 +24,6 @@
             class="opsemanticsview.OpsemanticsviewPackage"
             genModel="model/opsemanticsview.genmodel"/>
    </extension>
+   
 
 </plugin>

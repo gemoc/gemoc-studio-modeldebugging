@@ -10,35 +10,44 @@
  *******************************************************************************/
 package org.eclipse.gemoc.executionframework.ui.views.engine.actions;
 
+import java.util.Map.Entry;
+
 import org.eclipse.gemoc.executionframework.ui.Activator;
+import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine;
 import org.eclipse.gemoc.xdsmlframework.api.core.EngineStatus.RunStatus;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.ISharedImages;
 
-public class DisposeAllStoppedEnginesAction extends AbstractEngineAction {
+public class StopAllEnginesAction extends AbstractEngineAction {
 
-	public DisposeAllStoppedEnginesAction() {
-		setText("Dispose stopped engines");
-		setToolTipText("Dispose all stopped engines");
-		ImageDescriptor id = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, ISharedImages.IMG_ELCL_REMOVEALL);
-		setImageDescriptor(id);
+	public StopAllEnginesAction() {
+		super();
 	}
 
 	@Override
-	public void run() {
-		org.eclipse.gemoc.executionframework.engine.Activator.getDefault().gemocRunningEngineRegistry.getRunningEngines().forEach((name, engine) -> {
-			switch (engine.getRunningStatus()) {
-			case Stopped:
-				engine.dispose();
-				break;
-			default:
-			}
-		});
+	protected void init() {
+		super.init();
+		setText("Stop all");
+		setToolTipText("Stop all engines");
+		ImageDescriptor id = Activator.imageDescriptorFromPlugin("org.eclipse.debug.ui", "/icons/full/elcl16/terminate_all_co.png");
+		setImageDescriptor(id);
 	}
 
 	@Override
 	public void updateButton() {
 		setEnabled(org.eclipse.gemoc.executionframework.engine.Activator.getDefault().gemocRunningEngineRegistry.getRunningEngines().entrySet().stream()
-				.anyMatch(e -> e.getValue().getRunningStatus().equals(RunStatus.Stopped)));
+				.anyMatch(e -> !e.getValue().getRunningStatus().equals(RunStatus.Stopped)));
+	}
+
+	@Override
+	public void run() {
+		for (Entry<String, IExecutionEngine> engineEntry : org.eclipse.gemoc.executionframework.engine.Activator.getDefault().gemocRunningEngineRegistry.getRunningEngines().entrySet()) {
+			switch (engineEntry.getValue().getRunningStatus()) {
+			case Running:
+			case WaitingForEvent:
+				engineEntry.getValue().stop();
+				break;
+			default:
+			}
+		}
 	}
 }
