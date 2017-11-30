@@ -77,15 +77,16 @@ class EventInterpreterGenerator {
 	
 	private val Map<EOperation, IMethod> operationToMethod
 	
-	new(OperationalSemanticsView operationalSemanticsView, Map<EOperation, IMethod> operationToMethod, String basePluginName) {
+	new(String languageName, OperationalSemanticsView operationalSemanticsView, Map<EOperation, IMethod> operationToMethod, String basePluginName) {
 		this.operationalSemanticsView = operationalSemanticsView
 		this.basePluginName = basePluginName
 		this.operationToMethod = operationToMethod
 		eventPluginName = basePluginName + ".event"
 		pluginName = basePluginName + ".eventinterpreter"
-		dslName = operationalSemanticsView.executionMetamodel.name
-		behavioralAPIClassName = '''«dslName.toFirstUpper»BehavioralAPI'''
-		eventEcoreUri = '''platform:/resource/«eventPluginName»/model/«dslName»Event.ecore'''
+		dslName = languageName
+		val dslShortName = if (languageName.contains(".")) languageName.substring(languageName.lastIndexOf(".") + 1) else languageName
+		behavioralAPIClassName = '''«dslShortName.toFirstUpper»BehavioralAPI'''
+		eventEcoreUri = '''platform:/resource/«eventPluginName»/model/«dslShortName»Event.ecore'''
 	}
 	
 	public def void generateEventInterpreter() {
@@ -101,6 +102,7 @@ class EventInterpreterGenerator {
 		val element = changer.addChild(extensionPoint, "org.eclipse.gemoc.event.api")
 		
 		changer.addAttribute(element, "class", pluginName + "." + behavioralAPIClassName)
+		changer.addAttribute(element, "language", dslName)
 		
 		changer.save(2)
 	}
@@ -171,6 +173,9 @@ class EventInterpreterGenerator {
 
 	private def String generateImports() {
 		'''
+			«IF inputEventToHandler.entrySet.filter[e|e.value instanceof StartEventHandler].empty»
+			import java.util.Collections;
+			«ENDIF»
 			import java.util.HashSet;
 			import java.util.List;
 			import java.util.Set;
@@ -473,15 +478,20 @@ class EventInterpreterGenerator {
 	}
 
 	private def String generateStartEventClassesGetter() {
+		val entrySet = inputEventToHandler.entrySet.filter[e|e.value instanceof StartEventHandler]
 		'''
 			@Override
 			public Set<EClass> getStartEventClasses() {
+				«IF entrySet.empty»
+				return Collections.emptySet();
+				«ELSE»
 				final Set<EClass> eventClasses = new HashSet<>();
-				«FOR entry : inputEventToHandler.entrySet.filter[e|e.value instanceof StartEventHandler]»
+				«FOR entry : entrySet»
 					«val eventClass = entry.key as EClass»
 					eventClasses.add(«ePackage.name.toFirstUpper»Package.eINSTANCE.get«eventClass.name»());
 				«ENDFOR»
 				return eventClasses;
+				«ENDIF»
 			}
 		'''
 	}

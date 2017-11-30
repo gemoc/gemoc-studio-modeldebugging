@@ -55,7 +55,7 @@ class BehavioralInterfaceGeneratorIntegration {
 
 		// If we find one, we generate
 		if (validViewGenerator !== null) {
-			val OperationalSemanticsView mmextension = validViewGenerator.generate(selection, dslFile.project);
+			val OperationalSemanticsView mmextension = validViewGenerator.generate(selection, dslFile.project)
 			generateAddon(selectedLanguage, basePluginName, replace, monitor, mmextension, validViewGenerator.operationToMethod)
 
 		} // Otherwise, we error
@@ -64,8 +64,8 @@ class BehavioralInterfaceGeneratorIntegration {
 				new Status(
 					Status.
 						ERROR,
-					"org.eclipse.gemoc.trace.gemoc.generator",
-					"Impossible to create a trace addon: couldn't find an opsemanticsview generator that can manage the chosen melange language."
+					"org.eclipse.gemoc.executionframework.event.generator",
+					"Impossible to create a trace addon: couldn't find an opsemanticsview generator that can manage the chosen language."
 				));
 		}
 
@@ -74,7 +74,7 @@ class BehavioralInterfaceGeneratorIntegration {
 	/**
 	 * Central operation of the class, that calls business operations
 	 */
-	public static def void generateAddon(String mmName, String basePluginName, boolean replace, IProgressMonitor monitor,
+	public static def void generateAddon(String selectedLanguage, String basePluginName, boolean replace, IProgressMonitor monitor,
 		OperationalSemanticsView executionExtension, Map<EOperation, IMethod> operationToMethod) throws CoreException {
 
 		// We look for an existing project with this name
@@ -111,8 +111,8 @@ class BehavioralInterfaceGeneratorIntegration {
 		try {
 			// Then we call all our business operations
 			// TODO handle languages defined with multiple ecores
-			val EventMetamodelGenerator eventMetamodelGenerator = new EventMetamodelGenerator(executionExtension, basePluginName)
-			val EventInterpreterGenerator eventInterpreterGenerator = new EventInterpreterGenerator(executionExtension, operationToMethod, basePluginName)
+			val EventMetamodelGenerator eventMetamodelGenerator = new EventMetamodelGenerator(selectedLanguage, executionExtension, basePluginName)
+			val EventInterpreterGenerator eventInterpreterGenerator = new EventInterpreterGenerator(selectedLanguage, executionExtension, operationToMethod, basePluginName)
 			eventMetamodelGenerator.generateBehavioralInterface
 			eventInterpreterGenerator.generateEventInterpreter
 		} catch (IOException e) {

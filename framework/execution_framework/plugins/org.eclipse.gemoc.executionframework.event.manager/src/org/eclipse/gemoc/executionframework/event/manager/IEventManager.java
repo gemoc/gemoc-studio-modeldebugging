@@ -20,9 +20,9 @@ public interface IEventManager extends IEngineAddon {
 	void removeListener(IEventManagerListener listener);
 
 	boolean canSendEvent(Event event);
-	
+
 	Set<EClass> getEventClasses();
-	
+
 	List<Event> getInputEventQueue();
 
 	Set<EClass> getStartEventClasses();

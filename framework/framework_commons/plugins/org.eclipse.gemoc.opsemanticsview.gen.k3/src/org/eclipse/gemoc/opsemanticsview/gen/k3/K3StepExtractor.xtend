@@ -79,11 +79,11 @@ class K3StepExtractor {
 			val Rule rule = if (eventFunctions.contains(function)) {
 				if (function.isStart) {
 					val handler = OpsemanticsviewFactory.eINSTANCE.createStartEventHandler
-					handler.interruptible = function.isInterruptible(true)
+					handler.interruptible = function.isInterruptible
 					handler
 				} else if (function.isEventHandler) {
 					val handler = OpsemanticsviewFactory.eINSTANCE.createEventHandler
-					handler.interruptible = function.isInterruptible(false)
+					handler.interruptible = function.isInterruptible
 					val condition = eventFunctionToConditionFunction.get(function)
 					if (condition !== null) {
 						handler.condition = condition.toEOperation
@@ -98,7 +98,7 @@ class K3StepExtractor {
 			}
 			this.ecoreExtension.rules.add(rule)
 
-			// We find the ecore class matching the aspected java class 
+			// We find the ecore class matching the aspected java class
 			val containingClass = function.declaringType
 			rule.containingClass = stepAspectsClassToAspectedClasses.get(containingClass)
 
@@ -106,7 +106,6 @@ class K3StepExtractor {
 			operationToFunction.put(rule.operation, function)
 
 			rule.stepRule = stepFunctions.contains(function)
-			rule.main = isMain(function)
 			functionToRule.put(function, rule)
 			return rule
 		}
@@ -325,7 +324,9 @@ class K3StepExtractor {
 			}
 		]
 
-		val callGraphTotalLengthComputer = [|callGraph.values.map[s|s.size].reduce[i1, i2|i1 + i2]]
+		val callGraphTotalLengthComputer = [|
+			if (callGraph.empty) {0} else {callGraph.values.map[s|s.size].reduce[i1, i2|i1 + i2]}
+		]
 
 		// For each method, we add to its called methods the methods that can be called
 		// from each of its overriding methods.
@@ -488,30 +489,26 @@ class K3StepExtractor {
 	}
 
 	/**
-	 * Return true if 'method' is tagged with "@Main"
-	 */
-	private def boolean isMain(IMethod method) {
-		method.testAnnotation("Main")
-	}
-
-	/**
-	 * Return true if 'method' is tagged with "@Start"
+	 * Return true if 'method' is tagged with "@EventHandler" and has startEvent = true
 	 */
 	private def boolean isStart(IMethod method) {
-		method.testAnnotation("Start")
+		var annotation = method.findAnnotation("EventHandler")
+		val pairs = annotation?.memberValuePairs
+		if (pairs === null) {
+			return false
+		}
+		val value = pairs.findFirst[memberName == "startEvent" && value instanceof Boolean]?.value
+		return if (value === null) false else value as Boolean
 	}
 	
-	private def boolean isInterruptible(IMethod method, boolean defaultValue) {
+	private def boolean isInterruptible(IMethod method) {
 		var annotation = method.findAnnotation("EventHandler")
-		if (annotation === null) {
-			annotation = method.findAnnotation("Start")
-		}
-		val pairs = annotation.memberValuePairs
+		val pairs = annotation?.memberValuePairs
 		if (pairs === null) {
-			return defaultValue
+			return false
 		}
 		val value = pairs.findFirst[memberName == "interruptible" && value instanceof Boolean]?.value
-		return if (value === null) defaultValue else value as Boolean
+		return if (value === null) false else value as Boolean
 	}
 
 	/**

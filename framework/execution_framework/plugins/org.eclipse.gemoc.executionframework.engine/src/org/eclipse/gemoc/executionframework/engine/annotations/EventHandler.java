@@ -32,4 +32,9 @@ public @interface EventHandler {
 	 * Default value: <code>false</code>.
 	 */
 	boolean interruptible() default false;
+	/**
+	 * Indicates whether the event handler can be called to start an execution.
+	 * Default value: <code>false</code>.
+	 */
+	boolean startEvent() default false;
 }

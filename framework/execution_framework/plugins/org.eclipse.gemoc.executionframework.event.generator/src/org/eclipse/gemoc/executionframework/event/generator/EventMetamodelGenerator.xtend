@@ -68,7 +68,7 @@ class EventMetamodelGenerator {
 	
 	private val String eventGenerationPath
 	
-	new(OperationalSemanticsView operationalSemanticsView, String basePluginName) {
+	new(String languageName, OperationalSemanticsView operationalSemanticsView, String basePluginName) {
 		this.operationalSemanticsView = operationalSemanticsView
 		pluginName = basePluginName + ".event"
 		rootPackage = operationalSemanticsView.executionMetamodel
@@ -76,7 +76,7 @@ class EventMetamodelGenerator {
 		basePkgs += rootPackage
 		ecoreURI = '''platform:/resource«rootPackage.eResource.URI.toPlatformString(true)»'''
 		genmodelURI = '''platform:/resource«rootPackage.eResource.URI.trimFileExtension.appendFileExtension("genmodel").toPlatformString(true)»'''
-		dslName = operationalSemanticsView.executionMetamodel.name
+		dslName = if (languageName.contains(".")) languageName.substring(languageName.lastIndexOf(".") + 1) else languageName
 		eventGenerationPath = '''../«pluginName»/src-gen/'''
 		eventEcoreUri = '''platform:/resource/«pluginName»/model/«dslName»Event.ecore'''
 		eventGenmodelUri = '''platform:/resource/«pluginName»/model/«dslName»Event.genmodel'''
@@ -212,8 +212,8 @@ class EventMetamodelGenerator {
 			}
 			
 			params.forEach[opParam|
-				val parameterTypeName = opParam.EType.instanceClassName
-				val parameterDataType = typeNameToType.get(parameterTypeName)
+				val parameterInstanceTypeName = opParam.EType.instanceClassName
+				val parameterDataType = typeNameToType.get(parameterInstanceTypeName)
 				if (parameterDataType !== null) {
 					c.EStructuralFeatures += EcoreFactory.eINSTANCE.createEAttribute => [
 						name = opParam.name.toFirstLower
@@ -222,6 +222,7 @@ class EventMetamodelGenerator {
 						EType = parameterDataType
 					]
 				} else {
+					val parameterTypeName = opParam.EType.name
 					val parameterClassifier = basePkgs.findFirst[getEClassifier(parameterTypeName) !== null]?.getEClassifier(parameterTypeName)
 					if (parameterClassifier !== null) {
 						c.EStructuralFeatures += EcoreFactory.eINSTANCE.createEReference => [
