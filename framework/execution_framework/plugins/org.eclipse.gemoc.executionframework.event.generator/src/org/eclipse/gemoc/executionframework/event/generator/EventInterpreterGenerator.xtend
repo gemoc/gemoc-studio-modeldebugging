@@ -18,7 +18,6 @@ import java.util.Set
 import opsemanticsview.EventEmitter
 import opsemanticsview.EventHandler
 import opsemanticsview.OperationalSemanticsView
-import opsemanticsview.StartEventHandler
 import org.eclipse.core.resources.IFolder
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EClass
@@ -173,7 +172,7 @@ class EventInterpreterGenerator {
 
 	private def String generateImports() {
 		'''
-			«IF inputEventToHandler.entrySet.filter[e|e.value instanceof StartEventHandler].empty»
+			«IF inputEventToHandler.values.filter[start].empty»
 			import java.util.Collections;
 			«ENDIF»
 			import java.util.HashSet;
@@ -251,7 +250,7 @@ class EventInterpreterGenerator {
 					«val eventClass = entry.key as EClass»
 					eventClasses.add(«ePackage.name.toFirstUpper»Package.eINSTANCE.get«eventClass.name»());
 				«ENDFOR»
-				«FOR entry : inputEventToHandler.entrySet.filter[e|e.value instanceof StartEventHandler]»
+				«FOR entry : inputEventToHandler.entrySet.filter[e|e.value.start]»
 					«val eventClass = entry.key as EClass»
 					startEventClasses.add(«ePackage.name.toFirstUpper»Package.eINSTANCE.get«eventClass.name»());
 				«ENDFOR»
@@ -478,7 +477,7 @@ class EventInterpreterGenerator {
 	}
 
 	private def String generateStartEventClassesGetter() {
-		val entrySet = inputEventToHandler.entrySet.filter[e|e.value instanceof StartEventHandler]
+		val entrySet = inputEventToHandler.entrySet.filter[e|e.value.start]
 		'''
 			@Override
 			public Set<EClass> getStartEventClasses() {

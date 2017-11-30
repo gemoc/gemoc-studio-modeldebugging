@@ -15,6 +15,7 @@ import org.eclipse.emf.ecore.EOperation;
  * <ul>
  *   <li>{@link opsemanticsview.EventHandler#getCondition <em>Condition</em>}</li>
  *   <li>{@link opsemanticsview.EventHandler#isInterruptible <em>Interruptible</em>}</li>
+ *   <li>{@link opsemanticsview.EventHandler#isStart <em>Start</em>}</li>
  * </ul>
  *
  * @see opsemanticsview.OpsemanticsviewPackage#getEventHandler()
@@ -73,5 +74,31 @@ public interface EventHandler extends Rule {
 	 * @generated
 	 */
 	void setInterruptible(boolean value);
+
+	/**
+	 * Returns the value of the '<em><b>Start</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Start</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Start</em>' attribute.
+	 * @see #setStart(boolean)
+	 * @see opsemanticsview.OpsemanticsviewPackage#getEventHandler_Start()
+	 * @model
+	 * @generated
+	 */
+	boolean isStart();
+
+	/**
+	 * Sets the value of the '{@link opsemanticsview.EventHandler#isStart <em>Start</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Start</em>' attribute.
+	 * @see #isStart()
+	 * @generated
+	 */
+	void setStart(boolean value);
 
 } // EventHandler

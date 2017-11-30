@@ -38,7 +38,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link opsemanticsview.impl.RuleImpl#getOverrides <em>Overrides</em>}</li>
  *   <li>{@link opsemanticsview.impl.RuleImpl#getContainingClass <em>Containing Class</em>}</li>
  *   <li>{@link opsemanticsview.impl.RuleImpl#isAbstract <em>Abstract</em>}</li>
- *   <li>{@link opsemanticsview.impl.RuleImpl#isMain <em>Main</em>}</li>
  * </ul>
  *
  * @generated
@@ -133,26 +132,6 @@ public class RuleImpl extends MinimalEObjectImpl.Container implements Rule {
 	 * @ordered
 	 */
 	protected boolean abstract_ = ABSTRACT_EDEFAULT;
-
-	/**
-	 * The default value of the '{@link #isMain() <em>Main</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #isMain()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final boolean MAIN_EDEFAULT = false;
-
-	/**
-	 * The cached value of the '{@link #isMain() <em>Main</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #isMain()
-	 * @generated
-	 * @ordered
-	 */
-	protected boolean main = MAIN_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -385,27 +364,6 @@ public class RuleImpl extends MinimalEObjectImpl.Container implements Rule {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean isMain() {
-		return main;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setMain(boolean newMain) {
-		boolean oldMain = main;
-		main = newMain;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, OpsemanticsviewPackage.RULE__MAIN, oldMain, main));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
@@ -462,8 +420,6 @@ public class RuleImpl extends MinimalEObjectImpl.Container implements Rule {
 				return basicGetContainingClass();
 			case OpsemanticsviewPackage.RULE__ABSTRACT:
 				return isAbstract();
-			case OpsemanticsviewPackage.RULE__MAIN:
-				return isMain();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -500,9 +456,6 @@ public class RuleImpl extends MinimalEObjectImpl.Container implements Rule {
 			case OpsemanticsviewPackage.RULE__ABSTRACT:
 				setAbstract((Boolean)newValue);
 				return;
-			case OpsemanticsviewPackage.RULE__MAIN:
-				setMain((Boolean)newValue);
-				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -536,9 +489,6 @@ public class RuleImpl extends MinimalEObjectImpl.Container implements Rule {
 			case OpsemanticsviewPackage.RULE__ABSTRACT:
 				setAbstract(ABSTRACT_EDEFAULT);
 				return;
-			case OpsemanticsviewPackage.RULE__MAIN:
-				setMain(MAIN_EDEFAULT);
-				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -565,8 +515,6 @@ public class RuleImpl extends MinimalEObjectImpl.Container implements Rule {
 				return containingClass != null;
 			case OpsemanticsviewPackage.RULE__ABSTRACT:
 				return abstract_ != ABSTRACT_EDEFAULT;
-			case OpsemanticsviewPackage.RULE__MAIN:
-				return main != MAIN_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -585,8 +533,6 @@ public class RuleImpl extends MinimalEObjectImpl.Container implements Rule {
 		result.append(stepRule);
 		result.append(", abstract: ");
 		result.append(abstract_);
-		result.append(", main: ");
-		result.append(main);
 		result.append(')');
 		return result.toString();
 	}

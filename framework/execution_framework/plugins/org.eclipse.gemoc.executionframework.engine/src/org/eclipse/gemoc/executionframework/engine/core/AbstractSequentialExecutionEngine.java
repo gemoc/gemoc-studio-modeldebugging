@@ -74,6 +74,7 @@ public abstract class AbstractSequentialExecutionEngine extends AbstractExecutio
 
 	private void manageEvents() {
 		if (eventManager != null) {
+			//FIXME
 //			eventManager.processEvents();
 		}
 	}
@@ -226,19 +227,13 @@ public abstract class AbstractSequentialExecutionEngine extends AbstractExecutio
 		}
 		return mse;
 	}
-
+	
 	@Override
-	protected void beforeStart() {
-		
-	}
-
+	protected void beforeStart() {}
+	
 	@Override
-	protected void performStop() {
-		
-	}
-
+	protected void performStop() {}
+	
 	@Override
-	protected void finishDispose() {
-		
-	}
+	protected void finishDispose() {}
 }

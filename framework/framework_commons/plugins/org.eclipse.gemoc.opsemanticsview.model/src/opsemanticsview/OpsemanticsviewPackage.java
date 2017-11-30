@@ -212,22 +212,13 @@ public interface OpsemanticsviewPackage extends EPackage {
 	int RULE__ABSTRACT = 6;
 
 	/**
-	 * The feature id for the '<em><b>Main</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int RULE__MAIN = 7;
-
-	/**
 	 * The number of structural features of the '<em>Rule</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int RULE_FEATURE_COUNT = 8;
+	int RULE_FEATURE_COUNT = 7;
 
 	/**
 	 * The number of operations of the '<em>Rule</em>' class.
@@ -358,15 +349,6 @@ public interface OpsemanticsviewPackage extends EPackage {
 	int EVENT_HANDLER__ABSTRACT = RULE__ABSTRACT;
 
 	/**
-	 * The feature id for the '<em><b>Main</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EVENT_HANDLER__MAIN = RULE__MAIN;
-
-	/**
 	 * The feature id for the '<em><b>Condition</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -385,13 +367,22 @@ public interface OpsemanticsviewPackage extends EPackage {
 	int EVENT_HANDLER__INTERRUPTIBLE = RULE_FEATURE_COUNT + 1;
 
 	/**
+	 * The feature id for the '<em><b>Start</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_HANDLER__START = RULE_FEATURE_COUNT + 2;
+
+	/**
 	 * The number of structural features of the '<em>Event Handler</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int EVENT_HANDLER_FEATURE_COUNT = RULE_FEATURE_COUNT + 2;
+	int EVENT_HANDLER_FEATURE_COUNT = RULE_FEATURE_COUNT + 3;
 
 	/**
 	 * The number of operations of the '<em>Event Handler</em>' class.
@@ -476,15 +467,6 @@ public interface OpsemanticsviewPackage extends EPackage {
 	int EVENT_EMITTER__ABSTRACT = RULE__ABSTRACT;
 
 	/**
-	 * The feature id for the '<em><b>Main</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EVENT_EMITTER__MAIN = RULE__MAIN;
-
-	/**
 	 * The number of structural features of the '<em>Event Emitter</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -501,124 +483,6 @@ public interface OpsemanticsviewPackage extends EPackage {
 	 * @ordered
 	 */
 	int EVENT_EMITTER_OPERATION_COUNT = RULE_OPERATION_COUNT + 0;
-
-	/**
-	 * The meta object id for the '{@link opsemanticsview.impl.StartEventHandlerImpl <em>Start Event Handler</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see opsemanticsview.impl.StartEventHandlerImpl
-	 * @see opsemanticsview.impl.OpsemanticsviewPackageImpl#getStartEventHandler()
-	 * @generated
-	 */
-	int START_EVENT_HANDLER = 5;
-
-	/**
-	 * The feature id for the '<em><b>Called Rules</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int START_EVENT_HANDLER__CALLED_RULES = EVENT_HANDLER__CALLED_RULES;
-
-	/**
-	 * The feature id for the '<em><b>Operation</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int START_EVENT_HANDLER__OPERATION = EVENT_HANDLER__OPERATION;
-
-	/**
-	 * The feature id for the '<em><b>Step Rule</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int START_EVENT_HANDLER__STEP_RULE = EVENT_HANDLER__STEP_RULE;
-
-	/**
-	 * The feature id for the '<em><b>Overriden By</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int START_EVENT_HANDLER__OVERRIDEN_BY = EVENT_HANDLER__OVERRIDEN_BY;
-
-	/**
-	 * The feature id for the '<em><b>Overrides</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int START_EVENT_HANDLER__OVERRIDES = EVENT_HANDLER__OVERRIDES;
-
-	/**
-	 * The feature id for the '<em><b>Containing Class</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int START_EVENT_HANDLER__CONTAINING_CLASS = EVENT_HANDLER__CONTAINING_CLASS;
-
-	/**
-	 * The feature id for the '<em><b>Abstract</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int START_EVENT_HANDLER__ABSTRACT = EVENT_HANDLER__ABSTRACT;
-
-	/**
-	 * The feature id for the '<em><b>Main</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int START_EVENT_HANDLER__MAIN = EVENT_HANDLER__MAIN;
-
-	/**
-	 * The feature id for the '<em><b>Condition</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int START_EVENT_HANDLER__CONDITION = EVENT_HANDLER__CONDITION;
-
-	/**
-	 * The feature id for the '<em><b>Interruptible</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int START_EVENT_HANDLER__INTERRUPTIBLE = EVENT_HANDLER__INTERRUPTIBLE;
-
-	/**
-	 * The number of structural features of the '<em>Start Event Handler</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int START_EVENT_HANDLER_FEATURE_COUNT = EVENT_HANDLER_FEATURE_COUNT + 0;
-
-	/**
-	 * The number of operations of the '<em>Start Event Handler</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int START_EVENT_HANDLER_OPERATION_COUNT = EVENT_HANDLER_OPERATION_COUNT + 0;
 
 
 	/**
@@ -785,17 +649,6 @@ public interface OpsemanticsviewPackage extends EPackage {
 	EAttribute getRule_Abstract();
 
 	/**
-	 * Returns the meta object for the attribute '{@link opsemanticsview.Rule#isMain <em>Main</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Main</em>'.
-	 * @see opsemanticsview.Rule#isMain()
-	 * @see #getRule()
-	 * @generated
-	 */
-	EAttribute getRule_Main();
-
-	/**
 	 * Returns the meta object for class '{@link opsemanticsview.ExecutionToASEntry <em>Execution To AS Entry</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -860,6 +713,17 @@ public interface OpsemanticsviewPackage extends EPackage {
 	EAttribute getEventHandler_Interruptible();
 
 	/**
+	 * Returns the meta object for the attribute '{@link opsemanticsview.EventHandler#isStart <em>Start</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Start</em>'.
+	 * @see opsemanticsview.EventHandler#isStart()
+	 * @see #getEventHandler()
+	 * @generated
+	 */
+	EAttribute getEventHandler_Start();
+
+	/**
 	 * Returns the meta object for class '{@link opsemanticsview.EventEmitter <em>Event Emitter</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -868,16 +732,6 @@ public interface OpsemanticsviewPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getEventEmitter();
-
-	/**
-	 * Returns the meta object for class '{@link opsemanticsview.StartEventHandler <em>Start Event Handler</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Start Event Handler</em>'.
-	 * @see opsemanticsview.StartEventHandler
-	 * @generated
-	 */
-	EClass getStartEventHandler();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -1027,14 +881,6 @@ public interface OpsemanticsviewPackage extends EPackage {
 		EAttribute RULE__ABSTRACT = eINSTANCE.getRule_Abstract();
 
 		/**
-		 * The meta object literal for the '<em><b>Main</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute RULE__MAIN = eINSTANCE.getRule_Main();
-
-		/**
 		 * The meta object literal for the '{@link opsemanticsview.impl.ExecutionToASEntryImpl <em>Execution To AS Entry</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1087,6 +933,14 @@ public interface OpsemanticsviewPackage extends EPackage {
 		EAttribute EVENT_HANDLER__INTERRUPTIBLE = eINSTANCE.getEventHandler_Interruptible();
 
 		/**
+		 * The meta object literal for the '<em><b>Start</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute EVENT_HANDLER__START = eINSTANCE.getEventHandler_Start();
+
+		/**
 		 * The meta object literal for the '{@link opsemanticsview.impl.EventEmitterImpl <em>Event Emitter</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1095,16 +949,6 @@ public interface OpsemanticsviewPackage extends EPackage {
 		 * @generated
 		 */
 		EClass EVENT_EMITTER = eINSTANCE.getEventEmitter();
-
-		/**
-		 * The meta object literal for the '{@link opsemanticsview.impl.StartEventHandlerImpl <em>Start Event Handler</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see opsemanticsview.impl.StartEventHandlerImpl
-		 * @see opsemanticsview.impl.OpsemanticsviewPackageImpl#getStartEventHandler()
-		 * @generated
-		 */
-		EClass START_EVENT_HANDLER = eINSTANCE.getStartEventHandler();
 
 	}
 

@@ -67,15 +67,6 @@ public interface OpsemanticsviewFactory extends EFactory {
 	EventEmitter createEventEmitter();
 
 	/**
-	 * Returns a new object of class '<em>Start Event Handler</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Start Event Handler</em>'.
-	 * @generated
-	 */
-	StartEventHandler createStartEventHandler();
-
-	/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

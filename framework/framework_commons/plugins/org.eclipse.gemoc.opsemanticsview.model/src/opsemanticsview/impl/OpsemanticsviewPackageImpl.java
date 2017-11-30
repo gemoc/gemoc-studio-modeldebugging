@@ -9,7 +9,6 @@ import opsemanticsview.OperationalSemanticsView;
 import opsemanticsview.OpsemanticsviewFactory;
 import opsemanticsview.OpsemanticsviewPackage;
 import opsemanticsview.Rule;
-import opsemanticsview.StartEventHandler;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -59,13 +58,6 @@ public class OpsemanticsviewPackageImpl extends EPackageImpl implements Opsemant
 	 * @generated
 	 */
 	private EClass eventEmitterEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass startEventHandlerEClass = null;
 
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
@@ -268,15 +260,6 @@ public class OpsemanticsviewPackageImpl extends EPackageImpl implements Opsemant
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getRule_Main() {
-		return (EAttribute)ruleEClass.getEStructuralFeatures().get(7);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EClass getExecutionToASEntry() {
 		return executionToASEntryEClass;
 	}
@@ -331,8 +314,8 @@ public class OpsemanticsviewPackageImpl extends EPackageImpl implements Opsemant
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getEventEmitter() {
-		return eventEmitterEClass;
+	public EAttribute getEventHandler_Start() {
+		return (EAttribute)eventHandlerEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -340,8 +323,8 @@ public class OpsemanticsviewPackageImpl extends EPackageImpl implements Opsemant
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getStartEventHandler() {
-		return startEventHandlerEClass;
+	public EClass getEventEmitter() {
+		return eventEmitterEClass;
 	}
 
 	/**
@@ -388,7 +371,6 @@ public class OpsemanticsviewPackageImpl extends EPackageImpl implements Opsemant
 		createEReference(ruleEClass, RULE__OVERRIDES);
 		createEReference(ruleEClass, RULE__CONTAINING_CLASS);
 		createEAttribute(ruleEClass, RULE__ABSTRACT);
-		createEAttribute(ruleEClass, RULE__MAIN);
 
 		executionToASEntryEClass = createEClass(EXECUTION_TO_AS_ENTRY);
 		createEReference(executionToASEntryEClass, EXECUTION_TO_AS_ENTRY__EXECUTION_CLASS);
@@ -397,10 +379,9 @@ public class OpsemanticsviewPackageImpl extends EPackageImpl implements Opsemant
 		eventHandlerEClass = createEClass(EVENT_HANDLER);
 		createEReference(eventHandlerEClass, EVENT_HANDLER__CONDITION);
 		createEAttribute(eventHandlerEClass, EVENT_HANDLER__INTERRUPTIBLE);
+		createEAttribute(eventHandlerEClass, EVENT_HANDLER__START);
 
 		eventEmitterEClass = createEClass(EVENT_EMITTER);
-
-		startEventHandlerEClass = createEClass(START_EVENT_HANDLER);
 	}
 
 	/**
@@ -433,7 +414,6 @@ public class OpsemanticsviewPackageImpl extends EPackageImpl implements Opsemant
 		// Add supertypes to classes
 		eventHandlerEClass.getESuperTypes().add(this.getRule());
 		eventEmitterEClass.getESuperTypes().add(this.getRule());
-		startEventHandlerEClass.getESuperTypes().add(this.getEventHandler());
 
 		// Initialize classes, features, and operations; add parameters
 		initEClass(operationalSemanticsViewEClass, OperationalSemanticsView.class, "OperationalSemanticsView", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -452,7 +432,6 @@ public class OpsemanticsviewPackageImpl extends EPackageImpl implements Opsemant
 		initEReference(getRule_Overrides(), this.getRule(), this.getRule_OverridenBy(), "overrides", null, 0, 1, Rule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getRule_ContainingClass(), ecorePackage.getEClass(), null, "containingClass", null, 0, 1, Rule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getRule_Abstract(), ecorePackage.getEBoolean(), "abstract", null, 1, 1, Rule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getRule_Main(), ecorePackage.getEBoolean(), "main", null, 0, 1, Rule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(executionToASEntryEClass, ExecutionToASEntry.class, "ExecutionToASEntry", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getExecutionToASEntry_ExecutionClass(), ecorePackage.getEClass(), null, "executionClass", null, 1, 1, ExecutionToASEntry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -461,10 +440,9 @@ public class OpsemanticsviewPackageImpl extends EPackageImpl implements Opsemant
 		initEClass(eventHandlerEClass, EventHandler.class, "EventHandler", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getEventHandler_Condition(), ecorePackage.getEOperation(), null, "condition", null, 0, 1, EventHandler.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getEventHandler_Interruptible(), ecorePackage.getEBoolean(), "interruptible", null, 0, 1, EventHandler.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getEventHandler_Start(), ecorePackage.getEBoolean(), "start", null, 0, 1, EventHandler.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(eventEmitterEClass, EventEmitter.class, "EventEmitter", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
-		initEClass(startEventHandlerEClass, StartEventHandler.class, "StartEventHandler", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		// Create resource
 		createResource(eNS_URI);

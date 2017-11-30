@@ -25,13 +25,9 @@ import org.eclipse.gemoc.executionframework.event.manager.EventManager;
 import org.eclipse.gemoc.executionframework.event.model.event.Event;
 import org.eclipse.gemoc.trace.commons.model.launchconfiguration.AddonExtensionParameter;
 import org.eclipse.gemoc.trace.commons.model.launchconfiguration.AnimatorURIParameter;
-import org.eclipse.gemoc.trace.commons.model.launchconfiguration.EntryPointParameter;
-import org.eclipse.gemoc.trace.commons.model.launchconfiguration.InitializationArgumentsParameter;
-import org.eclipse.gemoc.trace.commons.model.launchconfiguration.InitializationMethodParameter;
 import org.eclipse.gemoc.trace.commons.model.launchconfiguration.LanguageNameParameter;
 import org.eclipse.gemoc.trace.commons.model.launchconfiguration.LaunchConfiguration;
 import org.eclipse.gemoc.trace.commons.model.launchconfiguration.LaunchconfigurationFactory;
-import org.eclipse.gemoc.trace.commons.model.launchconfiguration.ModelRootParameter;
 import org.eclipse.gemoc.trace.commons.model.launchconfiguration.ModelURIParameter;
 import org.eclipse.gemoc.xdsmlframework.api.core.IRunConfiguration;
 
@@ -61,22 +57,22 @@ public class PlainK3ExecutionEngine extends AbstractCommandBasedSequentialExecut
 			final EventManager eventManager = getAddonsTypedBy(EventManager.class).stream().findFirst().orElse(null);
 			if (eventManager != null) {
 				final Event startEvent = getExecutionContext().getRunConfiguration().getStartEvent();
-				final boolean stopAfterStartEvent = getExecutionContext().getRunConfiguration().getStopAfterStartEvent();
+				final boolean waitForEvents = getExecutionContext().getRunConfiguration().getWaitForEvents();
 				if (startEvent != null) {
 					eventManager.queueEvent(startEvent);
 				}
-				if (stopAfterStartEvent) {
-					// The start event has been queued, so we process it
-					// and let the execution unfold from there.
-					eventManager.processEvents();
-				} else {
-					// We wait for new events to process until we receive a stop event.
+				if (waitForEvents) {
+					// We wait for new events to process until we receive a stop event (TODO?).
 					// If a start event has been queued, it will be processed first.
 					// We then wait for further events.
 					while (true) {
 						eventManager.waitForEvents();
 						eventManager.processEvents();
 					}
+				} else {
+					// The start event has been queued, so we process it
+					// and let the execution unfold from there.
+					eventManager.processEvents();
 				}
 			}
 		} catch (EngineStoppedException stopException) {
@@ -144,10 +140,8 @@ public class PlainK3ExecutionEngine extends AbstractCommandBasedSequentialExecut
 	 * @return the loaded resource
 	 */
 	public static Resource loadModel(URI modelURI) {
-		Resource resource = null;
-		ResourceSet resourceSet;
-		resourceSet = new ResourceSetImpl();
-		resource = resourceSet.createResource(modelURI);
+		ResourceSet resourceSet = new ResourceSetImpl();
+		Resource resource = resourceSet.createResource(modelURI);
 		try {
 			resource.load(null);
 		} catch (IOException e) {
@@ -180,28 +174,6 @@ public class PlainK3ExecutionEngine extends AbstractCommandBasedSequentialExecut
 			final AnimatorURIParameter animatorURIParam = LaunchconfigurationFactory.eINSTANCE.createAnimatorURIParameter();
 			animatorURIParam.setValue(animatorURI.toString().substring(scheme.length()));
 			launchConfiguration.getParameters().add(animatorURIParam);
-		}
-		if (configuration.getExecutionEntryPoint() != null) {
-			final EntryPointParameter entryPointParam = LaunchconfigurationFactory.eINSTANCE.createEntryPointParameter();
-			entryPointParam.setValue(configuration.getExecutionEntryPoint());
-			launchConfiguration.getParameters().add(entryPointParam);
-		}
-		if (configuration.getModelEntryPoint() != null) {
-			final ModelRootParameter modelRootParam = LaunchconfigurationFactory.eINSTANCE.createModelRootParameter();
-			modelRootParam.setValue(configuration.getModelEntryPoint());
-			launchConfiguration.getParameters().add(modelRootParam);
-		}
-		if (configuration.getModelInitializationMethod() != null) {
-			final InitializationMethodParameter initializationMethodParam = LaunchconfigurationFactory.eINSTANCE
-					.createInitializationMethodParameter();
-			initializationMethodParam.setValue(configuration.getModelInitializationMethod());
-			launchConfiguration.getParameters().add(initializationMethodParam);
-		}
-		if (configuration.getModelInitializationArguments() != null) {
-			final InitializationArgumentsParameter initializationArgumentsParam = LaunchconfigurationFactory.eINSTANCE
-					.createInitializationArgumentsParameter();
-			initializationArgumentsParam.setValue(configuration.getModelInitializationArguments());
-			launchConfiguration.getParameters().add(initializationArgumentsParam);
 		}
 		configuration.getEngineAddonExtensions().forEach(extensionPoint -> {
 			final AddonExtensionParameter addonExtensionParam = LaunchconfigurationFactory.eINSTANCE.createAddonExtensionParameter();

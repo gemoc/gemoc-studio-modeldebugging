@@ -28,7 +28,6 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="containingClass" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EClass"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="abstract" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="main" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ExecutionToASEntry">
     <eStructuralFeatures xsi:type="ecore:EReference" name="executionClass" lowerBound="1"
@@ -40,7 +39,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="condition" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EOperation"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="interruptible" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="start" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EventEmitter" eSuperTypes="#//Rule"/>
-  <eClassifiers xsi:type="ecore:EClass" name="StartEventHandler" eSuperTypes="#//EventHandler"/>
 </ecore:EPackage>

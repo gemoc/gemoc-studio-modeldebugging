@@ -24,7 +24,6 @@ import org.eclipse.emf.ecore.EOperation;
  *   <li>{@link opsemanticsview.Rule#getOverrides <em>Overrides</em>}</li>
  *   <li>{@link opsemanticsview.Rule#getContainingClass <em>Containing Class</em>}</li>
  *   <li>{@link opsemanticsview.Rule#isAbstract <em>Abstract</em>}</li>
- *   <li>{@link opsemanticsview.Rule#isMain <em>Main</em>}</li>
  * </ul>
  *
  * @see opsemanticsview.OpsemanticsviewPackage#getRule()
@@ -197,31 +196,5 @@ public interface Rule extends EObject {
 	 * @generated
 	 */
 	void setAbstract(boolean value);
-
-	/**
-	 * Returns the value of the '<em><b>Main</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Main</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Main</em>' attribute.
-	 * @see #setMain(boolean)
-	 * @see opsemanticsview.OpsemanticsviewPackage#getRule_Main()
-	 * @model
-	 * @generated
-	 */
-	boolean isMain();
-
-	/**
-	 * Sets the value of the '{@link opsemanticsview.Rule#isMain <em>Main</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Main</em>' attribute.
-	 * @see #isMain()
-	 * @generated
-	 */
-	void setMain(boolean value);
 
 } // Rule

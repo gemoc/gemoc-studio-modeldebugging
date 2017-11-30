@@ -82,6 +82,14 @@
             public="true"
             sourceLocatorId="org.eclipse.gemoc.execution.sequential.javaengine.ui.sourceLocator">
       </launchConfigurationType>
+      <launchConfigurationType
+            delegate="org.eclipse.gemoc.execution.sequential.javaengine.ui.launcher.DistributedLauncher"
+            id="org.eclipse.gemoc.execution.distributed.javaengine.ui.launcher"
+            modes="run"
+            name="Gemoc Distributed Execution"
+            public="true"
+            sourceLocatorId="org.eclipse.gemoc.execution.sequential.javaengine.ui.sourceLocator">
+      </launchConfigurationType>
    </extension>
     <extension
           point="org.eclipse.debug.ui.debugModelPresentations">
@@ -103,13 +111,23 @@
         configTypeID="org.eclipse.gemoc.execution.sequential.javaengine.ui.launcher"
         id="org.eclipse.gemoc.execution.sequential.javaengine.ui.launcher.image">
     </launchConfigurationTypeImage>
-	</extension>
-	   <extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
-	    <launchConfigurationTabGroup
+    <launchConfigurationTypeImage
+          configTypeID="org.eclipse.gemoc.execution.distributed.javaengine.ui.launcher"
+          icon="icons/IconeGemocModel-16.png"
+          id="org.eclipse.gemoc.execution.distributed.javaengine.ui.launcher.image">
+    </launchConfigurationTypeImage>
+    </extension>
+       <extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+        <launchConfigurationTabGroup
            class="org.eclipse.gemoc.execution.sequential.javaengine.ui.launcher.LauncherTabGroup"
            id="org.eclipse.gemoc.execution.sequential.javaengine.ui.launcher.tabGroup"
            type="org.eclipse.gemoc.execution.sequential.javaengine.ui.launcher">
 	    </launchConfigurationTabGroup>
+     <launchConfigurationTabGroup
+           class="org.eclipse.gemoc.execution.sequential.javaengine.ui.launcher.DistributedLauncherTabGroup"
+           id="org.eclipse.gemoc.execution.distributed.javaengine.ui.launcher.tabGroup"
+           type="org.eclipse.gemoc.execution.distributed.javaengine.ui.launcher">
+     </launchConfigurationTabGroup>
 	</extension>
     <extension
           point="org.eclipse.core.expressions.propertyTesters">

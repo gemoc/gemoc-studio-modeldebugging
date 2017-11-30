@@ -88,10 +88,6 @@ public class OpsemanticsviewAdapterFactory extends AdapterFactoryImpl {
 				return createEventEmitterAdapter();
 			}
 			@Override
-			public Adapter caseStartEventHandler(StartEventHandler object) {
-				return createStartEventHandlerAdapter();
-			}
-			@Override
 			public Adapter defaultCase(EObject object) {
 				return createEObjectAdapter();
 			}
@@ -178,20 +174,6 @@ public class OpsemanticsviewAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createEventEmitterAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link opsemanticsview.StartEventHandler <em>Start Event Handler</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see opsemanticsview.StartEventHandler
-	 * @generated
-	 */
-	public Adapter createStartEventHandlerAdapter() {
 		return null;
 	}
 

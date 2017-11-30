@@ -22,34 +22,32 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.gemoc.executionframework.debugger.AnnotationMutableFieldExtractor;
-import org.eclipse.gemoc.executionframework.debugger.IntrospectiveMutableFieldExtractor;
+import org.eclipse.gemoc.commons.eclipse.messagingsystem.api.MessagingSystem;
 import org.eclipse.gemoc.commons.eclipse.ui.ViewHelper;
-import org.eclipse.gemoc.execution.sequential.javaengine.PlainK3ExecutionEngine;
+import org.eclipse.gemoc.dsl.debug.ide.IDSLDebugger;
+import org.eclipse.gemoc.dsl.debug.ide.event.DSLDebugEventDispatcher;
 import org.eclipse.gemoc.execution.sequential.javaengine.PlainK3ExecutionEngine;
 import org.eclipse.gemoc.execution.sequential.javaengine.SequentialModelExecutionContext;
 import org.eclipse.gemoc.execution.sequential.javaengine.ui.Activator;
 import org.eclipse.gemoc.execution.sequential.javaengine.ui.debug.GenericSequentialModelDebugger;
 import org.eclipse.gemoc.execution.sequential.javaengine.ui.debug.OmniscientGenericSequentialModelDebugger;
 import org.eclipse.gemoc.executionframework.debugger.AbstractGemocDebugger;
+import org.eclipse.gemoc.executionframework.debugger.AnnotationMutableFieldExtractor;
 import org.eclipse.gemoc.executionframework.debugger.IMutableFieldExtractor;
+import org.eclipse.gemoc.executionframework.debugger.IntrospectiveMutableFieldExtractor;
 import org.eclipse.gemoc.executionframework.engine.commons.EngineContextException;
 import org.eclipse.gemoc.executionframework.engine.commons.ModelExecutionContext;
 import org.eclipse.gemoc.executionframework.engine.ui.commons.RunConfiguration;
 import org.eclipse.gemoc.executionframework.engine.ui.launcher.AbstractSequentialGemocLauncher;
 import org.eclipse.gemoc.executionframework.ui.views.engine.EnginesStatusView;
-import org.eclipse.gemoc.xdsmlframework.api.core.ExecutionMode;
-import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine;
-import org.eclipse.gemoc.xdsmlframework.api.core.IRunConfiguration;
-
-import org.eclipse.gemoc.commons.eclipse.messagingsystem.api.MessagingSystem;
 import org.eclipse.gemoc.trace.commons.model.launchconfiguration.LaunchConfiguration;
 import org.eclipse.gemoc.trace.commons.model.launchconfiguration.LaunchConfigurationParameter;
 import org.eclipse.gemoc.trace.commons.model.launchconfiguration.LaunchconfigurationPackage;
 import org.eclipse.gemoc.trace.commons.model.trace.MSEOccurrence;
 import org.eclipse.gemoc.trace.gemoc.api.IMultiDimensionalTraceAddon;
-import org.eclipse.gemoc.dsl.debug.ide.IDSLDebugger;
-import org.eclipse.gemoc.dsl.debug.ide.event.DSLDebugEventDispatcher;
+import org.eclipse.gemoc.xdsmlframework.api.core.ExecutionMode;
+import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine;
+import org.eclipse.gemoc.xdsmlframework.api.core.IRunConfiguration;
 
 public class Launcher extends AbstractSequentialGemocLauncher {
 
@@ -59,7 +57,6 @@ public class Launcher extends AbstractSequentialGemocLauncher {
 	protected IExecutionEngine createExecutionEngine(RunConfiguration runConfiguration, ExecutionMode executionMode)
 			throws CoreException, EngineContextException {
 		// create and initialize engine
-//		IExecutionEngine executionEngine = new PlainK3ExecutionEngine();
 		IExecutionEngine executionEngine = new PlainK3ExecutionEngine();
 		ModelExecutionContext executioncontext = new SequentialModelExecutionContext(runConfiguration, executionMode);
 		executioncontext.getExecutionPlatform().getModelLoader().setProgressMonitor(this.launchProgressMonitor);
@@ -74,13 +71,15 @@ public class Launcher extends AbstractSequentialGemocLauncher {
 
 		IExecutionEngine engine = (IExecutionEngine) _executionEngine;
 		AbstractGemocDebugger res;
+		@SuppressWarnings("rawtypes")
 		Set<IMultiDimensionalTraceAddon> traceAddons = _executionEngine
 				.getAddonsTypedBy(IMultiDimensionalTraceAddon.class);
 
-		// We don't want to use trace managers that only work with a subset of
-		// the execution state
+		// We don't want to use trace managers that only work with a subset of the
+		// execution state
 		traceAddons.removeIf(traceAddon -> {
-			return traceAddon.getTraceConstructor() != null && traceAddon.getTraceConstructor().isPartialTraceConstructor();
+			return traceAddon.getTraceConstructor() != null
+					&& traceAddon.getTraceConstructor().isPartialTraceConstructor();
 		});
 
 		if (traceAddons.isEmpty()) {
@@ -93,23 +92,19 @@ public class Launcher extends AbstractSequentialGemocLauncher {
 		// We put annotation first
 		extractors.add(new AnnotationMutableFieldExtractor());
 		// Then introspection
-		extractors.add(new IntrospectiveMutableFieldExtractor(_executionEngine.getExecutionContext()
-				.getRunConfiguration().getLanguageName()));
+		extractors.add(new IntrospectiveMutableFieldExtractor(
+				_executionEngine.getExecutionContext().getRunConfiguration().getLanguageName()));
 		res.setMutableFieldExtractors(extractors);
 
 		// If in the launch configuration it is asked to pause at the start,
 		// we add this dummy break
-		try {
-			if (configuration.getAttribute(RunConfiguration.LAUNCH_BREAK_START, false)) {
-				res.addPredicateBreak(new BiPredicate<IExecutionEngine, MSEOccurrence>() {
-					@Override
-					public boolean test(IExecutionEngine t, MSEOccurrence u) {
-						return true;
-					}
-				});
-			}
-		} catch (CoreException e) {
-			Activator.error(e.getMessage(), e);
+		if (_executionEngine.getExecutionContext().getRunConfiguration().getBreakStart()) {
+			res.addPredicateBreak(new BiPredicate<IExecutionEngine, MSEOccurrence>() {
+				@Override
+				public boolean test(IExecutionEngine t, MSEOccurrence u) {
+					return true;
+				}
+			});
 		}
 
 		_executionEngine.getExecutionContext().getExecutionPlatform().addEngineAddon(res);
@@ -160,36 +155,25 @@ public class Launcher extends AbstractSequentialGemocLauncher {
 	protected void setDefaultsLaunchConfiguration(ILaunchConfigurationWorkingCopy configuration) {
 
 	}
-	
+
 	@Override
 	public Map<String, Object> parseLaunchConfiguration(LaunchConfiguration launchConfiguration) {
+		//FIXME add start event & parameters
 		Map<String, Object> attributes = new HashMap<>();
 		for (LaunchConfigurationParameter param : launchConfiguration.getParameters()) {
 			switch (param.eClass().getClassifierID()) {
-				case LaunchconfigurationPackage.LANGUAGE_NAME_PARAMETER: {
-					attributes.put(IRunConfiguration.LAUNCH_SELECTED_LANGUAGE, param.getValue());
-				}
-				case LaunchconfigurationPackage.MODEL_URI_PARAMETER: {
-					attributes.put("Resource", param.getValue());
-				}
-				case LaunchconfigurationPackage.ANIMATOR_URI_PARAMETER: {
-					attributes.put("airdResource", param.getValue());
-				}
-				case LaunchconfigurationPackage.ENTRY_POINT_PARAMETER: {
-					attributes.put(IRunConfiguration.LAUNCH_METHOD_ENTRY_POINT, param.getValue());
-				}
-				case LaunchconfigurationPackage.MODEL_ROOT_PARAMETER: {
-					attributes.put(IRunConfiguration.LAUNCH_MODEL_ENTRY_POINT, param.getValue());
-				}
-				case LaunchconfigurationPackage.INITIALIZATION_METHOD_PARAMETER: {
-					attributes.put(IRunConfiguration.LAUNCH_INITIALIZATION_METHOD, param.getValue());
-				}
-				case LaunchconfigurationPackage.INITIALIZATION_ARGUMENTS_PARAMETER: {
-					attributes.put(IRunConfiguration.LAUNCH_INITIALIZATION_ARGUMENTS, param.getValue());
-				}
-				case LaunchconfigurationPackage.ADDON_EXTENSION_PARAMETER: {
-					attributes.put(param.getValue(), true);
-				}
+			case LaunchconfigurationPackage.LANGUAGE_NAME_PARAMETER: {
+				attributes.put(IRunConfiguration.LAUNCH_SELECTED_LANGUAGE, param.getValue());
+			}
+			case LaunchconfigurationPackage.MODEL_URI_PARAMETER: {
+				attributes.put("Resource", param.getValue());
+			}
+			case LaunchconfigurationPackage.ANIMATOR_URI_PARAMETER: {
+				attributes.put("airdResource", param.getValue());
+			}
+			case LaunchconfigurationPackage.ADDON_EXTENSION_PARAMETER: {
+				attributes.put(param.getValue(), true);
+			}
 			}
 		}
 		return attributes;

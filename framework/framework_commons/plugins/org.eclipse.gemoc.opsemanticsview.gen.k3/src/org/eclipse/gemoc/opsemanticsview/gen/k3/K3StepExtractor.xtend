@@ -77,11 +77,7 @@ class K3StepExtractor {
 			return functionToRule.get(function)
 		} else {
 			val Rule rule = if (eventFunctions.contains(function)) {
-				if (function.isStart) {
-					val handler = OpsemanticsviewFactory.eINSTANCE.createStartEventHandler
-					handler.interruptible = function.isInterruptible
-					handler
-				} else if (function.isEventHandler) {
+				if (function.eventHandler) {
 					val handler = OpsemanticsviewFactory.eINSTANCE.createEventHandler
 					handler.interruptible = function.isInterruptible
 					val condition = eventFunctionToConditionFunction.get(function)
@@ -89,6 +85,7 @@ class K3StepExtractor {
 						handler.condition = condition.toEOperation
 						operationToFunction.put(handler.condition, condition)
 					}
+					handler.start = function.start
 					handler
 				} else {
 					OpsemanticsviewFactory.eINSTANCE.createEventEmitter
@@ -471,12 +468,15 @@ class K3StepExtractor {
 	}
 
 	/**
-	 * Return true if 'method' is tagged with "@EventProcessor"
+	 * Return true if 'method' is tagged with "@EventHandler"
 	 */
 	private def boolean isEventHandler(IMethod method) {
 		method.testAnnotation("EventHandler")
 	}
 	
+	/**
+	 * Return true if 'method' is tagged with "@EventEmitter"
+	 */
 	private def boolean isEventEmitter(IMethod method) {
 		method.testAnnotation("EventEmitter")
 	}
@@ -501,6 +501,9 @@ class K3StepExtractor {
 		return if (value === null) false else value as Boolean
 	}
 	
+	/**
+	 * Return true if 'method' is tagged with "@EventHandler" and has interruptible = true
+	 */
 	private def boolean isInterruptible(IMethod method) {
 		var annotation = method.findAnnotation("EventHandler")
 		val pairs = annotation?.memberValuePairs

@@ -24,6 +24,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * <ul>
  *   <li>{@link opsemanticsview.impl.EventHandlerImpl#getCondition <em>Condition</em>}</li>
  *   <li>{@link opsemanticsview.impl.EventHandlerImpl#isInterruptible <em>Interruptible</em>}</li>
+ *   <li>{@link opsemanticsview.impl.EventHandlerImpl#isStart <em>Start</em>}</li>
  * </ul>
  *
  * @generated
@@ -58,6 +59,26 @@ public class EventHandlerImpl extends RuleImpl implements EventHandler {
 	 * @ordered
 	 */
 	protected boolean interruptible = INTERRUPTIBLE_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #isStart() <em>Start</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isStart()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean START_EDEFAULT = false;
+
+	/**
+	 * The cached value of the '{@link #isStart() <em>Start</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isStart()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean start = START_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -147,6 +168,27 @@ public class EventHandlerImpl extends RuleImpl implements EventHandler {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public boolean isStart() {
+		return start;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setStart(boolean newStart) {
+		boolean oldStart = start;
+		start = newStart;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, OpsemanticsviewPackage.EVENT_HANDLER__START, oldStart, start));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
@@ -168,6 +210,8 @@ public class EventHandlerImpl extends RuleImpl implements EventHandler {
 				return getCondition();
 			case OpsemanticsviewPackage.EVENT_HANDLER__INTERRUPTIBLE:
 				return isInterruptible();
+			case OpsemanticsviewPackage.EVENT_HANDLER__START:
+				return isStart();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -185,6 +229,9 @@ public class EventHandlerImpl extends RuleImpl implements EventHandler {
 				return;
 			case OpsemanticsviewPackage.EVENT_HANDLER__INTERRUPTIBLE:
 				setInterruptible((Boolean)newValue);
+				return;
+			case OpsemanticsviewPackage.EVENT_HANDLER__START:
+				setStart((Boolean)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -204,6 +251,9 @@ public class EventHandlerImpl extends RuleImpl implements EventHandler {
 			case OpsemanticsviewPackage.EVENT_HANDLER__INTERRUPTIBLE:
 				setInterruptible(INTERRUPTIBLE_EDEFAULT);
 				return;
+			case OpsemanticsviewPackage.EVENT_HANDLER__START:
+				setStart(START_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -220,6 +270,8 @@ public class EventHandlerImpl extends RuleImpl implements EventHandler {
 				return condition != null;
 			case OpsemanticsviewPackage.EVENT_HANDLER__INTERRUPTIBLE:
 				return interruptible != INTERRUPTIBLE_EDEFAULT;
+			case OpsemanticsviewPackage.EVENT_HANDLER__START:
+				return start != START_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -236,6 +288,8 @@ public class EventHandlerImpl extends RuleImpl implements EventHandler {
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (interruptible: ");
 		result.append(interruptible);
+		result.append(", start: ");
+		result.append(start);
 		result.append(')');
 		return result.toString();
 	}

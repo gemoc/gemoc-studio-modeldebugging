@@ -98,14 +98,6 @@ public class OpsemanticsviewSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case OpsemanticsviewPackage.START_EVENT_HANDLER: {
-				StartEventHandler startEventHandler = (StartEventHandler)theEObject;
-				T result = caseStartEventHandler(startEventHandler);
-				if (result == null) result = caseEventHandler(startEventHandler);
-				if (result == null) result = caseRule(startEventHandler);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			default: return defaultCase(theEObject);
 		}
 	}
@@ -182,21 +174,6 @@ public class OpsemanticsviewSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseEventEmitter(EventEmitter object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Start Event Handler</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Start Event Handler</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseStartEventHandler(StartEventHandler object) {
 		return null;
 	}
 

@@ -43,7 +43,6 @@ public class DslHelper {
 	}
 	
 	public static Dsl load(String languageName) {
-		
 		IConfigurationElement[] languages = Platform.getExtensionRegistry().getConfigurationElementsFor("org.eclipse.gemoc.gemoc_language_workbench.sequential.xdsml");
 		for (IConfigurationElement lang : languages) {
 			String xdsmlPath = lang.getAttribute("xdsmlFilePath");
