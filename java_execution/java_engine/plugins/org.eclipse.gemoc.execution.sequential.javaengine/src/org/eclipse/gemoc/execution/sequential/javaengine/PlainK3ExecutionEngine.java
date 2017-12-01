@@ -84,7 +84,7 @@ public class PlainK3ExecutionEngine extends AbstractCommandBasedSequentialExecut
 		}
 	}
 
-//	@Override
+	@Override
 	/*
 	 * This is the operation called from K3 code. We use this callback to pass
 	 * the command to the generic executeOperation operation. (non-Javadoc)
