@@ -84,7 +84,7 @@ public class PlainK3ExecutionEngine extends AbstractCommandBasedSequentialExecut
 		}
 	}
 
-	@Override
+//	@Override
 	/*
 	 * This is the operation called from K3 code. We use this callback to pass
 	 * the command to the generic executeOperation operation. (non-Javadoc)
@@ -183,8 +183,8 @@ public class PlainK3ExecutionEngine extends AbstractCommandBasedSequentialExecut
 		return launchConfiguration;
 	}
 	
-	@Override
-	public void executeStep(Object caller, StepCommand command, String className, String methodName) {
-		executeStep(caller, new Object[] {}, command, className, methodName);
-	}
+//	@Override
+//	public void executeStep(Object caller, StepCommand command, String className, String methodName) {
+//		executeStep(caller, new Object[] {}, command, className, methodName);
+//	}
 }
