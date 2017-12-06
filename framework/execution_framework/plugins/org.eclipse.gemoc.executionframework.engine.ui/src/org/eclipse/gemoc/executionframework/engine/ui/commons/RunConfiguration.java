@@ -13,6 +13,7 @@ package org.eclipse.gemoc.executionframework.engine.ui.commons;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -187,6 +188,7 @@ public class RunConfiguration implements IRunConfiguration {
 		_waitForEvents = getAttribute(LAUNCH_WAIT_FOR_EVENTS, Boolean.FALSE);
 		_breakStart = getAttribute(LAUNCH_BREAK_START, Boolean.FALSE);
 		_debugModelID = getAttribute(DEBUG_MODEL_ID, ".debugModel");
+		_eventEmitters = getAttribute(LAUNCH_EVENT_EMITTERS, Collections.emptyList());
 	}
 
 	protected String getAttribute(String attributeName, String defaultValue) throws CoreException {
@@ -296,5 +298,12 @@ public class RunConfiguration implements IRunConfiguration {
 	public boolean getWaitForEvents() {
 		return _waitForEvents;
 	}
+	
+	private List<String> _eventEmitters;
 
+	@Override
+	public List<String> getEventEmitters() {
+		return _eventEmitters;
+	}
+	
 }

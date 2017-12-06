@@ -137,6 +137,8 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 		Group executionArea = createGroup(area, "Execution:");
 		createK3Layout(executionArea, null);
 
+		Group eventEmittersArea = createGroup(area, "Event Emitters:");
+		createEventEmittersLayout(eventEmittersArea, null);
 	}
 
 	@Override
@@ -194,6 +196,7 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 				_startEventParameters.stream().map(t -> t.getText()).collect(Collectors.toList()));
 		// DebugModelID for sequential engine
 		configuration.setAttribute(RunConfiguration.DEBUG_MODEL_ID, Activator.DEBUG_MODEL_ID);
+		configuration.setAttribute(RunConfiguration.LAUNCH_EVENT_EMITTERS, selectedEventEmitters.stream().collect(Collectors.toList()));
 	}
 
 	@Override
@@ -704,6 +707,38 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 			}
 		});
 
+		return parent;
+	}
+	
+	private final Set<String> selectedEventEmitters = new HashSet<>();
+	
+	private Composite createEventEmittersLayout(Composite parent, Font font) {
+		IConfigurationElement[] confElts = Platform.getExtensionRegistry()
+				.getConfigurationElementsFor("org.eclipse.gemoc.executionframework.event.event_emitter");
+		Arrays.asList(confElts).forEach(elt -> {
+			final String name = elt.getAttribute("Name");
+			final String id = elt.getAttribute("id");
+			final Button eventEmitter = new Button(parent, SWT.CHECK);
+			eventEmitter.setText(name);
+			eventEmitter.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent event) {
+					if (eventEmitter.getSelection()) {
+						selectedEventEmitters.add(id);
+					} else {
+						selectedEventEmitters.remove(id);
+					}
+					updateLaunchConfigurationDialog();
+				}
+			});
+		});
+		
+		if (confElts.length < 3) {
+			for (int i = confElts.length; i < 3; i++) {
+				new Label(parent, SWT.NONE).setText("");
+			}
+		}
+		
 		return parent;
 	}
 

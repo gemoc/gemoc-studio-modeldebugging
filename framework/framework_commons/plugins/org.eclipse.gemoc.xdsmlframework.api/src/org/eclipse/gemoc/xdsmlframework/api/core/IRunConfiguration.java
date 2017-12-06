@@ -11,6 +11,8 @@
 package org.eclipse.gemoc.xdsmlframework.api.core;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.gemoc.executionframework.event.model.event.Event;
@@ -27,6 +29,7 @@ public interface IRunConfiguration {
 	public static final String LAUNCH_START_EVENT = "GEMOC_LAUNCH_START_EVENT";
 	public static final String LAUNCH_START_EVENT_PARAMETERS = "GEMOC_LAUNCH_START_EVENT_PARAMETER";
 	public static final String LAUNCH_WAIT_FOR_EVENTS = "GEMOC_WAIT_FOR_EVENTS";
+	public static final String LAUNCH_EVENT_EMITTERS = "GEMOC_EVENT_EMITTER";
 	public static final String DEBUG_MODEL_ID = "GEMOC_DEBUG_MODEL_ID";
 
 	public final static String DISTRIBUTED_LAUNCH_CONFIGURATIONS = "DISTRIBUTED_LAUNCH_CONFIGURATION";
@@ -57,4 +60,6 @@ public interface IRunConfiguration {
 	default Event getStartEvent() {return null;}
 
 	default boolean getWaitForEvents() {return true;}
+	
+	default List<String> getEventEmitters() {return Collections.emptyList();}
 }

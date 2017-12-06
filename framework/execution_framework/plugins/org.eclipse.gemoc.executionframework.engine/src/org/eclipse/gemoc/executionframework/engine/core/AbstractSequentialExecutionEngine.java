@@ -14,8 +14,12 @@ package org.eclipse.gemoc.executionframework.engine.core;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EOperation;
@@ -25,6 +29,7 @@ import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.gemoc.executionframework.engine.Activator;
 import org.eclipse.gemoc.executionframework.event.manager.EventManager;
+import org.eclipse.gemoc.executionframework.event.manager.IEventEmitter;
 import org.eclipse.gemoc.executionframework.event.manager.IEventManager;
 import org.eclipse.gemoc.trace.commons.model.generictrace.GenericSequentialStep;
 import org.eclipse.gemoc.trace.commons.model.generictrace.GenerictraceFactory;
@@ -62,6 +67,19 @@ public abstract class AbstractSequentialExecutionEngine extends AbstractExecutio
 		final EPackage languageRootPackage = executionContext.getResourceModel().getContents()
 				.stream().findFirst().map(o -> o.eClass().getEPackage()).orElse(null);
 		eventManager = new EventManager(languageRootPackage);
+		List<String> eventEmitters = getExecutionContext().getRunConfiguration().getEventEmitters();
+		IConfigurationElement[] confElts = Platform.getExtensionRegistry()
+				.getConfigurationElementsFor("org.eclipse.gemoc.executionframework.event.event_emitter");
+		Arrays.asList(confElts).stream().filter(c -> eventEmitters.contains(c.getAttribute("id")))
+				.forEach(elt -> {
+					IEventEmitter emitter;
+					try {
+						emitter = (IEventEmitter) elt.createExecutableExtension("class");
+						emitter.setEventManager(eventManager, executionContext.getResourceModel());
+					} catch (CoreException e) {
+						e.printStackTrace();
+					}
+				});
 		getExecutionContext().getExecutionPlatform().addEngineAddon(eventManager);
 	}
 
