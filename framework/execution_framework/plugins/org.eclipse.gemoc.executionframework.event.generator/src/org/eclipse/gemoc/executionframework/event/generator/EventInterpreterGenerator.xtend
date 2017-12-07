@@ -389,9 +389,9 @@ class EventInterpreterGenerator {
 	}
 	
 	private def generateEventEmitterParameters(EventEmitter e) {
-		val caller = '''(«e.containingClass.name») caller, '''
+		val caller = '''(«e.containingClass.addType.name») caller'''
 		val parameters = e.operation.EParameters.map[EType.instanceClass.simpleName]
-		'''«caller»«FOR i : 0..(parameters.size - 1) SEPARATOR ", "»(«parameters.get(i)») parameters.get(«i»)«ENDFOR»'''
+		'''«caller»«IF !parameters.empty», «FOR i : 0..(parameters.size - 1) SEPARATOR ", "»(«parameters.get(i)») parameters.get(«i»)«ENDFOR»«ENDIF»'''
 	}
 	
 	private def generateEventEmitters() {
@@ -425,10 +425,10 @@ class EventInterpreterGenerator {
 	}
 	
 	private def generateEventEmitterParametersDeclaration(EventEmitter e) {
-		val caller = '''«e.containingClass.name» caller, '''
+		val caller = '''«e.containingClass.name» caller'''
 		val parameterTypes = e.operation.EParameters.map[EType.instanceClass.simpleName]
 		val parameterNames = e.operation.EParameters.map[name]
-		'''«caller»«FOR i : 0..(parameterTypes.size - 1) SEPARATOR ", "»«parameterTypes.get(i)» «parameterNames.get(i)»«ENDFOR»'''
+		'''«caller»«IF !parameterTypes.empty», «FOR i : 0..(parameterTypes.size - 1) SEPARATOR ", "»«parameterTypes.get(i)» «parameterNames.get(i)»«ENDFOR»«ENDIF»'''
 	}
 	
 	private def String getDeclaringTypeName(IMethod method) {
