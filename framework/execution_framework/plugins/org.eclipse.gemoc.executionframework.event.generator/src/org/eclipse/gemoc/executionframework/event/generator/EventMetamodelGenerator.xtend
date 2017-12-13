@@ -217,8 +217,8 @@ class EventMetamodelGenerator {
 				if (parameterDataType !== null) {
 					c.EStructuralFeatures += EcoreFactory.eINSTANCE.createEAttribute => [
 						name = opParam.name.toFirstLower
-						lowerBound = 1
-						upperBound = 1
+						lowerBound = opParam.lowerBound
+						upperBound = opParam.upperBound
 						EType = parameterDataType
 					]
 				} else {
@@ -227,8 +227,8 @@ class EventMetamodelGenerator {
 					if (parameterClassifier !== null) {
 						c.EStructuralFeatures += EcoreFactory.eINSTANCE.createEReference => [
 							EType = parameterClassifier
-							upperBound = 1
-							lowerBound = 1
+							lowerBound = opParam.lowerBound
+							upperBound = opParam.upperBound
 							containment = false
 							name = opParam.name.toFirstLower
 						]

@@ -453,7 +453,11 @@ class EventInterpreterGenerator {
 				} else {
 					f.EType.instanceClass.simpleName
 				}»
+			«IF f.many»
+			final List<«parameterType»> «name» = _event.get«name.toFirstUpper»();
+			«ELSE»
 			final «parameterType» «name» = _event.get«name.toFirstUpper»();
+			«ENDIF»
 			«ENDFOR»
 			«ENDIF»
 		'''
