@@ -28,11 +28,10 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.gemoc.dsl.Dsl;
 import org.eclipse.gemoc.dsl.DslFactory;
 import org.eclipse.gemoc.dsl.DslPackage;
-import org.eclipse.gemoc.dsl.SimpleValue;
+import org.eclipse.gemoc.dsl.Entry;
 import org.eclipse.gemoc.xdsmlframework.ide.ui.commands.AbstractDslSelectHandler;
 import org.eclipse.gemoc.xdsmlframework.ide.ui.xdsml.wizards.CreateDomainModelWizardContextAction;
 import org.eclipse.gemoc.xdsmlframework.ide.ui.xdsml.wizards.CreateDomainModelWizardContextAction.CreateDomainModelAction;
-//import org.eclipse.jface.dialogs.MessageDialog;
 
 public class CreateDomainModelProjectHandler extends AbstractDslSelectHandler implements
 		IHandler {
@@ -59,26 +58,22 @@ public class CreateDomainModelProjectHandler extends AbstractDslSelectHandler im
 		IFile dslFile = getDslFileFromProject(project);
 		Resource res = (new ResourceSetImpl()).getResource(URI.createURI(dslFile.getFullPath().toOSString()), true);
 		Dsl dsl = (Dsl) res.getContents().get(0);
-		Optional<SimpleValue> syntax = dsl
-			.getAbstractSyntax()
-			.getValues()
+		Optional<Entry> syntax = dsl.getEntries()
 			.stream()
-			.filter(v -> v instanceof SimpleValue)
-			.map(v -> (SimpleValue) v)
-			.filter(v -> v.getName().equals("ecore"))
+			.filter(entry -> entry.getKey().equals("ecore"))
 			.findFirst();
 		
 		if(syntax.isPresent()) {
-			syntax.get().getValues().add(ecoreURI);
+			syntax.get().setValue(syntax.get().getValue() + "," + ecoreURI);
 		}
 		else {
-			SimpleValue newEcore = ((DslFactory)DslPackage.eINSTANCE.getEFactoryInstance()).createSimpleValue();
-			newEcore.setName("ecore");
-			newEcore.getValues().add(ecoreURI);
-			dsl.getAbstractSyntax().getValues().add(newEcore);
+			Entry ecoreEntry = ((DslFactory)DslPackage.eINSTANCE.getEFactoryInstance()).createEntry();
+			ecoreEntry.setKey("ecore");
+			ecoreEntry.setValue(ecoreURI);
+			dsl.getEntries().add(ecoreEntry);
 		}
 		try {
-			res.save(new HashMap());
+			res.save(new HashMap<>());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

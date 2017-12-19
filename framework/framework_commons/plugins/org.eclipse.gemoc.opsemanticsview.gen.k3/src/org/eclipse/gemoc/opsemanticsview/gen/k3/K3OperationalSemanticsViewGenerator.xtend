@@ -20,7 +20,6 @@ import org.eclipse.emf.ecore.EOperation
 import org.eclipse.emf.ecore.EPackage
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
 import org.eclipse.gemoc.dsl.Dsl
-import org.eclipse.gemoc.dsl.SimpleValue
 import org.eclipse.gemoc.opsemanticsview.gen.OperationalSemanticsViewGenerator
 import org.eclipse.jdt.core.IJavaProject
 import org.eclipse.jdt.core.IMethod
@@ -39,27 +38,14 @@ class K3OperationalSemanticsViewGenerator implements OperationalSemanticsViewGen
 		val selectedLanguage = language.name
 		val ecoreUri = 
 			language
-			.abstractSyntax
-			.values
-			.filter[v | v instanceof SimpleValue]
-			.map[v| v as SimpleValue]
-			.filter[v | v.name == "ecore"]
-			.head
-			.values
+			.entries
+			.filter[entry | entry.key == "ecore"]			
+			.map[entry | entry.value.split(",").head]
 			.head
 		val rs = new ResourceSetImpl
 		val executionMetamodelResource = rs.getResource(URI.createURI(ecoreUri), true)
 		val executionMetamodel = executionMetamodelResource.contents.filter(EPackage).head
 		
-		
-//		val LanguageOperator inheritance = language.operators.filter(Inheritance).head
-//		val abstractSyntax = if (inheritance != null) {
-//			val asURI = URI.createURI(inheritance.getTargetLanguage().syntax.ecoreUri)
-//			val asResource = rs.getResource(asURI,true)
-//			asResource.contents.filter(EPackage).head
-//		} else {
-//			null
-//		}
 		val abstractSyntax = null //FIXME: check where it is used
 		
 		val K3DynamicElementsFinder dynFinder = new K3DynamicElementsFinder(abstractSyntax, executionMetamodel, result);
@@ -78,14 +64,13 @@ class K3OperationalSemanticsViewGenerator implements OperationalSemanticsViewGen
 	}
 
 	private static def Set<IType> findAspects(Dsl language, IProject melangeProject) {
-		val SimpleValue semantic = language.getSemantic()
-				.getValues()
-				.filter[v | v instanceof SimpleValue]
-				.map[v | v as SimpleValue]
-				.filter[v | v.getName() == "k3"]
-				.head
-		if(semantic !== null) {
-			val aspectNames = semantic.values
+		val semantics = 
+			language
+			.entries
+			.filter[entry | entry.key == "k3"]			
+			.head
+		if(semantics !== null) {
+			val aspectNames = semantics.value.split(",").map[asp | asp.trim]
 			val IJavaProject javaProject = JavaCore.create(melangeProject);
 			val aspectClasses = aspectNames.map[it|javaProject.findType(it)].toSet
 			return aspectClasses
@@ -94,13 +79,12 @@ class K3OperationalSemanticsViewGenerator implements OperationalSemanticsViewGen
 	}
 
 	override canHandle(Dsl language, IProject melangeProject) {
-		val SimpleValue semantic = language.getSemantic()
-			.getValues()
-			.filter[v | v instanceof SimpleValue]
-			.map[v | v as SimpleValue]
-			.filter[v | v.getName() == "k3"]
+		val semantics = 
+			language
+			.entries
+			.filter[entry | entry.key == "k3"]			
 			.head
-		return semantic !== null && !semantic.values.isEmpty
+		return semantics !== null && !semantics.value.isEmpty
 	}
 	
 	override getOperationToMethod() {

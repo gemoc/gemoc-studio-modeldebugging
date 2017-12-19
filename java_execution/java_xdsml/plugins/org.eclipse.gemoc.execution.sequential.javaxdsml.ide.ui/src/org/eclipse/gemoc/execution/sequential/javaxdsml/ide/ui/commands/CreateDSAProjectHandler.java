@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -27,13 +28,13 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.gemoc.execution.sequential.javaxdsml.ide.ui.templates.SequentialSingleLanguageTemplate;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.gemoc.dsl.Dsl;
 import org.eclipse.gemoc.dsl.DslFactory;
 import org.eclipse.gemoc.dsl.DslPackage;
-import org.eclipse.gemoc.dsl.SimpleValue;
+import org.eclipse.gemoc.dsl.Entry;
+import org.eclipse.gemoc.execution.sequential.javaxdsml.ide.ui.templates.SequentialSingleLanguageTemplate;
 import org.eclipse.gemoc.execution.sequential.javaxdsml.ide.ui.wizards.CreateDSAWizardContextActionDSAK3;
 import org.eclipse.gemoc.xdsmlframework.ide.ui.commands.AbstractDslSelectHandler;
 
@@ -69,26 +70,21 @@ public class CreateDSAProjectHandler extends AbstractDslSelectHandler implements
 		IFile dslFile = getDslFileFromProject(project);
 		Resource res = (new ResourceSetImpl()).getResource(URI.createURI(dslFile.getFullPath().toOSString()), true);
 		Dsl dsl = (Dsl) res.getContents().get(0);
-		Optional<SimpleValue> semantic = dsl
-			.getSemantic()
-			.getValues()
-			.stream()
-			.filter(v -> v instanceof SimpleValue)
-			.map(v -> (SimpleValue) v)
-			.filter(v -> v.getName().equals("k3"))
-			.findFirst();
-		
-		if(semantic.isPresent()) {
-			semantic.get().getValues().addAll(aspects);
+		Optional<Entry> semantics = dsl.getEntries()
+				.stream()
+				.filter(entry -> entry.getKey().equals("k3"))
+				.findFirst();
+		if(semantics.isPresent()) {
+			semantics.get().setValue(semantics.get().getValue() + "," + aspects.stream().collect(Collectors.joining(", ")));
 		}
 		else {
-			SimpleValue newAspects = ((DslFactory)DslPackage.eINSTANCE.getEFactoryInstance()).createSimpleValue();
-			newAspects.setName("k3");
-			newAspects.getValues().addAll(aspects);
-			dsl.getSemantic().getValues().add(newAspects);
+			Entry k3Entry = ((DslFactory)DslPackage.eINSTANCE.getEFactoryInstance()).createEntry();
+			k3Entry.setKey("k3");
+			k3Entry.setValue(aspects.stream().collect(Collectors.joining(",")));
+			dsl.getEntries().add(k3Entry);
 		}
 		try {
-			res.save(new HashMap());
+			res.save(new HashMap<>());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -100,16 +96,15 @@ public class CreateDSAProjectHandler extends AbstractDslSelectHandler implements
 		IFile dslFile = getDslFileFromSelection(event);
 		Resource res = (new ResourceSetImpl()).getResource(URI.createURI(dslFile.getFullPath().toOSString()), true);
 		Dsl dsl = (Dsl) res.getContents().get(0);
-		Optional<SimpleValue> syntax = dsl
-			.getAbstractSyntax()
-			.getValues()
+		Optional<Entry> syntax = dsl.getEntries()
 			.stream()
-			.filter(v -> v instanceof SimpleValue)
-			.map(v -> (SimpleValue) v)
-			.filter(v -> v.getName().equals("ecore"))
+			.filter(entry -> entry.getKey().equals("ecore"))
 			.findFirst();
-		if(syntax.isPresent() && !syntax.get().getValues().isEmpty()) {
-			ecoreURI = syntax.get().getValues().get(0);
+		if(syntax.isPresent() && !syntax.get().getValue().isEmpty()) {
+			ecoreURI = syntax.get().getValue();
+			if(ecoreURI.contains(",")) {
+				ecoreURI = ecoreURI.split(",")[0];
+			}
 		}
 		
 		if(ecoreURI != null){

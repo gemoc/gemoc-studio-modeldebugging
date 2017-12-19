@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -50,7 +51,7 @@ import org.eclipse.gemoc.commons.value.model.value.StringAttributeValue;
 import org.eclipse.gemoc.commons.value.model.value.Value;
 import org.eclipse.gemoc.commons.value.model.value.ValuePackage;
 import org.eclipse.gemoc.dsl.Dsl;
-import org.eclipse.gemoc.dsl.SimpleValue;
+import org.eclipse.gemoc.dsl.Entry;
 import org.eclipse.gemoc.dsl.debug.ide.launch.AbstractDSLLaunchConfigurationDelegate;
 import org.eclipse.gemoc.dsl.debug.ide.sirius.ui.launch.AbstractDSLLaunchConfigurationDelegateSiriusUI;
 import org.eclipse.gemoc.execution.sequential.javaengine.PlainK3ExecutionEngine;
@@ -342,52 +343,59 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 			}
 
 			if (dsl != null) {
-				final List<String> nsURIs = dsl.getAbstractSyntax().getValues().stream()
-						.flatMap(v -> ((SimpleValue) v).getValues().stream())
-						.map(s -> URI.createURI(s.replace("platform:/resource", "platform:/plugin"), true))
-						.map(uri -> ((EPackage) resSet.getResource(uri, true).getContents().get(0)).getNsURI())
-						.collect(Collectors.toList());
-				packages = nsURIs.stream().map(uri -> {
-					return Arrays
-							.asList(Platform.getExtensionRegistry()
-									.getConfigurationElementsFor("org.eclipse.emf.ecore.generated_package"))
-							.stream().filter(c -> c.getAttribute("uri").equals(uri)).map(c -> {
-								EPackage result = null;
-								try {
-									List<Field> fields = Arrays.asList(Platform.getBundle(c.getContributor().getName())
-											.loadClass(c.getAttribute("class")).getFields());
-									result = fields.stream().filter(f -> f.getName().equals("eINSTANCE")).findFirst()
-											.map(f -> {
-												try {
-													return (EPackage) f.get(null);
-												} catch (IllegalArgumentException e) {
-													e.printStackTrace();
-												} catch (IllegalAccessException e) {
-													e.printStackTrace();
-												}
-												return null;
-											}).orElse(null);
-								} catch (SecurityException e1) {
-									e1.printStackTrace();
-								} catch (ClassNotFoundException e1) {
-									e1.printStackTrace();
-								}
-								return result;
-							}).filter(p -> p != null).findFirst().orElse(null);
-				}).collect(Collectors.toList());
-				if (behavioralAPI == null) {
-					final List<String> classNames = dsl.getSemantic().getValues().stream()
-							.filter(v -> v.getName().equals("k3")).flatMap(v -> ((SimpleValue) v).getValues().stream())
+				final Optional<Entry> abstractSyntax = dsl.getEntries().stream()
+						.filter(e -> e.getKey().equals("ecore"))
+						.findFirst();
+				if (abstractSyntax.isPresent()) {
+					final List<String> nsURIs = Arrays.asList(abstractSyntax.get().getValue().split(", ")).stream()
+							.map(s -> URI.createURI(s.replace("platform:/resource", "platform:/plugin"), true))
+							.map(uri -> ((EPackage) resSet.getResource(uri, true).getContents().get(0)).getNsURI())
 							.collect(Collectors.toList());
-					aspects = classNames.stream().map(cn -> {
-						Class<?> result = null;
-						try {
-							result = bundle.loadClass(cn);
-						} catch (ClassNotFoundException e) {
-							e.printStackTrace();
-						}
-						return result;
-					}).filter(c -> c != null).collect(Collectors.toList());
+					packages = nsURIs.stream().map(uri -> {
+						return Arrays
+								.asList(Platform.getExtensionRegistry()
+										.getConfigurationElementsFor("org.eclipse.emf.ecore.generated_package"))
+								.stream().filter(c -> c.getAttribute("uri").equals(uri)).map(c -> {
+									EPackage result = null;
+									try {
+										List<Field> fields = Arrays.asList(Platform.getBundle(c.getContributor().getName())
+												.loadClass(c.getAttribute("class")).getFields());
+										result = fields.stream().filter(f -> f.getName().equals("eINSTANCE")).findFirst()
+												.map(f -> {
+													try {
+														return (EPackage) f.get(null);
+													} catch (IllegalArgumentException e) {
+														e.printStackTrace();
+													} catch (IllegalAccessException e) {
+														e.printStackTrace();
+													}
+													return null;
+												}).orElse(null);
+									} catch (SecurityException e1) {
+										e1.printStackTrace();
+									} catch (ClassNotFoundException e1) {
+										e1.printStackTrace();
+									}
+									return result;
+								}).filter(p -> p != null).findFirst().orElse(null);
+					}).collect(Collectors.toList());
+				}
+				if (behavioralAPI == null) {
+					final Optional<Entry> semantics = dsl.getEntries().stream()
+							.filter(e -> e.getKey().equals("k3"))
+							.findFirst();
+					if (semantics.isPresent()) {
+						final List<String> classNames = Arrays.asList(semantics.get().getValue().split(", "));
+						aspects = classNames.stream().map(cn -> {
+							Class<?> result = null;
+							try {
+								result = bundle.loadClass(cn.trim());
+							} catch (ClassNotFoundException e) {
+								e.printStackTrace();
+							}
+							return result;
+						}).filter(c -> c != null).collect(Collectors.toList());
+					}
 				}
 			} else {
 				// TODO error no dsl found
