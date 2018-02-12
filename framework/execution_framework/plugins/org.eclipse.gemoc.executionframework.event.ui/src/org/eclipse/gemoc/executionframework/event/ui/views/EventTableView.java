@@ -183,7 +183,7 @@ public class EventTableView extends TableView<Event> {
 			final EClass elementClass = modelElement.eClass();
 			eventParameters.stream().filter(r -> {
 				final EClass parameterClass = referenceToParameterClass.get(r);
-				return elementClass.getClassifierID() == parameterClass.getClassifierID()
+				return (parameterClass.getEPackage() == elementClass.getEPackage() && elementClass.getClassifierID() == parameterClass.getClassifierID())
 						|| elementClass.getEAllSuperTypes().contains(parameterClass);
 			}).forEach(r -> {
 				List<EObject> elements = referenceToMatchingModelElements.get(r);

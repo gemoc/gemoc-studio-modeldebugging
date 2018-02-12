@@ -385,11 +385,11 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 							.filter(e -> e.getKey().equals("k3"))
 							.findFirst();
 					if (semantics.isPresent()) {
-						final List<String> classNames = Arrays.asList(semantics.get().getValue().split(", "));
+						final List<String> classNames = Arrays.asList(semantics.get().getValue().split(","));
 						aspects = classNames.stream().map(cn -> {
 							Class<?> result = null;
 							try {
-								result = bundle.loadClass(cn.trim());
+								result = bundle.loadClass(cn.replaceAll("\\s","").trim());
 							} catch (ClassNotFoundException e) {
 								e.printStackTrace();
 							}
@@ -400,7 +400,6 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 			} else {
 				// TODO error no dsl found
 			}
-
 		}
 	}
 
