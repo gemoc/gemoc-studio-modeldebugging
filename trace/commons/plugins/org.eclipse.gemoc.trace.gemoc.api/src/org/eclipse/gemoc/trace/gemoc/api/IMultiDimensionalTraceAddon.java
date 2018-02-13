@@ -36,5 +36,5 @@ public interface IMultiDimensionalTraceAddon<StepSubType extends Step<?>, StateS
 
 	boolean isAddonForTrace(EObject traceRoot);
 
-	Trace<?,?,?> getTrace();
+	Trace<StepSubType, TracedObjectSubType, StateSubType> getTrace();
 }

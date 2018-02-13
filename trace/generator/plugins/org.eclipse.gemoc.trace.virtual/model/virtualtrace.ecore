@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="virtualtrace" nsURI="http://www.gemoc.org/virtualtrace" nsPrefix="virtualtrace">
+  <eClassifiers xsi:type="ecore:EClass" name="VirtualTrace">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="trace" lowerBound="1">
+      <eGenericType eClassifier="ecore:EClass ../../org.eclipse.gemoc.trace.commons.model/model/GenericTrace.ecore#//Trace">
+        <eTypeArguments/>
+        <eTypeArguments/>
+        <eTypeArguments/>
+      </eGenericType>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="selectedDimensions" upperBound="-1">
+      <eGenericType eClassifier="ecore:EClass ../../org.eclipse.gemoc.trace.commons.model/model/GenericTrace.ecore#//Dimension">
+        <eTypeArguments/>
+      </eGenericType>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="stateGroups" upperBound="-1"
+        eType="#//StateGroup" containment="true" eOpposite="#//StateGroup/trace"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="StateGroup">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="trace" eType="#//VirtualTrace"
+        eOpposite="#//VirtualTrace/stateGroups"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="values" upperBound="-1"
+        changeable="false" volatile="true" transient="true" derived="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="get" value="if (!getStates().isEmpty()) {&#xA;&#x9;final State&lt;?, ?> referenceState = getStates().get(0);&#xA;&#x9;final EList&lt;Value&lt;?>> result = new org.eclipse.emf.common.util.BasicEList&lt;>();&#xA;&#x9;referenceState.getValues().stream()&#xA;&#x9;&#x9;&#x9;.filter(v -> getTrace().getSelectedDimensions().contains(v.eContainer()))&#xA;&#x9;&#x9;&#x9;.forEach(v -> result.add(v));&#xA;&#x9;return result;&#xA;} else {&#xA;&#x9;return new org.eclipse.emf.common.util.BasicEList&lt;>();&#xA;}"/>
+      </eAnnotations>
+      <eGenericType eClassifier="ecore:EClass ../../org.eclipse.gemoc.trace.commons.model/model/GenericTrace.ecore#//Value">
+        <eTypeArguments/>
+      </eGenericType>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="states" upperBound="-1">
+      <eGenericType eClassifier="ecore:EClass ../../org.eclipse.gemoc.trace.commons.model/model/GenericTrace.ecore#//State">
+        <eTypeArguments/>
+        <eTypeArguments/>
+      </eGenericType>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="startingSteps" upperBound="-1"
+        changeable="false" volatile="true" transient="true" derived="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="get" value="final java.util.List&lt;State&lt;?, ?>> states = getStates();&#xA;if (!states.isEmpty()) {&#xA;&#x9;final EList&lt;Step&lt;?>> result = new org.eclipse.emf.common.util.BasicEList&lt;>();&#xA;&#x9;final java.util.List&lt;Step&lt;?>> steps = states.stream().flatMap(state -> {&#xA;&#x9;&#x9;return state.getStartedSteps().stream().map(step -> (Step&lt;?>) step);&#xA;&#x9;}).collect(java.util.stream.Collectors.toList());&#xA;&#x9;result.addAll(steps);&#xA;&#x9;return result;&#xA;} else {&#xA;&#x9;return new org.eclipse.emf.common.util.BasicEList&lt;>();&#xA;}"/>
+      </eAnnotations>
+      <eGenericType eClassifier="ecore:EClass ../../org.eclipse.gemoc.trace.commons.model/model/GenericTrace.ecore#//Step">
+        <eTypeArguments/>
+      </eGenericType>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="endingSteps" upperBound="-1"
+        changeable="false" volatile="true" transient="true" derived="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="get" value="final java.util.List&lt;State&lt;?, ?>> states = getStates();&#xA;if (!states.isEmpty()) {&#xA;&#x9;final EList&lt;Step&lt;?>> result = new org.eclipse.emf.common.util.BasicEList&lt;>();&#xA;&#x9;final java.util.List&lt;Step&lt;?>> steps = states.stream().flatMap(state -> {&#xA;&#x9;&#x9;return state.getEndedSteps().stream().map(step -> (Step&lt;?>) step);&#xA;&#x9;}).collect(java.util.stream.Collectors.toList());&#xA;&#x9;result.addAll(steps);&#xA;&#x9;return result;&#xA;} else {&#xA;&#x9;return new org.eclipse.emf.common.util.BasicEList&lt;>();&#xA;}"/>
+      </eAnnotations>
+      <eGenericType eClassifier="ecore:EClass ../../org.eclipse.gemoc.trace.commons.model/model/GenericTrace.ecore#//Step">
+        <eTypeArguments/>
+      </eGenericType>
+    </eStructuralFeatures>
+  </eClassifiers>
+</ecore:EPackage>

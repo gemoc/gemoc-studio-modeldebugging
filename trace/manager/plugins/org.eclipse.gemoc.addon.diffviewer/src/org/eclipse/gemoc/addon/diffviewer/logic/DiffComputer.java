@@ -181,6 +181,7 @@ public class DiffComputer {
 			result = compareEObjects(trace1.get(i), trace2.get(i));
 			i++;
 		}
+		
 		return result;
 	}
 
@@ -224,6 +225,7 @@ public class DiffComputer {
 		final Map<Integer, List<int[]>> pairs = new HashMap<>();
 		for (int i = 0; i < traces1.size(); i++) {
 			for (int j = 0; j < traces2.size(); j++) {
+				// Computing the distance for each pair of value traces from both traces
 				final int k = computeDistanceBetweenTraces(traces1.get(i), traces2.get(j));
 				List<int[]> l = pairs.get(k);
 				if (l == null) {
@@ -237,6 +239,7 @@ public class DiffComputer {
 		List<Integer> distances = pairs.keySet().stream().sorted().collect(Collectors.toList());
 		Map<int[], Integer> result = new HashMap<>();
 		for (Integer d : distances) {
+			// Matching value traces from both traces by ascending distance
 			List<int[]> l = pairs.get(d);
 			while (l != null && !l.isEmpty()) {
 				int[] p = l.remove(0);
@@ -244,7 +247,7 @@ public class DiffComputer {
 				pairs.values().forEach(toClean -> toClean.removeIf(t -> t[0] == p[0] || t[1] == p[1]));
 			}
 		}
-
+		
 		return result;
 	}
 
@@ -284,6 +287,7 @@ public class DiffComputer {
 		final Map<EClass, List<List<Value<?>>>> traceGroups2 = new HashMap<>();
 		diffs.clear();
 
+		// Sorting value traces by value class 
 		for (List<Value<?>> trace : traces1) {
 			EClass eClass = getTraceEClass(trace);
 			if (eClass != null) {
@@ -313,6 +317,7 @@ public class DiffComputer {
 		inGroup.clear();
 		delGroup.clear();
 
+		// Computing the union set of the value classes from both traces and sorting classes by name
 		final Set<EClass> classes = new HashSet<>(traceGroups1.keySet());
 		classes.addAll(traceGroups2.keySet());
 		final List<EClass> classesSorted = classes.stream().sorted((e1, e2) -> e2.getName().compareTo(e1.getName()))
@@ -322,11 +327,13 @@ public class DiffComputer {
 
 		for (EClass eClass : classesSorted) {
 			if (traceGroups1.containsKey(eClass) && traceGroups2.containsKey(eClass)) {
+				// Retrieving all value traces of the same value class from both traces
 				List<List<Value<?>>> traceGroup1 = traceGroups1.get(eClass);
 				List<List<Value<?>>> traceGroup2 = traceGroups2.get(eClass);
 				int i = 0;
 				int j = 0;
 				while (i < traceGroup1.size() && j < traceGroup2.size()) {
+					// Matching individual value traces from both traces
 					List<Value<?>> trace1 = traceGroup1.get(i);
 					List<Value<?>> trace2 = traceGroup2.get(j);
 					if (compareTraces(trace1, trace2)) {
@@ -344,7 +351,9 @@ public class DiffComputer {
 					}
 				}
 				if (!traceGroup1.isEmpty() && !traceGroup2.isEmpty()) {
-					for (Map.Entry<int[], Integer> pair : matchTraces(traceGroup1, traceGroup2).entrySet()) {
+					final Map<int[], Integer> matchedTraces = matchTraces(traceGroup1, traceGroup2);
+					// Unmatched traces added
+					for (Map.Entry<int[], Integer> pair : matchedTraces.entrySet()) {
 						final List<Value<?>> t1 = traceGroup1.get(pair.getKey()[0]);
 						final List<Value<?>> t2 = traceGroup2.get(pair.getKey()[1]);
 						substGroupAccumulator.put(new Pair<>(t1, t2), pair.getValue());
@@ -353,16 +362,23 @@ public class DiffComputer {
 			}
 		}
 
+		// Equivalent value traces are removed from the inserted and deleted value trace groups
 		delGroup.addAll(traces1);
 		inGroup.addAll(traces2);
 
 		eqGroup.forEach(p -> {
-			inGroup.remove(p.getKey());
-			inGroup.remove(p.getValue());
+			/*
+			 * TODO (minor) remove one of each (inGroup should not contain traces from traces1,
+			 * delGroup should not contain traces from traces2)
+			 */
+//			inGroup.remove(p.getKey());
 			delGroup.remove(p.getKey());
-			delGroup.remove(p.getValue());
+			inGroup.remove(p.getValue());
+//			delGroup.remove(p.getValue());
 		});
 
+
+		// Substituted value traces are added to the substituted value trace group in ascending distance order
 		for (Map.Entry<Pair<List<Value<?>>, List<Value<?>>>, Integer> e : substGroupAccumulator.entrySet().stream()
 				.sorted((e1, e2) -> {
 					return e1.getValue() - e2.getValue();
@@ -370,11 +386,16 @@ public class DiffComputer {
 			substGroup.add(e.getKey());
 		}
 
+		// Substituted value traces are removed from the inserted and deleted value trace groups
 		substGroup.forEach(p -> {
-			inGroup.remove(p.getKey());
-			inGroup.remove(p.getValue());
+			/*
+			 * TODO (minor) remove one of each (inGroup should not contain traces from traces1,
+			 * delGroup should not contain traces from traces2)
+			 */
+//			inGroup.remove(p.getKey());
 			delGroup.remove(p.getKey());
-			delGroup.remove(p.getValue());
+			inGroup.remove(p.getValue());
+//			delGroup.remove(p.getValue());
 		});
 
 		List<List<Value<?>>> stateTrace1 = new ArrayList<>();
@@ -383,12 +404,15 @@ public class DiffComputer {
 		if (!substGroup.isEmpty()) {
 			List<List<Value<?>>> valuesTrace1 = new ArrayList<>();
 			List<List<Value<?>>> valuesTrace2 = new ArrayList<>();
-
+			
+			// The actual diff between states is only computed on the set of substituted value traces:
+			// no information can be derived from equivalent traces (and the same goes for inserted/deleted traces?)
 			substGroup.forEach(p -> {
 				valuesTrace1.add(p.getKey());
 				valuesTrace2.add(p.getValue());
 			});
 
+			// Creating the two state traces which are lists of vectors of values
 			for (int i = 0; i < valuesTrace1.get(0).size(); i++) {
 				final List<Value<?>> stateValues = new ArrayList<>();
 				for (List<Value<?>> l : valuesTrace1) {
@@ -396,7 +420,6 @@ public class DiffComputer {
 				}
 				stateTrace1.add(stateValues);
 			}
-
 			for (int i = 0; i < valuesTrace2.get(0).size(); i++) {
 				final List<Value<?>> stateValues = new ArrayList<>();
 				for (List<Value<?>> l : valuesTrace2) {
@@ -405,10 +428,17 @@ public class DiffComputer {
 				stateTrace2.add(stateValues);
 			}
 
+			/*
+			 * Combining all the states in a single collection to build equivalence classes
+			 * between states from both traces
+			 */
 			final List<List<Value<?>>> allStates = new ArrayList<>(stateTrace1);
 			allStates.addAll(stateTrace2);
-
 			List<List<List<Value<?>>>> equivalenceClasses = computeEquivalenceClasses(allStates);
+			
+			/*
+			 * 
+			 */
 			diffs.addAll(computeDiff(stateTrace1, stateTrace2, equivalenceClasses));
 		} else {
 			eqGroup.stream().findAny().ifPresent(p -> {
@@ -509,8 +539,8 @@ public class DiffComputer {
 
 		for (int i = 1; i < m.length; i++) {
 			for (int j = 1; j < m[1].length; j++) {
-				final int deletion = m[i - 1][j] + 1;
-				final int insertion = m[i][j - 1] + 1;
+				final int deletion = m[i - 1][j] + 1;//TODO
+				final int insertion = m[i][j - 1] + 1;//TODO
 				final int substitution = m[i - 1][j - 1] + cost[i - 1][j - 1];
 				m[i][j] = Math.min(Math.min(insertion, deletion), substitution);
 			}
@@ -550,5 +580,25 @@ public class DiffComputer {
 		Collections.reverse(diffs);
 
 		return diffs;
+	}
+	
+	private void printMatrix(int[][] m) {
+		int d = (m[m.length - 1][m[0].length - 1] + "").length();
+		for (int i = 0; i < m.length; i++) {
+			String s = "";
+			for (int j = 0; j < m[0].length; j++) {
+				s += formatNumber(m[i][j]);
+			}
+			System.out.println(s);
+		}
+	}
+	
+	private String formatNumber(int i) {
+		int l = (i + "").length();
+		String s = "";
+		for (int j = l; j < 4; j++) {
+			s += " ";
+		}
+		return s + i;
 	}
 }

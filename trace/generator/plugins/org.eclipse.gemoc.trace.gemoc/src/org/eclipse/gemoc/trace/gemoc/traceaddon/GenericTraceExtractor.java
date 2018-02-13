@@ -116,6 +116,7 @@ public class GenericTraceExtractor
 	@Override
 	public void ignoreDimension(Dimension<?> dimension, boolean ignore) {
 		ignoredDimensions.put(dimension, ignore);
+		cachedMaskedStateEquivalenceClasses.clear();
 	}
 
 	@Override
@@ -560,7 +561,7 @@ public class GenericTraceExtractor
 
 	@Override
 	public void statesAdded(List<State<?, ?>> states) {
-		//updateEquivalenceClasses(states);
+		updateEquivalenceClasses(states);
 		notifyListeners();
 	}
 

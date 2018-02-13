@@ -14,23 +14,30 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.eclipse.gemoc.addon.diffviewer.logic.Diff;
 import org.eclipse.gemoc.addon.diffviewer.logic.Diff.DiffKind;
 import org.eclipse.gemoc.addon.diffviewer.logic.DiffComputer;
-
 import org.eclipse.gemoc.trace.commons.model.trace.Dimension;
 import org.eclipse.gemoc.trace.commons.model.trace.State;
 import org.eclipse.gemoc.trace.commons.model.trace.Step;
+import org.eclipse.gemoc.trace.commons.model.trace.Trace;
 import org.eclipse.gemoc.trace.commons.model.trace.TracedObject;
 import org.eclipse.gemoc.trace.commons.model.trace.Value;
 import org.eclipse.gemoc.trace.gemoc.api.ITraceExtractor;
+import org.eclipse.gemoc.trace.virtual.VirtualTraceManager;
+import org.eclipse.gemoc.trace.virtual.virtualtrace.StateGroup;
+import org.eclipse.gemoc.trace.virtual.virtualtrace.VirtualTrace;
+
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.OverrunStyle;
 import javafx.scene.control.ScrollBar;
@@ -95,16 +102,12 @@ public class TimelineDiffViewerRenderer extends Pane {
 
 	final Map<HBox, List<List<DiffKind>>> lineToSegments = new HashMap<>();
 	final Map<HBox, List<String>> segmentToDescription = new HashMap<>();
-	final Map<List<Value<?>>, String> dimensionDescriptions = new HashMap<>();
 
 	private ITraceExtractor<Step<?>, State<?, ?>, TracedObject<?>, Dimension<?>, Value<?>> extractor1 = null;
 	private ITraceExtractor<Step<?>, State<?, ?>, TracedObject<?>, Dimension<?>, Value<?>> extractor2 = null;
-
-	private final List<List<Value<?>>> values1 = new ArrayList<>();
-	private final List<List<Value<?>>> values2 = new ArrayList<>();
-
-	private final List<State<?,?>> states1 = new ArrayList<>();
-	private final List<State<?,?>> states2 = new ArrayList<>();
+	
+	private final List<List<Value<?>>> selectedValues1 = new ArrayList<>();
+	private final List<List<Value<?>>> selectedValues2 = new ArrayList<>();
 
 	private DiffComputer diffComputer;
 
@@ -197,12 +200,12 @@ public class TimelineDiffViewerRenderer extends Pane {
 		}
 	}
 
-	private void addState(State<?,?> state, HBox line, Color color, int stateIndex, String stateDescription) {
+	private void addStateGroup(StateGroup stateGroup, HBox line, Color color, int index, String stateDescription) {
 		final Rectangle rectangle = new Rectangle(WIDTH, WIDTH, color);
 		rectangle.setArcHeight(WIDTH);
 		rectangle.setArcWidth(WIDTH);
-		rectangle.setUserData(state);
-		Label text = new Label(computeStateLabel(stateIndex));
+		rectangle.setUserData(stateGroup);
+		Label text = new Label(computeStateLabel(index));
 		text.setTextOverrun(OverrunStyle.ELLIPSIS);
 		text.setAlignment(Pos.CENTER);
 		text.setMouseTransparent(true);
@@ -244,7 +247,6 @@ public class TimelineDiffViewerRenderer extends Pane {
 					segments.add(segment);
 				}
 			}
-
 		}
 		if (addDescription) {
 			List<String> descriptions = segmentToDescription.get(line);
@@ -256,7 +258,7 @@ public class TimelineDiffViewerRenderer extends Pane {
 		}
 		segment.add(diffKind);
 	}
-	
+
 	private void addValue(Value<?> value, HBox line, String description, boolean newValue) {
 		addValue(value, line, description, newValue, DiffKind.EQ);
 	}
@@ -287,65 +289,75 @@ public class TimelineDiffViewerRenderer extends Pane {
 		lineToSegments.get(line).add(null);
 	}
 
-	private List<Value<?>> normalizeValueTrace(List<Value<?>> trace, int start, int end, ITraceExtractor<Step<?>, State<?, ?>, TracedObject<?>, Dimension<?>, Value<?>> extractor) {
+	private VirtualTraceManager traceManager1;
+	private VirtualTraceManager traceManager2;
+
+	private final List<StateGroup> stateGroups1 = new ArrayList<>();
+	private final List<StateGroup> stateGroups2 = new ArrayList<>();
+	
+	public void loadTraces(
+			final Trace<Step<?>, TracedObject<?>, State<?, ?>> trace1,
+			final Trace<Step<?>, TracedObject<?>, State<?, ?>> trace2,
+			final ITraceExtractor<Step<?>, State<?, ?>, TracedObject<?>, Dimension<?>, Value<?>> extractor1,
+			final ITraceExtractor<Step<?>, State<?, ?>, TracedObject<?>, Dimension<?>, Value<?>> extractor2) {
+		this.traceManager1 = new VirtualTraceManager(trace1, extractor1);
+		this.traceManager2 = new VirtualTraceManager(trace2, extractor2);
+		this.extractor1 = extractor1;
+		this.extractor2 = extractor2;
+		diffComputer = new DiffComputer();
+		refreshValues(this.traceManager1);
+		refreshValues(this.traceManager2);
+		computeDiff();
+		refresh();
+	}
+	
+	private void refreshValues(VirtualTraceManager traceManager) {
+		final List<StateGroup> stateGroups;
+		final List<List<Value<?>>> selectedValues;
+		if (traceManager == traceManager1) {
+			selectedValues1.clear();
+			stateGroups1.clear();
+			stateGroups = stateGroups1;
+			selectedValues = selectedValues1;
+		} else {
+			selectedValues2.clear();
+			stateGroups2.clear();
+			stateGroups = stateGroups2;
+			selectedValues = selectedValues2;
+		}
+		final VirtualTrace trace = traceManager.getVirtualTrace();
+		stateGroups.addAll(trace.getStateGroups());
+		for (Dimension<?> dimension : trace.getSelectedDimensions()) {
+			final List<Value<?>> values = traceManager.getValuesForDimension(dimension);
+			final List<Value<?>> normalizedValues = normalizeValueTrace(values, traceManager);
+			while (normalizedValues.size() < trace.getStateGroups().size()) {
+				normalizedValues.add(null);
+			}
+			selectedValues.add(normalizedValues);
+		}
+	}
+	
+	private List<Value<?>> normalizeValueTrace(List<Value<?>> valueTrace, VirtualTraceManager traceManager) {
 		final List<Value<?>> result = new ArrayList<>();
-		for (Value<?> w : trace) {
-			final int firstStateIndex = extractor.getValueFirstStateIndex(w);
-			final int lastStateIndex = extractor.getValueLastStateIndex(w);
-			while (result.size() < firstStateIndex - start) {
+		final VirtualTrace trace = traceManager.getVirtualTrace();
+		final List<StateGroup> stateGroups = trace.getStateGroups();
+		for (Value<?> v : valueTrace) {
+			final State<?, ?> firstState = v.getStates().get(0);
+			final StateGroup firstStateGroup = traceManager.getStateGroupForState(firstState);
+			final int firstIndex = stateGroups.indexOf(firstStateGroup);
+			while (result.size() < firstIndex) {
 				result.add(null);
 			}
-			for (int i = Math.max(firstStateIndex, start); i <= Math.min(lastStateIndex, end); i++) {
-				result.add(w);
-			}
+			result.add(v);
 		}
 		return result;
 	}
-
-	public void loadTraces(final ITraceExtractor<Step<?>, State<?, ?>, TracedObject<?>, Dimension<?>, Value<?>> extractor1,
-			final ITraceExtractor<Step<?>, State<?, ?>, TracedObject<?>, Dimension<?>, Value<?>> extractor2) {
-		loadTraces(extractor1, extractor2, 0, 0, extractor1.getStatesTraceLength() - 1, extractor2.getStatesTraceLength() - 1);
-	}
 	
-	public void loadTraces(final ITraceExtractor<Step<?>, State<?, ?>, TracedObject<?>, Dimension<?>, Value<?>> extractor1,
-			final ITraceExtractor<Step<?>, State<?, ?>, TracedObject<?>, Dimension<?>, Value<?>> extractor2, int s1, int s2, int e1, int e2) {
-		this.extractor1 = extractor1;
-		this.extractor2 = extractor2;
-		values1.clear();
-		values2.clear();
-		states1.clear();
-		states2.clear();
-		dimensionDescriptions.clear();
-
-		states1.addAll(extractor1.getStates(s1, e1));
-		for (Dimension<?> dimension : this.extractor1.getDimensions()) {
-			final List<Value<?>> values = extractor1.getValuesForStates(dimension, s1, e1);
-			final List<Value<?>> normalizedValues = normalizeValueTrace(values, s1, e1, extractor1);
-			while (normalizedValues.size() < e1 - s1 + 1) {
-				normalizedValues.add(null);
-			}
-			values1.add(normalizedValues);
-			dimensionDescriptions.put(normalizedValues, extractor1.getDimensionLabel(dimension));
-		}
-
-		states2.addAll(extractor2.getStates(s2, e2));
-		for (Dimension<?> dimension : this.extractor2.getDimensions()) {
-			final List<Value<?>> values = extractor2.getValuesForStates(dimension, s2, e2);
-			final List<Value<?>> normalizedValues = normalizeValueTrace(values, s2, e2, extractor2);
-			while (normalizedValues.size() < e2 - s2 + 1) {
-				normalizedValues.add(null);
-			}
-			values2.add(normalizedValues);
-			dimensionDescriptions.put(normalizedValues, extractor1.getDimensionLabel(dimension));
-		}
-
-		diffComputer = new DiffComputer();
-		diffComputer.loadTraces(values1, values2);
+	private void computeDiff() {
+		diffComputer.loadTraces(selectedValues1, selectedValues2);
 		nbStates.set(diffComputer.getDiffs().size());
 		currentState = 0;
 		scrollBar.setValue(0);
-		
-		refresh();
 	}
 
 	private boolean isNewValue(int idx, List<Value<?>> list) {
@@ -362,6 +374,37 @@ public class TimelineDiffViewerRenderer extends Pane {
 		} else {
 			addBlankValue(line);
 		}
+	}
+	
+	private HBox setupLabelForValueTrace(final List<Value<?>> valueTrace, final VirtualTraceManager traceManager) {
+		final HBox labelBox = new HBox();
+		final CheckBox checkBox = new CheckBox();
+		final Label label = new Label("some dimension");
+		final Dimension<?> dimension = valueTrace.stream().filter(v -> v != null).findFirst().map(v -> {
+			return (Dimension<?>) v.eContainer();
+		}).orElse(null);
+		label.setFont(VALUE_FONT);
+		labelBox.getChildren().addAll(checkBox, label);
+		checkBox.setSelected(true);
+		BooleanProperty selectedProperty = checkBox.selectedProperty();
+		selectedProperty.addListener((v, o, n) -> {
+			if (o != n) {
+				if (diffComputer != null) {
+					if (n) {
+						// If the value trace is reselected, add it to the corresponding list of traces
+						traceManager.selectDimension(dimension);
+					} else {
+						// Otherwise, remove it from the corresponding list of traces
+						traceManager.ignoreDimension(dimension);
+					}
+					// Then recompute the diff
+					refreshValues(traceManager);
+					computeDiff();
+					refresh();
+				}
+			}
+		});
+		return labelBox;
 	}
 
 	public void refresh() {
@@ -408,13 +451,11 @@ public class TimelineDiffViewerRenderer extends Pane {
 				traceToLine.put(e.getValue(), trace2Box);
 				lineToSegments.put(trace1Box, new ArrayList<>());
 				lineToSegments.put(trace2Box, new ArrayList<>());
-				Label l1 = new Label(dimensionDescriptions.get(e.getKey()));
-				Label l2 = new Label(dimensionDescriptions.get(e.getValue()));
-				VBox.setMargin(l1, HALF_MARGIN_INSETS);
-				VBox.setMargin(l2, HALF_MARGIN_INSETS);
-				l1.setFont(VALUE_FONT);
-				l2.setFont(VALUE_FONT);
-				pairBox.getChildren().addAll(l1, trace1Box, l2, trace2Box);
+				final HBox labelBox1 = setupLabelForValueTrace(e.getKey(), traceManager1);
+				final HBox labelBox2 = setupLabelForValueTrace(e.getValue(), traceManager2);
+				VBox.setMargin(labelBox1, HALF_MARGIN_INSETS);
+				VBox.setMargin(labelBox2, HALF_MARGIN_INSETS);
+				pairBox.getChildren().addAll(labelBox1, trace1Box, labelBox2, trace2Box);
 				eqLines.getChildren().add(pairBox);
 				pairBox.setBackground(c % 2 == 0 ? LINE_BACKGROUND : WHITE_BACKGROUND);
 				trace1Box.setBackground(TRANSPARENT_BACKGROUND);
@@ -430,13 +471,11 @@ public class TimelineDiffViewerRenderer extends Pane {
 				traceToLine.put(e.getValue(), trace2Box);
 				lineToSegments.put(trace1Box, new ArrayList<>());
 				lineToSegments.put(trace2Box, new ArrayList<>());
-				Label l1 = new Label(dimensionDescriptions.get(e.getKey()));
-				Label l2 = new Label(dimensionDescriptions.get(e.getValue()));
-				VBox.setMargin(l1, HALF_MARGIN_INSETS);
-				VBox.setMargin(l2, HALF_MARGIN_INSETS);
-				l1.setFont(VALUE_FONT);
-				l2.setFont(VALUE_FONT);
-				pairBox.getChildren().addAll(l1, trace1Box, l2, trace2Box);
+				final HBox labelBox1 = setupLabelForValueTrace(e.getKey(), traceManager1);
+				final HBox labelBox2 = setupLabelForValueTrace(e.getValue(), traceManager2);
+				VBox.setMargin(labelBox1, HALF_MARGIN_INSETS);
+				VBox.setMargin(labelBox2, HALF_MARGIN_INSETS);
+				pairBox.getChildren().addAll(labelBox1, trace1Box, labelBox2, trace2Box);
 				substLines.getChildren().add(pairBox);
 				pairBox.setBackground(c % 2 == 0 ? LINE_BACKGROUND : WHITE_BACKGROUND);
 				trace1Box.setBackground(TRANSPARENT_BACKGROUND);
@@ -449,10 +488,9 @@ public class TimelineDiffViewerRenderer extends Pane {
 				final HBox traceBox = new HBox();
 				traceToLine.put(in, traceBox);
 				lineToSegments.put(traceBox, new ArrayList<>());
-				Label l = new Label(dimensionDescriptions.get(in));
-				VBox.setMargin(l, HALF_MARGIN_INSETS);
-				l.setFont(VALUE_FONT);
-				inVBox.getChildren().addAll(l, traceBox);
+				final HBox labelBox = setupLabelForValueTrace(in, traceManager2);
+				VBox.setMargin(labelBox, HALF_MARGIN_INSETS);
+				inVBox.getChildren().addAll(labelBox, traceBox);
 				inLines.getChildren().add(inVBox);
 				traceBox.setBackground(c % 2 == 0 ? LINE_BACKGROUND : WHITE_BACKGROUND);
 				c++;
@@ -463,10 +501,9 @@ public class TimelineDiffViewerRenderer extends Pane {
 				final HBox traceBox = new HBox();
 				traceToLine.put(del, traceBox);
 				lineToSegments.put(traceBox, new ArrayList<>());
-				Label l = new Label(dimensionDescriptions.get(del));
-				VBox.setMargin(l, HALF_MARGIN_INSETS);
-				l.setFont(VALUE_FONT);
-				delVBox.getChildren().addAll(l, traceBox);
+				final HBox labelBox = setupLabelForValueTrace(del, traceManager1);
+				VBox.setMargin(labelBox, HALF_MARGIN_INSETS);
+				delVBox.getChildren().addAll(labelBox, traceBox);
 				delLines.getChildren().add(delVBox);
 				traceBox.setBackground(c % 2 == 0 ? LINE_BACKGROUND : WHITE_BACKGROUND);
 				c++;
@@ -479,10 +516,12 @@ public class TimelineDiffViewerRenderer extends Pane {
 				int j = diff.idx2;
 				switch (diff.kind) {
 				case EQ: {
-					final State<?,?> state1 = states1.get(i);
-					final State<?,?> state2 = states2.get(j);
-					addState(state1, line1, Color.SLATEBLUE, extractor1.getStateIndex(state1), extractor1.getStateDescription(state1));
-					addState(state2, line2, Color.SLATEBLUE, extractor2.getStateIndex(state2), extractor2.getStateDescription(state2));
+					final StateGroup stateGroup1 = stateGroups1.get(i);
+					final StateGroup stateGroup2 = stateGroups2.get(j);
+					addStateGroup(stateGroup1, line1, Color.SLATEBLUE, stateGroups1.indexOf(stateGroup1),
+							extractor1.getStateDescription(stateGroup1.getStates().get(0)));
+					addStateGroup(stateGroup2, line2, Color.SLATEBLUE, stateGroups2.indexOf(stateGroup2),
+							extractor2.getStateDescription(stateGroup2.getStates().get(0)));
 					for (Pair<List<Value<?>>, List<Value<?>>> e : eqGroup) {
 						final List<Value<?>> t1 = e.getKey();
 						final List<Value<?>> t2 = e.getValue();
@@ -514,10 +553,12 @@ public class TimelineDiffViewerRenderer extends Pane {
 					break;
 				}
 				case SUBST: {
-					final State<?,?> state1 = states1.get(i);
-					final State<?,?> state2 = states2.get(j);
-					addState(state1, line1, Color.TOMATO, extractor1.getStateIndex(state1), extractor1.getStateDescription(state1));
-					addState(state2, line2, Color.TOMATO, extractor2.getStateIndex(state2), extractor2.getStateDescription(state2));
+					final StateGroup stateGroup1 = stateGroups1.get(i);
+					final StateGroup stateGroup2 = stateGroups2.get(j);
+					addStateGroup(stateGroup1, line1, Color.TOMATO, stateGroups1.indexOf(stateGroup1),
+							extractor1.getStateDescription(stateGroup1.getStates().get(0)));
+					addStateGroup(stateGroup2, line2, Color.TOMATO, stateGroups2.indexOf(stateGroup2),
+							extractor2.getStateDescription(stateGroup2.getStates().get(0)));
 					for (Pair<List<Value<?>>, List<Value<?>>> e : eqGroup) {
 						final List<Value<?>> t1 = e.getKey();
 						final List<Value<?>> t2 = e.getValue();
@@ -550,8 +591,9 @@ public class TimelineDiffViewerRenderer extends Pane {
 					break;
 				}
 				case DEL: {
-					final State<?,?> state1 = states1.get(i);
-					addState(state1, line1, Color.BROWN, extractor1.getStateIndex(state1), extractor1.getStateDescription(state1));
+					final StateGroup stateGroup1 = stateGroups1.get(i);
+					addStateGroup(stateGroup1, line1, Color.BROWN, stateGroups1.indexOf(stateGroup1),
+							extractor1.getStateDescription(stateGroup1.getStates().get(0)));
 					addBlankState(line2);
 					for (Pair<List<Value<?>>, List<Value<?>>> e : eqGroup) {
 						final List<Value<?>> t1 = e.getKey();
@@ -580,9 +622,10 @@ public class TimelineDiffViewerRenderer extends Pane {
 					break;
 				}
 				case IN: {
-					final State<?,?> state2 = states2.get(i);
+					final StateGroup stateGroup2 = stateGroups2.get(j);
 					addBlankState(line1);
-					addState(state2, line2, Color.BROWN, extractor2.getStateIndex(state2), extractor2.getStateDescription(state2));
+					addStateGroup(stateGroup2, line2, Color.BROWN, stateGroups2.indexOf(stateGroup2),
+							extractor2.getStateDescription(stateGroup2.getStates().get(0)));
 					for (Pair<List<Value<?>>, List<Value<?>>> e : eqGroup) {
 						final List<Value<?>> t1 = e.getKey();
 						final List<Value<?>> t2 = e.getValue();

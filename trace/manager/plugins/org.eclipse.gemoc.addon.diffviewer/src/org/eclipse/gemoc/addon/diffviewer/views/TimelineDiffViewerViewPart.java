@@ -29,6 +29,7 @@ import org.eclipse.gemoc.executionframework.ui.views.engine.actions.AbstractEngi
 import org.eclipse.gemoc.trace.commons.model.trace.Dimension;
 import org.eclipse.gemoc.trace.commons.model.trace.State;
 import org.eclipse.gemoc.trace.commons.model.trace.Step;
+import org.eclipse.gemoc.trace.commons.model.trace.Trace;
 import org.eclipse.gemoc.trace.commons.model.trace.TracedObject;
 import org.eclipse.gemoc.trace.commons.model.trace.Value;
 import org.eclipse.gemoc.trace.gemoc.api.ITraceExtractor;
@@ -37,7 +38,6 @@ import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
@@ -58,6 +58,8 @@ public class TimelineDiffViewerViewPart extends ViewPart {
 
 	private ITraceExtractor<Step<?>, State<?,?>, TracedObject<?>, Dimension<?>, Value<?>> extractor1;
 	private ITraceExtractor<Step<?>, State<?,?>, TracedObject<?>, Dimension<?>, Value<?>> extractor2;
+	private Trace<Step<?>, TracedObject<?>, State<?,?>> trace1;
+	private Trace<Step<?>, TracedObject<?>, State<?,?>> trace2;
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -147,43 +149,13 @@ public class TimelineDiffViewerViewPart extends ViewPart {
 						if (newTraceAddon != null) {
 							newTraceAddon.load(traceResource1);
 							extractor1 = newTraceAddon.getTraceExtractor();
+							trace1 = newTraceAddon.getTrace();
 							newTraceAddon.load(traceResource2);
 							extractor2 = newTraceAddon.getTraceExtractor();
-							diffViewer.loadTraces(extractor1, extractor2);
+							trace2 = newTraceAddon.getTrace();
+							diffViewer.loadTraces(trace1, trace2, extractor1, extractor2);
 						}
 					}
-				}
-			}
-
-			@Override
-			public void updateButton() {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-
-		addActionToToolbar(new AbstractEngineAction(Action.AS_PUSH_BUTTON) {
-			@Override
-			protected void init() {
-				super.init();
-				setText("Select Trace Sections");
-				setToolTipText("Select Trace Sections");
-				ImageDescriptor id = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/scoped_ovr.gif");
-				setImageDescriptor(id);
-				setEnabled(true);
-			}
-
-			@Override
-			public void engineSelectionChanged(IExecutionEngine engine) {
-			}
-
-			@Override
-			public void run() {
-				TraceSectionsDialog dialog = new TraceSectionsDialog(shell, extractor1, extractor2);
-				dialog.open();
-				if (dialog.getReturnCode() == Window.OK) {
-					diffViewer.loadTraces(extractor1, extractor2, dialog.getS1(), dialog.getS2(), dialog.getE1(),
-							dialog.getE2());
 				}
 			}
 
