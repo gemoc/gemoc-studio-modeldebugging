@@ -59,6 +59,7 @@ public class PlainK3ExecutionEngine extends AbstractCommandBasedSequentialExecut
 				final Event startEvent = getExecutionContext().getRunConfiguration().getStartEvent();
 				final boolean waitForEvents = getExecutionContext().getRunConfiguration().getWaitForEvents();
 				if (startEvent != null) {
+					convertEventToExecutedResource(startEvent, getExecutionContext().getResourceModel());
 					eventManager.queueEvent(startEvent);
 				}
 				if (waitForEvents) {
@@ -82,6 +83,16 @@ public class PlainK3ExecutionEngine extends AbstractCommandBasedSequentialExecut
 		} finally {
 			StepManagerRegistry.getInstance().unregisterManager(PlainK3ExecutionEngine.this);
 		}
+	}
+	
+	private void convertEventToExecutedResource(Event event, Resource executedResource) {
+		event.eClass().getEAllReferences().forEach(r -> {
+			final EObject parameter = (EObject) event.eGet(r);
+			final Resource parameterResource = parameter.eResource();
+			final String uriFragment = parameterResource.getURIFragment(parameter);
+			final EObject effectiveParameter = executedResource.getEObject(uriFragment);
+			event.eSet(r, effectiveParameter);
+		});
 	}
 
 	@Override
