@@ -45,6 +45,8 @@ public class PlainK3ExecutionEngine extends AbstractCommandBasedSequentialExecut
 
 	private static final String LAUNCH_CONFIGURATION_TYPE = "org.eclipse.gemoc.execution.sequential.javaengine.ui.launcher";
 
+	private EventManager eventManager = null;
+	
 	@Override
 	public String engineKindName() {
 		return "GEMOC Event Driven Execution Engine";
@@ -54,7 +56,7 @@ public class PlainK3ExecutionEngine extends AbstractCommandBasedSequentialExecut
 	protected void executeEntryPoint() {
 		StepManagerRegistry.getInstance().registerManager(PlainK3ExecutionEngine.this);
 		try {
-			final EventManager eventManager = getAddonsTypedBy(EventManager.class).stream().findFirst().orElse(null);
+			eventManager = getAddonsTypedBy(EventManager.class).stream().findFirst().orElse(null);
 			if (eventManager != null) {
 				final Event startEvent = getExecutionContext().getRunConfiguration().getStartEvent();
 				final boolean waitForEvents = getExecutionContext().getRunConfiguration().getWaitForEvents();
@@ -85,6 +87,12 @@ public class PlainK3ExecutionEngine extends AbstractCommandBasedSequentialExecut
 		}
 	}
 	
+	private void processEvents() {
+		if (eventManager != null) {
+			eventManager.processEvents();
+		}
+	}
+	
 	private void convertEventToExecutedResource(Event event, Resource executedResource) {
 		event.eClass().getEAllReferences().forEach(r -> {
 			final EObject parameter = (EObject) event.eGet(r);
@@ -106,12 +114,14 @@ public class PlainK3ExecutionEngine extends AbstractCommandBasedSequentialExecut
 	 * java.lang.String)
 	 */
 	public void executeStep(Object caller, Object[] parameters, final StepCommand command, String className, String methodName) {
+		processEvents();
 		executeOperation(caller, parameters, className, methodName, new Runnable() {
 			@Override
 			public void run() {
 				command.execute();
 			}
 		});
+		processEvents();
 	}
 
 	@Override

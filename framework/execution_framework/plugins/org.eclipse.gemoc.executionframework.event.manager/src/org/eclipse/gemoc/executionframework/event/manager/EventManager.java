@@ -93,7 +93,7 @@ public class EventManager implements IEventManager {
 				}
 				while (event != null) {
 					final boolean interruptible = api.isInterruptible(event.eClass());
-					if (interruptible) {
+					if (!interruptible) {
 						canManageEvents = false;
 						api.dispatchEvent(event);
 						canManageEvents = true;
