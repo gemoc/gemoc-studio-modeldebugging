@@ -12,8 +12,12 @@ Export-Package: org.eclipse.gemoc.executionframework.event.model.event,
  org.eclipse.gemoc.executionframework.event.model.event.util,
  org.eclipse.gemoc.executionframework.event.model.genericevent,
  org.eclipse.gemoc.executionframework.event.model.genericevent.impl,
- org.eclipse.gemoc.executionframework.event.model.genericevent.util
+ org.eclipse.gemoc.executionframework.event.model.genericevent.util,
+ org.eclipse.gemoc.executionframework.event.testsuite,
+ org.eclipse.gemoc.executionframework.event.testsuite.impl,
+ org.eclipse.gemoc.executionframework.event.testsuite.util
 Require-Bundle: org.eclipse.gemoc.executionframework.event.model;visibility:=reexport,
+ org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
  org.eclipse.gemoc.commons.value.model;visibility:=reexport
 Bundle-ActivationPolicy: lazy
