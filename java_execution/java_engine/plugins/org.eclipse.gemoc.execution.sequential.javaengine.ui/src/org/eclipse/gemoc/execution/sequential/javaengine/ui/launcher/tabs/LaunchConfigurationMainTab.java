@@ -415,7 +415,7 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 	public Composite createLanguageLayout(Composite parent, Font font) {
 		// Language
 		createTextLabelLayout(parent, "Languages");
-		_languageCombo = new Combo(parent, SWT.READ_ONLY);
+		_languageCombo = new Combo(parent, SWT.NONE);
 		_languageCombo.setLayoutData(createStandardLayout());
 
 		List<String> languagesNames = DslHelper.getAllLanguages();
@@ -782,7 +782,7 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 		}
 		return result;
 	}
-
+	
 	/**
 	 * caches the current model resource in order to avoid to reload it many times
 	 * use {@link getModel()} in order to access it.

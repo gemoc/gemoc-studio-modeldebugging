@@ -135,8 +135,10 @@ public class MelangeHelper {
 	 */
 	public static Set<Class<?>> getAspects(String languageName) {
 		Set<Class<?>> res = new HashSet<Class<?>>();
+		
 		Dsl dsl = DslHelper.load(languageName);
 		if(dsl != null) {
+			
 			Optional<Entry> semantics = dsl.getEntries()
 				.stream()
 				.filter(entry -> entry.getKey().equals("k3"))
@@ -151,6 +153,7 @@ public class MelangeHelper {
 				}
 			}
 		}
+		
 		return res;
 	}
 

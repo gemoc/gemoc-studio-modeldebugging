@@ -67,7 +67,7 @@ class K3OperationalSemanticsViewGenerator implements OperationalSemanticsViewGen
 		val semantics = 
 			language
 			.entries
-			.filter[entry | entry.key == "k3"]			
+			.filter[entry | entry.key == "k3"]
 			.head
 		if(semantics !== null) {
 			val aspectNames = semantics.value.split(",").map[asp | asp.trim]
@@ -82,7 +82,7 @@ class K3OperationalSemanticsViewGenerator implements OperationalSemanticsViewGen
 		val semantics = 
 			language
 			.entries
-			.filter[entry | entry.key == "k3"]			
+			.filter[entry | entry.key == "k3"]
 			.head
 		return semantics !== null && !semantics.value.isEmpty
 	}

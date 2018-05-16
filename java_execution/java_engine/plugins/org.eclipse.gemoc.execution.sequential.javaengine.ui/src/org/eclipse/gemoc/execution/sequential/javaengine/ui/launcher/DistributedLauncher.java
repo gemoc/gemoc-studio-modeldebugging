@@ -353,4 +353,10 @@ public class DistributedLauncher extends AbstractGemocLauncher {
 		return null;
 	}
 
+	@Override
+	public IExecutionEngine getExecutionEngine() {
+		//TODO
+		return null;
+	}
+
 }

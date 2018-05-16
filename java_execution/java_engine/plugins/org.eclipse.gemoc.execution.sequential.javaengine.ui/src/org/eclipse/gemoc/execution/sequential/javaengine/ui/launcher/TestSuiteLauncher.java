@@ -93,7 +93,7 @@ public class TestSuiteLauncher extends AbstractGemocLauncher {
 	private IExecutionEngine createExecutionEngine(RunConfiguration runConfiguration, ExecutionMode executionMode)
 			throws CoreException, EngineContextException {
 		// create and initialize engine
-		IExecutionEngine executionEngine = new PlainK3ExecutionEngine(runConfiguration.getLanguageName());
+		IExecutionEngine executionEngine = new PlainK3ExecutionEngine();
 		ModelExecutionContext executioncontext = new SequentialModelExecutionContext(runConfiguration, executionMode);
 		executioncontext.getExecutionPlatform().getModelLoader().setProgressMonitor(this.launchProgressMonitor);
 		executioncontext.initializeResourceModel();
@@ -345,6 +345,12 @@ public class TestSuiteLauncher extends AbstractGemocLauncher {
 
 	@Override
 	public String getModelIdentifier() {
+		return null;
+	}
+
+	@Override
+	public IExecutionEngine getExecutionEngine() {
+		//TODO
 		return null;
 	}
 

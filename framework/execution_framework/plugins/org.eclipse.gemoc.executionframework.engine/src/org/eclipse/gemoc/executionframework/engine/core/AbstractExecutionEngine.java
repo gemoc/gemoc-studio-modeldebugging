@@ -24,15 +24,13 @@ import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.impl.EMFCommandTransaction;
 import org.eclipse.emf.transaction.impl.InternalTransactionalEditingDomain;
 import org.eclipse.gemoc.executionframework.engine.Activator;
+import org.eclipse.gemoc.trace.commons.model.trace.Step;
 import org.eclipse.gemoc.xdsmlframework.api.core.EngineStatus;
 import org.eclipse.gemoc.xdsmlframework.api.core.EngineStatus.RunStatus;
 import org.eclipse.gemoc.xdsmlframework.api.core.IDisposable;
 import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionContext;
 import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine;
 import org.eclipse.gemoc.xdsmlframework.api.engine_addon.IEngineAddon;
-
-import org.eclipse.gemoc.trace.commons.model.trace.MSEOccurrence;
-import org.eclipse.gemoc.trace.commons.model.trace.Step;
 
 /**
  * Common implementation of {@link IExecutionEngine}. It provides the following
@@ -379,7 +377,7 @@ public abstract class AbstractExecutionEngine implements IExecutionEngine, IDisp
 				Throwable realT = t.getStatus().getException();
 
 				// And we put it inside our own sort of exception, as a cause
-				SequentialExecutionException enclosingException = new SequentialExecutionException(getCurrentMSEOccurrence(), realT);
+				SequentialExecutionException enclosingException = new SequentialExecutionException(getCurrentStep(), realT);
 				enclosingException.initCause(realT);
 				throw enclosingException;
 			}
@@ -388,12 +386,8 @@ public abstract class AbstractExecutionEngine implements IExecutionEngine, IDisp
 	}
 
 	@Override
-	public final Deque<MSEOccurrence> getCurrentStack() {
-		Deque<MSEOccurrence> result = new ArrayDeque<MSEOccurrence>();
-		for (Step<?> ls : currentSteps) {
-			result.add(ls.getMseoccurrence());
-		}
-		return result;
+	public final Deque<Step<?>> getCurrentStack() {
+		return currentSteps;
 	}
 
 	private EMFCommandTransaction createTransaction(InternalTransactionalEditingDomain editingDomain, RecordingCommand command) {
@@ -404,12 +398,12 @@ public abstract class AbstractExecutionEngine implements IExecutionEngine, IDisp
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine#
-	 * getCurrentMSEOccurrence()
+	 * getCurrentStep()
 	 */
 	@Override
-	public final MSEOccurrence getCurrentMSEOccurrence() {
+	public final Step<?> getCurrentStep() {
 		if (currentSteps.size() > 0)
-			return currentSteps.getFirst().getMseoccurrence();
+			return currentSteps.getFirst();
 		else
 			return null;
 	}
@@ -421,7 +415,7 @@ public abstract class AbstractExecutionEngine implements IExecutionEngine, IDisp
 		} catch (InterruptedException e) {
 			cleanCurrentTransactionCommand();
 			command.dispose();
-			SequentialExecutionException enclosingException = new SequentialExecutionException(getCurrentMSEOccurrence(), e);
+			SequentialExecutionException enclosingException = new SequentialExecutionException(getCurrentStep(), e);
 			enclosingException.initCause(e);
 			throw enclosingException;
 		}
