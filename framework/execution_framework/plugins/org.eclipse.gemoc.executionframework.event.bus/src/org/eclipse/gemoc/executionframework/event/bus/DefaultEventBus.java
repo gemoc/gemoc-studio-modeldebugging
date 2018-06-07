@@ -3,14 +3,14 @@ package org.eclipse.gemoc.executionframework.event.bus;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.gemoc.executionframework.event.model.event.Event;
+import org.eclipse.gemoc.executionframework.event.model.event.EventOccurrence;
 
 public class DefaultEventBus implements IEventBus {
 
 	private final Set<IEventBusListener> listeners = new HashSet<>();
 	
 	@Override
-	public void emitEvent(Object emitter, Event event) {
+	public void emitEvent(Object emitter, EventOccurrence event) {
 		listeners.stream().filter(l -> l != emitter).forEach(l -> l.eventReceived(event));
 	}
 

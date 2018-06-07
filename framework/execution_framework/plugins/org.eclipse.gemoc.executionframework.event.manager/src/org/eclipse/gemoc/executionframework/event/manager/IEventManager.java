@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.gemoc.executionframework.event.model.event.Event;
+import org.eclipse.gemoc.executionframework.event.model.event.EventOccurrence;
 import org.eclipse.gemoc.xdsmlframework.api.engine_addon.IEngineAddon;
 
 public interface IEventManager extends IEngineAddon {
 
-	void queueEvent(Event event);
+	void queueEvent(EventOccurrence event);
 
 	void processEvents();
 
@@ -19,11 +19,9 @@ public interface IEventManager extends IEngineAddon {
 
 	void removeListener(IEventManagerListener listener);
 
-	boolean canSendEvent(Event event);
+	boolean canSendEvent(EventOccurrence event);
 
 	Set<EClass> getEventClasses();
 
-	List<Event> getInputEventQueue();
-
-	Set<EClass> getStartEventClasses();
+	List<EventOccurrence> getInputEventQueue();
 }

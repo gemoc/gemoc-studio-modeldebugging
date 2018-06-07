@@ -42,21 +42,22 @@ import org.eclipse.gemoc.commons.eclipse.ui.ViewHelper;
 import org.eclipse.gemoc.dsl.debug.ide.IDSLDebugger;
 import org.eclipse.gemoc.dsl.debug.ide.adapter.IDSLCurrentInstructionListener;
 import org.eclipse.gemoc.dsl.debug.ide.event.DSLDebugEventDispatcher;
+import org.eclipse.gemoc.execution.sequential.javaengine.EventBasedExecutionEngine;
+import org.eclipse.gemoc.execution.sequential.javaengine.EventBasedRunConfiguration;
 import org.eclipse.gemoc.execution.sequential.javaengine.PlainK3ExecutionEngine;
 import org.eclipse.gemoc.execution.sequential.javaengine.SequentialModelExecutionContext;
 import org.eclipse.gemoc.execution.sequential.javaengine.ui.Activator;
 import org.eclipse.gemoc.executionframework.engine.commons.EngineContextException;
 import org.eclipse.gemoc.executionframework.engine.commons.ModelExecutionContext;
-import org.eclipse.gemoc.executionframework.engine.ui.commons.RunConfiguration;
 import org.eclipse.gemoc.executionframework.engine.ui.launcher.AbstractGemocLauncher;
 import org.eclipse.gemoc.executionframework.event.bus.DefaultEventBus;
 import org.eclipse.gemoc.executionframework.event.bus.DefaultEventBusListener;
 import org.eclipse.gemoc.executionframework.event.bus.IEventBus;
 import org.eclipse.gemoc.executionframework.event.bus.IEventBusListener;
 import org.eclipse.gemoc.executionframework.event.bus.IEventTranslator;
-import org.eclipse.gemoc.executionframework.event.manager.EventManager;
+import org.eclipse.gemoc.executionframework.event.manager.GenericEventManager;
 import org.eclipse.gemoc.executionframework.event.manager.IEventManager;
-import org.eclipse.gemoc.executionframework.event.model.event.Event;
+import org.eclipse.gemoc.executionframework.event.model.event.EventOccurrence;
 import org.eclipse.gemoc.executionframework.extensions.sirius.services.AbstractGemocDebuggerServices;
 import org.eclipse.gemoc.executionframework.ui.views.engine.EnginesStatusView;
 import org.eclipse.gemoc.xdsmlframework.api.core.EngineStatus.RunStatus;
@@ -86,10 +87,10 @@ public class DistributedLauncher extends AbstractGemocLauncher {
 
 	protected final static String executionStartedMessage = "Execution started successfully.";
 
-	private IExecutionEngine createExecutionEngine(RunConfiguration runConfiguration, ExecutionMode executionMode)
+	private IExecutionEngine createExecutionEngine(IRunConfiguration runConfiguration, ExecutionMode executionMode)
 			throws CoreException, EngineContextException {
 		// create and initialize engine
-		IExecutionEngine executionEngine = new PlainK3ExecutionEngine();
+		IExecutionEngine executionEngine = new EventBasedExecutionEngine();
 		ModelExecutionContext executioncontext = new SequentialModelExecutionContext(runConfiguration, executionMode);
 		executioncontext.getExecutionPlatform().getModelLoader().setProgressMonitor(this.launchProgressMonitor);
 		executioncontext.initializeResourceModel();
@@ -126,22 +127,21 @@ public class DistributedLauncher extends AbstractGemocLauncher {
 			// fetch the names of all sequential launch configurations that will take part
 			// in the execution
 			final Set<String> launchConfigurationNames = configuration
-					.getAttribute(IRunConfiguration.DISTRIBUTED_LAUNCH_CONFIGURATIONS, Collections.emptySet());
+					.getAttribute("DISTRIBUTED_LAUNCH_CONFIGURATIONS", Collections.emptySet());
 			launchConfigurations.removeIf(c -> !launchConfigurationNames.contains(c.getName()));
 
 			// traceability stuff
-			final Map<IExecutionEngine, Event> engineToStartEvent = new HashMap<>();
+			final Map<IExecutionEngine, EventOccurrence> engineToStartEvent = new HashMap<>();
 			final Map<IExecutionEngine, IEventManager> engineToEventManager = new HashMap<>();
 			final Map<String, IExecutionEngine> launchConfigurationNameToExecutionEngine = new HashMap<>();
 
 			// create an execution engine for each sequential launch configuration
 			_executionEngines.addAll(launchConfigurations.stream().map(c -> {
 				try {
-					final RunConfiguration runConf = new RunConfiguration(c);
-					final Event event = runConf.getStartEvent();
-					runConf.clearStartEvent();
+					final IRunConfiguration runConf = new EventBasedRunConfiguration(c);
+					final EventOccurrence event = null; //TODO
 					final IExecutionEngine engine = createExecutionEngine(runConf, ExecutionMode.Run);
-					engineToEventManager.put(engine, engine.getAddon(EventManager.class));
+					engineToEventManager.put(engine, engine.getAddon(GenericEventManager.class));
 					if (event != null) {
 						convertEventToExecutedResource(event, engine.getExecutionContext().getResourceModel());
 						engineToStartEvent.put(engine, event);
@@ -167,7 +167,7 @@ public class DistributedLauncher extends AbstractGemocLauncher {
 					final IConfigurationElement confElt = availableConnectors.stream()
 							.filter(cElt -> cElt.getAttribute("class").equals(connectorFqn)).findFirst().orElse(null);
 					if (confElt != null) {
-						final IEventTranslator<?> eventTranslator = (IEventTranslator<?>) confElt
+						final IEventTranslator eventTranslator = (IEventTranslator) confElt
 								.createExecutableExtension("class");
 						final IEventBusListener listener = new DefaultEventBusListener(engine, eventTranslator);
 						eventBus.addListener(listener);
@@ -227,13 +227,13 @@ public class DistributedLauncher extends AbstractGemocLauncher {
 		}
 	}
 
-	private void convertEventToExecutedResource(Event event, Resource executedResource) {
-		event.eClass().getEAllReferences().forEach(r -> {
-			final EObject parameter = (EObject) event.eGet(r);
+	private void convertEventToExecutedResource(EventOccurrence eventOccurrence, Resource executedResource) {
+		eventOccurrence.eClass().getEAllReferences().forEach(r -> {
+			final EObject parameter = (EObject) eventOccurrence.eGet(r);
 			final Resource parameterResource = parameter.eResource();
 			final String uriFragment = parameterResource.getURIFragment(parameter);
 			final EObject effectiveParameter = executedResource.getEObject(uriFragment);
-			event.eSet(r, effectiveParameter);
+			eventOccurrence.eSet(r, effectiveParameter);
 		});
 	}
 

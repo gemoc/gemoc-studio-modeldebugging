@@ -4,6 +4,7 @@ package org.eclipse.gemoc.executionframework.event.model.event;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EReference;
 
 /**
  * <!-- begin-user-doc -->
@@ -55,43 +56,111 @@ public interface EventPackage extends EPackage {
 	EventPackage eINSTANCE = org.eclipse.gemoc.executionframework.event.model.event.impl.EventPackageImpl.init();
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.gemoc.executionframework.event.model.event.impl.EventImpl <em>Event</em>}' class.
+	 * The meta object id for the '{@link org.eclipse.gemoc.executionframework.event.model.event.impl.EventOccurrenceImpl <em>Occurrence</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see org.eclipse.gemoc.executionframework.event.model.event.impl.EventImpl
-	 * @see org.eclipse.gemoc.executionframework.event.model.event.impl.EventPackageImpl#getEvent()
+	 * @see org.eclipse.gemoc.executionframework.event.model.event.impl.EventOccurrenceImpl
+	 * @see org.eclipse.gemoc.executionframework.event.model.event.impl.EventPackageImpl#getEventOccurrence()
 	 * @generated
 	 */
-	int EVENT = 0;
+	int EVENT_OCCURRENCE = 0;
 
 	/**
-	 * The number of structural features of the '<em>Event</em>' class.
+	 * The feature id for the '<em><b>Event</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int EVENT_FEATURE_COUNT = 0;
+	int EVENT_OCCURRENCE__EVENT = 0;
 
 	/**
-	 * The number of operations of the '<em>Event</em>' class.
+	 * The number of structural features of the '<em>Occurrence</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int EVENT_OPERATION_COUNT = 0;
+	int EVENT_OCCURRENCE_FEATURE_COUNT = 1;
+
+	/**
+	 * The number of operations of the '<em>Occurrence</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_OCCURRENCE_OPERATION_COUNT = 0;
 
 
 	/**
-	 * Returns the meta object for class '{@link org.eclipse.gemoc.executionframework.event.model.event.Event <em>Event</em>}'.
+	 * The meta object id for the '{@link org.eclipse.gemoc.executionframework.event.model.event.impl.StopEventOccurrenceImpl <em>Stop Event Occurrence</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Event</em>'.
-	 * @see org.eclipse.gemoc.executionframework.event.model.event.Event
+	 * @see org.eclipse.gemoc.executionframework.event.model.event.impl.StopEventOccurrenceImpl
+	 * @see org.eclipse.gemoc.executionframework.event.model.event.impl.EventPackageImpl#getStopEventOccurrence()
 	 * @generated
 	 */
-	EClass getEvent();
+	int STOP_EVENT_OCCURRENCE = 1;
+
+	/**
+	 * The feature id for the '<em><b>Event</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STOP_EVENT_OCCURRENCE__EVENT = EVENT_OCCURRENCE__EVENT;
+
+	/**
+	 * The number of structural features of the '<em>Stop Event Occurrence</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STOP_EVENT_OCCURRENCE_FEATURE_COUNT = EVENT_OCCURRENCE_FEATURE_COUNT + 0;
+
+	/**
+	 * The number of operations of the '<em>Stop Event Occurrence</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STOP_EVENT_OCCURRENCE_OPERATION_COUNT = EVENT_OCCURRENCE_OPERATION_COUNT + 0;
+
+
+	/**
+	 * Returns the meta object for class '{@link org.eclipse.gemoc.executionframework.event.model.event.EventOccurrence <em>Occurrence</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Occurrence</em>'.
+	 * @see org.eclipse.gemoc.executionframework.event.model.event.EventOccurrence
+	 * @generated
+	 */
+	EClass getEventOccurrence();
+
+	/**
+	 * Returns the meta object for the reference '{@link org.eclipse.gemoc.executionframework.event.model.event.EventOccurrence#getEvent <em>Event</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Event</em>'.
+	 * @see org.eclipse.gemoc.executionframework.event.model.event.EventOccurrence#getEvent()
+	 * @see #getEventOccurrence()
+	 * @generated
+	 */
+	EReference getEventOccurrence_Event();
+
+	/**
+	 * Returns the meta object for class '{@link org.eclipse.gemoc.executionframework.event.model.event.StopEventOccurrence <em>Stop Event Occurrence</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Stop Event Occurrence</em>'.
+	 * @see org.eclipse.gemoc.executionframework.event.model.event.StopEventOccurrence
+	 * @generated
+	 */
+	EClass getStopEventOccurrence();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -117,14 +186,32 @@ public interface EventPackage extends EPackage {
 	 */
 	interface Literals {
 		/**
-		 * The meta object literal for the '{@link org.eclipse.gemoc.executionframework.event.model.event.impl.EventImpl <em>Event</em>}' class.
+		 * The meta object literal for the '{@link org.eclipse.gemoc.executionframework.event.model.event.impl.EventOccurrenceImpl <em>Occurrence</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see org.eclipse.gemoc.executionframework.event.model.event.impl.EventImpl
-		 * @see org.eclipse.gemoc.executionframework.event.model.event.impl.EventPackageImpl#getEvent()
+		 * @see org.eclipse.gemoc.executionframework.event.model.event.impl.EventOccurrenceImpl
+		 * @see org.eclipse.gemoc.executionframework.event.model.event.impl.EventPackageImpl#getEventOccurrence()
 		 * @generated
 		 */
-		EClass EVENT = eINSTANCE.getEvent();
+		EClass EVENT_OCCURRENCE = eINSTANCE.getEventOccurrence();
+
+		/**
+		 * The meta object literal for the '<em><b>Event</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference EVENT_OCCURRENCE__EVENT = eINSTANCE.getEventOccurrence_Event();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.gemoc.executionframework.event.model.event.impl.StopEventOccurrenceImpl <em>Stop Event Occurrence</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.eclipse.gemoc.executionframework.event.model.event.impl.StopEventOccurrenceImpl
+		 * @see org.eclipse.gemoc.executionframework.event.model.event.impl.EventPackageImpl#getStopEventOccurrence()
+		 * @generated
+		 */
+		EClass STOP_EVENT_OCCURRENCE = eINSTANCE.getStopEventOccurrence();
 
 	}
 

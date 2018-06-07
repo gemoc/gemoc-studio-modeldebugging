@@ -11,7 +11,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.gemoc.executionframework.event.model.event.Event;
+import org.eclipse.gemoc.executionframework.event.model.event.EventOccurrence;
 import org.eclipse.gemoc.trace.commons.model.trace.MSE;
 import org.eclipse.gemoc.trace.commons.model.trace.MSEOccurrence;
 import org.eclipse.gemoc.trace.commons.model.trace.Step;
@@ -20,7 +20,7 @@ import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine;
 
 public class EventManager implements IEventManager {
 
-	private final LinkedTransferQueue<Event> inputEventQueue = new LinkedTransferQueue<>();
+	private final LinkedTransferQueue<EventOccurrence> inputEventQueue = new LinkedTransferQueue<>();
 
 	private boolean canManageEvents = true;
 
@@ -53,12 +53,12 @@ public class EventManager implements IEventManager {
 	}
 
 	@Override
-	public void queueEvent(Event input) {
+	public void queueEvent(EventOccurrence input) {
 		inputEventQueue.add(input);
 	}
 
 	@Override
-	public boolean canSendEvent(Event event) {
+	public boolean canSendEvent(EventOccurrence event) {
 		return api == null ? false : api.canSendEvent(event);
 	}
 
@@ -78,7 +78,7 @@ public class EventManager implements IEventManager {
 	public void processEvents() {
 		if (api != null) {
 			if (canManageEvents) {
-				Event event = null;
+				EventOccurrence event = null;
 				if (waitForEvents) {
 					try {
 						engine.setEngineStatus(RunStatus.WaitingForEvent);
@@ -115,7 +115,7 @@ public class EventManager implements IEventManager {
 	public void stepExecuted(IExecutionEngine engine, Step<?> stepExecuted) {
 		final MSEOccurrence mseOcc = stepExecuted.getMseoccurrence();
 		final MSE mse = mseOcc.getMse();
-		final Event event = api.getOutputEvent(mse.getAction(), mse.getCaller(), mseOcc.getParameters());
+		final EventOccurrence event = api.getOutputEvent(mse.getAction(), mse.getCaller(), mseOcc.getParameters());
 		if (event != null) {
 			listeners.forEach(l -> l.eventReceived(event));
 		}
@@ -127,12 +127,7 @@ public class EventManager implements IEventManager {
 	}
 
 	@Override
-	public Set<EClass> getStartEventClasses() {
-		return api == null ? Collections.emptySet() : api.getStartEventClasses();
-	}
-
-	@Override
-	public List<Event> getInputEventQueue() {
+	public List<EventOccurrence> getInputEventQueue() {
 		return new ArrayList<>(inputEventQueue);
 	}
 }

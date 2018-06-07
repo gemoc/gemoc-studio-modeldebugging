@@ -3,7 +3,7 @@ package org.eclipse.gemoc.executionframework.event.bus;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.gemoc.executionframework.event.manager.EventManager;
 import org.eclipse.gemoc.executionframework.event.manager.IEventManager;
-import org.eclipse.gemoc.executionframework.event.model.event.Event;
+import org.eclipse.gemoc.executionframework.event.model.event.EventOccurrence;
 import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine;
 
 /**
@@ -18,16 +18,16 @@ public class DefaultEventBusListener implements IEventBusListener {
 
 	private final Resource resource;
 	private final IEventManager eventManager;
-	private final IEventTranslator<?> eventTranslator;
+	private final IEventTranslator eventTranslator;
 
-	public DefaultEventBusListener(IExecutionEngine engine, IEventTranslator<?> eventTranslator) {
+	public DefaultEventBusListener(IExecutionEngine engine, IEventTranslator eventTranslator) {
 		this.eventTranslator = eventTranslator;
 		resource = engine.getExecutionContext().getResourceModel();
 		eventManager = engine.getAddon(EventManager.class);
 	}
 
 	@Override
-	public void eventReceived(Event event) {
+	public void eventReceived(EventOccurrence event) {
 		eventTranslator.translateEvent(event, resource).ifPresent(evt -> eventManager.queueEvent(evt));
 	}
 }

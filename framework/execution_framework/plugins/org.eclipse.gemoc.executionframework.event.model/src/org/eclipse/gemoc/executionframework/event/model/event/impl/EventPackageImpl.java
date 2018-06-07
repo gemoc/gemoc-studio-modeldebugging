@@ -4,12 +4,16 @@ package org.eclipse.gemoc.executionframework.event.model.event.impl;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EReference;
 
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 
-import org.eclipse.gemoc.executionframework.event.model.event.Event;
 import org.eclipse.gemoc.executionframework.event.model.event.EventFactory;
+import org.eclipse.gemoc.executionframework.event.model.event.EventOccurrence;
 import org.eclipse.gemoc.executionframework.event.model.event.EventPackage;
+
+import org.eclipse.gemoc.executionframework.event.model.event.StopEventOccurrence;
+import org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.BehavioralInterfacePackage;
 
 /**
  * <!-- begin-user-doc -->
@@ -23,7 +27,14 @@ public class EventPackageImpl extends EPackageImpl implements EventPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass eventEClass = null;
+	private EClass eventOccurrenceEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass stopEventOccurrenceEClass = null;
 
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
@@ -71,6 +82,9 @@ public class EventPackageImpl extends EPackageImpl implements EventPackage {
 
 		isInited = true;
 
+		// Initialize simple dependencies
+		BehavioralInterfacePackage.eINSTANCE.eClass();
+
 		// Create package meta-data objects
 		theEventPackage.createPackageContents();
 
@@ -91,8 +105,26 @@ public class EventPackageImpl extends EPackageImpl implements EventPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getEvent() {
-		return eventEClass;
+	public EClass getEventOccurrence() {
+		return eventOccurrenceEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getEventOccurrence_Event() {
+		return (EReference)eventOccurrenceEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getStopEventOccurrence() {
+		return stopEventOccurrenceEClass;
 	}
 
 	/**
@@ -123,7 +155,10 @@ public class EventPackageImpl extends EPackageImpl implements EventPackage {
 		isCreated = true;
 
 		// Create classes and their features
-		eventEClass = createEClass(EVENT);
+		eventOccurrenceEClass = createEClass(EVENT_OCCURRENCE);
+		createEReference(eventOccurrenceEClass, EVENT_OCCURRENCE__EVENT);
+
+		stopEventOccurrenceEClass = createEClass(STOP_EVENT_OCCURRENCE);
 	}
 
 	/**
@@ -149,14 +184,21 @@ public class EventPackageImpl extends EPackageImpl implements EventPackage {
 		setNsPrefix(eNS_PREFIX);
 		setNsURI(eNS_URI);
 
+		// Obtain other dependent packages
+		BehavioralInterfacePackage theBehavioralInterfacePackage = (BehavioralInterfacePackage)EPackage.Registry.INSTANCE.getEPackage(BehavioralInterfacePackage.eNS_URI);
+
 		// Create type parameters
 
 		// Set bounds for type parameters
 
 		// Add supertypes to classes
+		stopEventOccurrenceEClass.getESuperTypes().add(this.getEventOccurrence());
 
 		// Initialize classes, features, and operations; add parameters
-		initEClass(eventEClass, Event.class, "Event", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEClass(eventOccurrenceEClass, EventOccurrence.class, "EventOccurrence", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getEventOccurrence_Event(), theBehavioralInterfacePackage.getEvent(), null, "event", null, 0, 1, EventOccurrence.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(stopEventOccurrenceEClass, StopEventOccurrence.class, "StopEventOccurrence", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		// Create resource
 		createResource(eNS_URI);

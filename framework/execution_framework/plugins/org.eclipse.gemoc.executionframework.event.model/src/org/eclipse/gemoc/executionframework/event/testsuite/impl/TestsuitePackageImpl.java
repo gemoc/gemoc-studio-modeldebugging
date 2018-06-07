@@ -21,6 +21,8 @@ import org.eclipse.gemoc.executionframework.event.testsuite.TestSuiteReport;
 import org.eclipse.gemoc.executionframework.event.testsuite.TestsuiteFactory;
 import org.eclipse.gemoc.executionframework.event.testsuite.TestsuitePackage;
 
+import org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.BehavioralInterfacePackage;
+
 /**
  * <!-- begin-user-doc -->
  * An implementation of the model <b>Package</b>.
@@ -125,6 +127,7 @@ public class TestsuitePackageImpl extends EPackageImpl implements TestsuitePacka
 
 		// Initialize simple dependencies
 		EventPackage.eINSTANCE.eClass();
+		BehavioralInterfacePackage.eINSTANCE.eClass();
 
 		// Create package meta-data objects
 		theTestsuitePackage.createPackageContents();
@@ -370,7 +373,7 @@ public class TestsuitePackageImpl extends EPackageImpl implements TestsuitePacka
 		initEAttribute(getTestCase_Name(), ecorePackage.getEString(), "name", null, 0, 1, TestCase.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getTestCase_Model(), ecorePackage.getEObject(), null, "model", null, 0, 1, TestCase.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getTestCase_ExpectedTrace(), ecorePackage.getEString(), "expectedTrace", null, 0, 1, TestCase.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getTestCase_Scenario(), theEventPackage.getEvent(), null, "scenario", null, 0, -1, TestCase.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getTestCase_Scenario(), theEventPackage.getEventOccurrence(), null, "scenario", null, 0, -1, TestCase.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(testSuiteReportEClass, TestSuiteReport.class, "TestSuiteReport", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getTestSuiteReport_TestCaseReports(), this.getTestCaseReport(), null, "testCaseReports", null, 0, -1, TestSuiteReport.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

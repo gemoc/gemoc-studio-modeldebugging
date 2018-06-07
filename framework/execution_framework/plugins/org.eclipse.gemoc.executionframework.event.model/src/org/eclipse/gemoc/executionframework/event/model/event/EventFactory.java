@@ -22,6 +22,24 @@ public interface EventFactory extends EFactory {
 	EventFactory eINSTANCE = org.eclipse.gemoc.executionframework.event.model.event.impl.EventFactoryImpl.init();
 
 	/**
+	 * Returns a new object of class '<em>Occurrence</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Occurrence</em>'.
+	 * @generated
+	 */
+	EventOccurrence createEventOccurrence();
+
+	/**
+	 * Returns a new object of class '<em>Stop Event Occurrence</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Stop Event Occurrence</em>'.
+	 * @generated
+	 */
+	StopEventOccurrence createStopEventOccurrence();
+
+	/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

@@ -6,7 +6,7 @@ import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EObject;
 
-import org.eclipse.gemoc.executionframework.event.model.event.Event;
+import org.eclipse.gemoc.executionframework.event.model.event.EventOccurrence;
 
 /**
  * <!-- begin-user-doc -->
@@ -108,7 +108,7 @@ public interface TestCase extends EObject {
 
 	/**
 	 * Returns the value of the '<em><b>Scenario</b></em>' containment reference list.
-	 * The list contents are of type {@link org.eclipse.gemoc.executionframework.event.model.event.Event}.
+	 * The list contents are of type {@link org.eclipse.gemoc.executionframework.event.model.event.EventOccurrence}.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Scenario</em>' containment reference list isn't clear,
@@ -120,6 +120,6 @@ public interface TestCase extends EObject {
 	 * @model containment="true"
 	 * @generated
 	 */
-	EList<Event> getScenario();
+	EList<EventOccurrence> getScenario();
 
 } // TestCase

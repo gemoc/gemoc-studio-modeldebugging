@@ -157,7 +157,6 @@ public interface TestsuitePackage extends EPackage {
 	 */
 	int TEST_CASE_OPERATION_COUNT = 0;
 
-
 	/**
 	 * The meta object id for the '{@link org.eclipse.gemoc.executionframework.event.testsuite.impl.TestSuiteReportImpl <em>Test Suite Report</em>}' class.
 	 * <!-- begin-user-doc -->

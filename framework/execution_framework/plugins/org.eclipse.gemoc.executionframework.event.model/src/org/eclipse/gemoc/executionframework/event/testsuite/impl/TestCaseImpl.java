@@ -19,7 +19,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
-import org.eclipse.gemoc.executionframework.event.model.event.Event;
+import org.eclipse.gemoc.executionframework.event.model.event.EventOccurrence;
 
 import org.eclipse.gemoc.executionframework.event.testsuite.TestCase;
 import org.eclipse.gemoc.executionframework.event.testsuite.TestsuitePackage;
@@ -99,7 +99,7 @@ public class TestCaseImpl extends MinimalEObjectImpl.Container implements TestCa
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Event> scenario;
+	protected EList<EventOccurrence> scenario;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -205,9 +205,9 @@ public class TestCaseImpl extends MinimalEObjectImpl.Container implements TestCa
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<Event> getScenario() {
+	public EList<EventOccurrence> getScenario() {
 		if (scenario == null) {
-			scenario = new EObjectContainmentEList<Event>(Event.class, this, TestsuitePackage.TEST_CASE__SCENARIO);
+			scenario = new EObjectContainmentEList<EventOccurrence>(EventOccurrence.class, this, TestsuitePackage.TEST_CASE__SCENARIO);
 		}
 		return scenario;
 	}
@@ -267,7 +267,7 @@ public class TestCaseImpl extends MinimalEObjectImpl.Container implements TestCa
 				return;
 			case TestsuitePackage.TEST_CASE__SCENARIO:
 				getScenario().clear();
-				getScenario().addAll((Collection<? extends Event>)newValue);
+				getScenario().addAll((Collection<? extends EventOccurrence>)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);

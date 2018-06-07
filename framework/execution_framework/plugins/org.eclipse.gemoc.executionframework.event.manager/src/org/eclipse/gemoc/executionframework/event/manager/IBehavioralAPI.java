@@ -7,19 +7,19 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.gemoc.executionframework.event.model.event.Event;
+import org.eclipse.gemoc.executionframework.event.model.event.EventOccurrence;
 
 public interface IBehavioralAPI {
 
-	void dispatchEvent(Event event);
+	void dispatchEvent(EventOccurrence event);
 	
-	boolean canSendEvent(Event event);
+	boolean canSendEvent(EventOccurrence event);
 	
 	Set<EClass> getEventClasses();
 	
 	Set<EClass> getStartEventClasses();
 	
-	Event getOutputEvent(EOperation operation, EObject caller, List<Object> parameters);
+	EventOccurrence getOutputEvent(EOperation operation, EObject caller, List<Object> parameters);
 	
 	boolean canHandle(EPackage pkg);
 	
