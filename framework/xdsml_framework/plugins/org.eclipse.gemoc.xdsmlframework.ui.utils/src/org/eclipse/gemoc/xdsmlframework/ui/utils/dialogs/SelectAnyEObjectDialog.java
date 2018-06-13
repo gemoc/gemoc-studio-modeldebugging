@@ -46,10 +46,4 @@ public class SelectAnyEObjectDialog extends ElementListSelectionDialog  {
 	protected boolean select(EObject obj){
 		return true;
 	}
-	
-
-	
-
-
 }
-

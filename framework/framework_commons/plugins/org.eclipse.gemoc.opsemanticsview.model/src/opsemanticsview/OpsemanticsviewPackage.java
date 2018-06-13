@@ -1,13 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2017 Inria and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     Inria - initial API and implementation
- *******************************************************************************/
 /**
  */
 package opsemanticsview;
@@ -222,22 +212,13 @@ public interface OpsemanticsviewPackage extends EPackage {
 	int RULE__ABSTRACT = 6;
 
 	/**
-	 * The feature id for the '<em><b>Main</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int RULE__MAIN = 7;
-
-	/**
 	 * The number of structural features of the '<em>Rule</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int RULE_FEATURE_COUNT = 8;
+	int RULE_FEATURE_COUNT = 7;
 
 	/**
 	 * The number of operations of the '<em>Rule</em>' class.
@@ -293,6 +274,215 @@ public interface OpsemanticsviewPackage extends EPackage {
 	 * @ordered
 	 */
 	int EXECUTION_TO_AS_ENTRY_OPERATION_COUNT = 0;
+
+	/**
+	 * The meta object id for the '{@link opsemanticsview.impl.EventHandlerImpl <em>Event Handler</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see opsemanticsview.impl.EventHandlerImpl
+	 * @see opsemanticsview.impl.OpsemanticsviewPackageImpl#getEventHandler()
+	 * @generated
+	 */
+	int EVENT_HANDLER = 3;
+
+	/**
+	 * The feature id for the '<em><b>Called Rules</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_HANDLER__CALLED_RULES = RULE__CALLED_RULES;
+
+	/**
+	 * The feature id for the '<em><b>Operation</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_HANDLER__OPERATION = RULE__OPERATION;
+
+	/**
+	 * The feature id for the '<em><b>Step Rule</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_HANDLER__STEP_RULE = RULE__STEP_RULE;
+
+	/**
+	 * The feature id for the '<em><b>Overriden By</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_HANDLER__OVERRIDEN_BY = RULE__OVERRIDEN_BY;
+
+	/**
+	 * The feature id for the '<em><b>Overrides</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_HANDLER__OVERRIDES = RULE__OVERRIDES;
+
+	/**
+	 * The feature id for the '<em><b>Containing Class</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_HANDLER__CONTAINING_CLASS = RULE__CONTAINING_CLASS;
+
+	/**
+	 * The feature id for the '<em><b>Abstract</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_HANDLER__ABSTRACT = RULE__ABSTRACT;
+
+	/**
+	 * The feature id for the '<em><b>Condition</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_HANDLER__CONDITION = RULE_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Interruptible</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_HANDLER__INTERRUPTIBLE = RULE_FEATURE_COUNT + 1;
+
+	/**
+	 * The feature id for the '<em><b>Start</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_HANDLER__START = RULE_FEATURE_COUNT + 2;
+
+	/**
+	 * The number of structural features of the '<em>Event Handler</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_HANDLER_FEATURE_COUNT = RULE_FEATURE_COUNT + 3;
+
+	/**
+	 * The number of operations of the '<em>Event Handler</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_HANDLER_OPERATION_COUNT = RULE_OPERATION_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link opsemanticsview.impl.EventEmitterImpl <em>Event Emitter</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see opsemanticsview.impl.EventEmitterImpl
+	 * @see opsemanticsview.impl.OpsemanticsviewPackageImpl#getEventEmitter()
+	 * @generated
+	 */
+	int EVENT_EMITTER = 4;
+
+	/**
+	 * The feature id for the '<em><b>Called Rules</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_EMITTER__CALLED_RULES = RULE__CALLED_RULES;
+
+	/**
+	 * The feature id for the '<em><b>Operation</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_EMITTER__OPERATION = RULE__OPERATION;
+
+	/**
+	 * The feature id for the '<em><b>Step Rule</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_EMITTER__STEP_RULE = RULE__STEP_RULE;
+
+	/**
+	 * The feature id for the '<em><b>Overriden By</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_EMITTER__OVERRIDEN_BY = RULE__OVERRIDEN_BY;
+
+	/**
+	 * The feature id for the '<em><b>Overrides</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_EMITTER__OVERRIDES = RULE__OVERRIDES;
+
+	/**
+	 * The feature id for the '<em><b>Containing Class</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_EMITTER__CONTAINING_CLASS = RULE__CONTAINING_CLASS;
+
+	/**
+	 * The feature id for the '<em><b>Abstract</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_EMITTER__ABSTRACT = RULE__ABSTRACT;
+
+	/**
+	 * The number of structural features of the '<em>Event Emitter</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_EMITTER_FEATURE_COUNT = RULE_FEATURE_COUNT + 0;
+
+	/**
+	 * The number of operations of the '<em>Event Emitter</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_EMITTER_OPERATION_COUNT = RULE_OPERATION_COUNT + 0;
 
 
 	/**
@@ -459,17 +649,6 @@ public interface OpsemanticsviewPackage extends EPackage {
 	EAttribute getRule_Abstract();
 
 	/**
-	 * Returns the meta object for the attribute '{@link opsemanticsview.Rule#isMain <em>Main</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Main</em>'.
-	 * @see opsemanticsview.Rule#isMain()
-	 * @see #getRule()
-	 * @generated
-	 */
-	EAttribute getRule_Main();
-
-	/**
 	 * Returns the meta object for class '{@link opsemanticsview.ExecutionToASEntry <em>Execution To AS Entry</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -500,6 +679,59 @@ public interface OpsemanticsviewPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getExecutionToASEntry_ASclass();
+
+	/**
+	 * Returns the meta object for class '{@link opsemanticsview.EventHandler <em>Event Handler</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Event Handler</em>'.
+	 * @see opsemanticsview.EventHandler
+	 * @generated
+	 */
+	EClass getEventHandler();
+
+	/**
+	 * Returns the meta object for the containment reference '{@link opsemanticsview.EventHandler#getCondition <em>Condition</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Condition</em>'.
+	 * @see opsemanticsview.EventHandler#getCondition()
+	 * @see #getEventHandler()
+	 * @generated
+	 */
+	EReference getEventHandler_Condition();
+
+	/**
+	 * Returns the meta object for the attribute '{@link opsemanticsview.EventHandler#isInterruptible <em>Interruptible</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Interruptible</em>'.
+	 * @see opsemanticsview.EventHandler#isInterruptible()
+	 * @see #getEventHandler()
+	 * @generated
+	 */
+	EAttribute getEventHandler_Interruptible();
+
+	/**
+	 * Returns the meta object for the attribute '{@link opsemanticsview.EventHandler#isStart <em>Start</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Start</em>'.
+	 * @see opsemanticsview.EventHandler#isStart()
+	 * @see #getEventHandler()
+	 * @generated
+	 */
+	EAttribute getEventHandler_Start();
+
+	/**
+	 * Returns the meta object for class '{@link opsemanticsview.EventEmitter <em>Event Emitter</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Event Emitter</em>'.
+	 * @see opsemanticsview.EventEmitter
+	 * @generated
+	 */
+	EClass getEventEmitter();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -649,14 +881,6 @@ public interface OpsemanticsviewPackage extends EPackage {
 		EAttribute RULE__ABSTRACT = eINSTANCE.getRule_Abstract();
 
 		/**
-		 * The meta object literal for the '<em><b>Main</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute RULE__MAIN = eINSTANCE.getRule_Main();
-
-		/**
 		 * The meta object literal for the '{@link opsemanticsview.impl.ExecutionToASEntryImpl <em>Execution To AS Entry</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -681,6 +905,50 @@ public interface OpsemanticsviewPackage extends EPackage {
 		 * @generated
 		 */
 		EReference EXECUTION_TO_AS_ENTRY__ASCLASS = eINSTANCE.getExecutionToASEntry_ASclass();
+
+		/**
+		 * The meta object literal for the '{@link opsemanticsview.impl.EventHandlerImpl <em>Event Handler</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see opsemanticsview.impl.EventHandlerImpl
+		 * @see opsemanticsview.impl.OpsemanticsviewPackageImpl#getEventHandler()
+		 * @generated
+		 */
+		EClass EVENT_HANDLER = eINSTANCE.getEventHandler();
+
+		/**
+		 * The meta object literal for the '<em><b>Condition</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference EVENT_HANDLER__CONDITION = eINSTANCE.getEventHandler_Condition();
+
+		/**
+		 * The meta object literal for the '<em><b>Interruptible</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute EVENT_HANDLER__INTERRUPTIBLE = eINSTANCE.getEventHandler_Interruptible();
+
+		/**
+		 * The meta object literal for the '<em><b>Start</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute EVENT_HANDLER__START = eINSTANCE.getEventHandler_Start();
+
+		/**
+		 * The meta object literal for the '{@link opsemanticsview.impl.EventEmitterImpl <em>Event Emitter</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see opsemanticsview.impl.EventEmitterImpl
+		 * @see opsemanticsview.impl.OpsemanticsviewPackageImpl#getEventEmitter()
+		 * @generated
+		 */
+		EClass EVENT_EMITTER = eINSTANCE.getEventEmitter();
 
 	}
 

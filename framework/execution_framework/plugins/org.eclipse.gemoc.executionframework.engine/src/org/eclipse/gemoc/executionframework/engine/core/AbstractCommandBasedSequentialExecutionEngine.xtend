@@ -25,13 +25,17 @@ abstract class AbstractCommandBasedSequentialExecutionEngine<C extends IExecutio
 	 * @param operation
 	 */
 	protected def void executeOperation(Object caller, String className, String operationName, Runnable operation) {
+		executeOperation(caller, #{}, className, operationName, operation);
+	}
+	
+	protected def void executeOperation(Object caller, Object[] parameters, String className, String operationName, Runnable operation) {
 		val RecordingCommand rc = new RecordingCommand(editingDomain) {
 			override doExecute() {
 				operation.run()
 			}
 		}
 		try {
-			beforeExecutionStep(caller, className, operationName, rc)
+			beforeExecutionStep(caller, className, operationName, parameters, rc)
 			rc.execute
 			afterExecutionStep
 		} finally {

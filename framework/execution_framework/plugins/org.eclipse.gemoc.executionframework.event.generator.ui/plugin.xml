@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.eclipse.gemoc.executionframework.event.generator.ui.commands.GenerateBehavioralInterfaceHandler"
+            id="org.eclipse.gemoc.executionframework.event.generator.ui.commands.GenerateBehavioralInterface"
+            name="GenerateBehavioralInterface">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.popup.any?after=xdsmlGroup">
+         <menu
+               icon="icons/IconeGemocLanguage-16.png"
+               id="GemocLanguage.menu"
+               label="GEMOC Language">
+            <command
+                  commandId="org.eclipse.gemoc.executionframework.event.generator.ui.commands.GenerateBehavioralInterface"
+                  label="Generate Behavioral Interface"
+                  style="push">
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+
+</plugin>

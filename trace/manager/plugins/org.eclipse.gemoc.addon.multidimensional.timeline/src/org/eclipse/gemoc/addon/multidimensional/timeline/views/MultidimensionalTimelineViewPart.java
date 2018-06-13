@@ -184,6 +184,12 @@ public class MultidimensionalTimelineViewPart extends EngineSelectionDependentVi
 				URI uri = URI.createFileURI(filePath);
 				traceAddon.getTraceConstructor().save(uri);
 			}
+
+			@Override
+			public void updateButton() {
+				// TODO Auto-generated method stub
+				
+			}
 		});
 
 		addActionToToolbar(new AbstractEngineAction(Action.AS_PUSH_BUTTON) {
@@ -207,6 +213,12 @@ public class MultidimensionalTimelineViewPart extends EngineSelectionDependentVi
 				traceAddon = null;
 				timelineRenderer.setTraceExtractor(null);
 				timelineRenderer.setTraceExplorer(null);
+			}
+
+			@Override
+			public void updateButton() {
+				// TODO Auto-generated method stub
+				
 			}
 		});
 
@@ -284,6 +296,12 @@ public class MultidimensionalTimelineViewPart extends EngineSelectionDependentVi
 					}
 				}
 			}
+
+			@Override
+			public void updateButton() {
+				// TODO Auto-generated method stub
+				
+			}
 		});
 
 		addActionToToolbar(new AbstractEngineAction(Action.AS_CHECK_BOX) {
@@ -305,6 +323,12 @@ public class MultidimensionalTimelineViewPart extends EngineSelectionDependentVi
 			public void run() {
 				timelineRenderer.setScrollLock(isChecked());
 			}
+
+			@Override
+			public void updateButton() {
+				// TODO Auto-generated method stub
+				
+			}
 		});
 		
 		addActionToToolbar(new AbstractEngineAction(Action.AS_CHECK_BOX) {
@@ -325,6 +349,12 @@ public class MultidimensionalTimelineViewPart extends EngineSelectionDependentVi
 			@Override
 			public void run() {
 				timelineRenderer.setStateColoration(isChecked());
+			}
+
+			@Override
+			public void updateButton() {
+				// TODO Auto-generated method stub
+				
 			}
 		});
 
@@ -369,6 +399,12 @@ public class MultidimensionalTimelineViewPart extends EngineSelectionDependentVi
 					int state = Integer.parseInt(dialog.getValue());
 					timelineRenderer.getJumpConsumer().accept(state);
 				}
+			}
+
+			@Override
+			public void updateButton() {
+				// TODO Auto-generated method stub
+				
 			}
 		});
 	}

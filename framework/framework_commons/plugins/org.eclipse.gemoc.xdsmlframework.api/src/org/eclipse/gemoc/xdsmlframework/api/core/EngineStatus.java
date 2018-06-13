@@ -12,15 +12,15 @@ package org.eclipse.gemoc.xdsmlframework.api.core;
 
 import org.eclipse.gemoc.trace.commons.model.trace.Step;
 
-public class  EngineStatus {
+public class EngineStatus {
 	long nbLogicalStepRun = 0;
-	
+
 	Step<?> chosenLogicalStep;
 
+	public enum RunStatus {
+		Initializing, Running, WaitingForEvent, WaitingLogicalStepSelection, Stopped
+	}
 
-	public enum RunStatus { Initializing, Running, WaitingLogicalStepSelection, Stopped}
-
-	
 	public long getNbLogicalStepRun() {
 		return nbLogicalStepRun;
 	}
@@ -28,9 +28,9 @@ public class  EngineStatus {
 	public void setNbLogicalStepRun(long nbLogicalStepRun) {
 		this.nbLogicalStepRun = nbLogicalStepRun;
 	}
+
 	public void incrementNbLogicalStepRun() {
-		this.nbLogicalStepRun +=1;
+		this.nbLogicalStepRun += 1;
 	}
-		
-	
+
 }

@@ -56,9 +56,42 @@ public class EventFactoryImpl extends EFactoryImpl implements EventFactory {
 	@Override
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
+			case EventPackage.EVENT_OCCURRENCE: return createEventOccurrence();
+			case EventPackage.STOP_EVENT_OCCURRENCE: return createStopEventOccurrence();
+			case EventPackage.EVENT_OCCURRENCE_ARGUMENT: return createEventOccurrenceArgument();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EventOccurrence createEventOccurrence() {
+		EventOccurrenceImpl eventOccurrence = new EventOccurrenceImpl();
+		return eventOccurrence;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public StopEventOccurrence createStopEventOccurrence() {
+		StopEventOccurrenceImpl stopEventOccurrence = new StopEventOccurrenceImpl();
+		return stopEventOccurrence;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EventOccurrenceArgument createEventOccurrenceArgument() {
+		EventOccurrenceArgumentImpl eventOccurrenceArgument = new EventOccurrenceArgumentImpl();
+		return eventOccurrenceArgument;
 	}
 
 	/**

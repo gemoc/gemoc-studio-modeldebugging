@@ -34,8 +34,8 @@ public class StopEngineAction extends AbstractEngineAction {
 	}
 
 	@Override
-	protected void updateButton() {
-		super.updateButton();
+	public void updateButton() {
+		setEnabled(_currentSelectedEngine != null && !_currentSelectedEngine.getRunningStatus().equals(RunStatus.Stopped));
 	}
 
 	@Override
@@ -51,13 +51,6 @@ public class StopEngineAction extends AbstractEngineAction {
 	@Override
 	public void engineSelectionChanged(IExecutionEngine engine) {
 		_currentSelectedEngine = engine;
-
-		if (_currentSelectedEngine == null) {
-			setEnabled(false);
-		} else {
-			setEnabled(!_currentSelectedEngine.getRunningStatus().equals(RunStatus.Stopped));
-
-		}
 	}
 
 }

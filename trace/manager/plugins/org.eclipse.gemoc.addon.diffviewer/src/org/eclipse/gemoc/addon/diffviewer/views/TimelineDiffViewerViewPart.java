@@ -154,6 +154,12 @@ public class TimelineDiffViewerViewPart extends ViewPart {
 					}
 				}
 			}
+
+			@Override
+			public void updateButton() {
+				// TODO Auto-generated method stub
+				
+			}
 		});
 
 		addActionToToolbar(new AbstractEngineAction(Action.AS_PUSH_BUTTON) {
@@ -179,6 +185,12 @@ public class TimelineDiffViewerViewPart extends ViewPart {
 					diffViewer.loadTraces(extractor1, extractor2, dialog.getS1(), dialog.getS2(), dialog.getE1(),
 							dialog.getE2());
 				}
+			}
+
+			@Override
+			public void updateButton() {
+				// TODO Auto-generated method stub
+				
 			}
 		});
 	}

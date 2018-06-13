@@ -4,13 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
+ * 
  * Contributors:
  *     Inria - initial API and implementation
  *******************************************************************************/
 package org.eclipse.gemoc.opsemanticsview.gen.k3
- 
-import org.eclipse.gemoc.commons.eclipse.jdt.CallHierarchyHelper
+
 import java.util.ArrayList
 import java.util.HashMap
 import java.util.HashSet
@@ -25,18 +24,20 @@ import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EOperation
 import org.eclipse.emf.ecore.EPackage
 import org.eclipse.emf.ecore.EcoreFactory
+import org.eclipse.gemoc.commons.eclipse.jdt.CallHierarchyHelper
 import org.eclipse.jdt.core.IAnnotation
 import org.eclipse.jdt.core.IMethod
 import org.eclipse.jdt.core.IType
 
 class K3StepExtractor {
-	
+
 	// Input
 	private val Set<IType> allClasses
 	private val EPackage extendedMetamodel
 
 	// Input / Output
 	private val OperationalSemanticsView ecoreExtension
+	private val Map<EOperation, IMethod> operationToFunction
 
 	// Transient
 	private val Map<IType, EClass> stepAspectsClassToAspectedClasses = new HashMap
@@ -45,6 +46,7 @@ class K3StepExtractor {
 	private val Set<IMethod> allSuperMethods = new HashSet
 	private val Set<IMethod> stepFunctions = new HashSet
 	private val Set<IMethod> eventFunctions = new HashSet
+	private val Map<IMethod, IMethod> eventFunctionToConditionFunction = new HashMap
 	private val Map<IMethod, Rule> functionToRule = new HashMap
 	private val Set<IType> inspectedClasses = new HashSet
 
@@ -58,10 +60,12 @@ class K3StepExtractor {
 	private val Map<IType, Set<IType>> classToSuperClasses = new HashMap
 
 	new(Set<IType> aspects, String languageName, EPackage extendedMetamodel,
-		OperationalSemanticsView inConstructionOperationalSemanticsView) {
+		OperationalSemanticsView inConstructionOperationalSemanticsView,
+		Map<EOperation, IMethod> inConstructionOperationToFunction) {
 		this.allClasses = aspects
 		this.extendedMetamodel = extendedMetamodel
 		this.ecoreExtension = inConstructionOperationalSemanticsView
+		this.operationToFunction = inConstructionOperationToFunction
 	}
 
 	public def void generate() {
@@ -69,31 +73,36 @@ class K3StepExtractor {
 	}
 
 	private def Rule getRuleOfFunction(IMethod function) {
-		if (functionToRule.containsKey(function))
+		if (functionToRule.containsKey(function)) {
 			return functionToRule.get(function)
-		else {
-			val Rule rule = OpsemanticsviewFactory.eINSTANCE.createRule;
+		} else {
+			val Rule rule = if (eventFunctions.contains(function)) {
+				if (function.eventHandler) {
+					val handler = OpsemanticsviewFactory.eINSTANCE.createEventHandler
+					handler.interruptible = function.isInterruptible
+					val condition = eventFunctionToConditionFunction.get(function)
+					if (condition !== null) {
+						handler.condition = condition.toEOperation
+						operationToFunction.put(handler.condition, condition)
+					}
+					handler.start = function.start
+					handler
+				} else {
+					OpsemanticsviewFactory.eINSTANCE.createEventEmitter
+				}
+			} else {
+				OpsemanticsviewFactory.eINSTANCE.createRule
+			}
 			this.ecoreExtension.rules.add(rule)
 
-			// We find the ecore class matching the aspected java class 
+			// We find the ecore class matching the aspected java class
 			val containingClass = function.declaringType
 			rule.containingClass = stepAspectsClassToAspectedClasses.get(containingClass)
 
-			var EOperation candidate = null
-			if (rule.containingClass != null) {
-				candidate = rule.containingClass.EAllOperations.findFirst [ o |
-					o.name.equals(function.elementName)
-				]
-
-			}
-			if (candidate != null) {
-				rule.operation = candidate
-			} else {
-				rule.operation = xtendFunctionToEOperation(function)
-			}
+			rule.operation = function.toEOperation
+			operationToFunction.put(rule.operation, function)
 
 			rule.stepRule = stepFunctions.contains(function)
-			rule.main = isMain(function)
 			functionToRule.put(function, rule)
 			return rule
 		}
@@ -106,7 +115,7 @@ class K3StepExtractor {
 
 		// We retrieve which functions are called by the function
 		val calledFunctions = callGraph.get(function)
-		if (calledFunctions != null) {
+		if (calledFunctions !== null) {
 			for (calledFunction : calledFunctions) {
 				if (calledFunction !== null) {
 					val Rule calledRule = getRuleOfFunction(calledFunction)
@@ -118,7 +127,7 @@ class K3StepExtractor {
 		// Finally we look if this function was overriden/implemented by subtypes
 		// TODO use annotation?
 		val subtypes = classToSubClasses.get(function.declaringType)
-		if (subtypes != null) {
+		if (subtypes !== null) {
 			for (t : subtypes) {
 				for (f : t.methods) {
 					if (f.elementName.equals(function.elementName)) {
@@ -127,6 +136,21 @@ class K3StepExtractor {
 					}
 				}
 			}
+		}
+	}
+
+	private def EOperation toEOperation(IMethod method) {
+		val containingClass = stepAspectsClassToAspectedClasses.get(method.declaringType)
+		var EOperation candidate = null
+		if (containingClass !== null) {
+			candidate = containingClass.EAllOperations.findFirst [ o |
+				o.name.equals(method.elementName)
+			]
+		}
+		if (candidate !== null) {
+			return candidate
+		} else {
+			return method.xtendFunctionToEOperation
 		}
 	}
 
@@ -145,7 +169,7 @@ class K3StepExtractor {
 			allk3Methods.addAll(typeK3Methods)
 
 			// Gather the methods calling those k3 methods
-			val typeMethods = type.methods.filter [m|
+			val typeMethods = type.methods.filter [ m |
 				typeK3Methods.exists [ c |
 					c.elementName.substring(8).equals(m.elementName)
 				]
@@ -162,7 +186,7 @@ class K3StepExtractor {
 			candidateSupers.addAll(type.methods.filter[elementName.startsWith("super_")])
 
 			// Gather all k3 generated super methods
-			allSuperMethods.addAll(candidateSupers.filter [c|
+			allSuperMethods.addAll(candidateSupers.filter [ c |
 				type.methods.exists [ m |
 					c.elementName.substring(6).equals(m.elementName)
 				]
@@ -181,10 +205,31 @@ class K3StepExtractor {
 				stepFunctions.addAll(type.methods.filter[isStep])
 
 				// And we store all the functions with @EventProcessor
-				eventFunctions.addAll(type.methods.filter[isEvent])
+				eventFunctions.addAll(type.methods.filter[isEventHandler])
+				eventFunctions.addAll(type.methods.filter[isStart])
+				
+				eventFunctions.addAll(type.methods.filter[isEventEmitter])
+
+				eventFunctions.forEach[gatherConditionFromEvent]
 			}
 			inspectedClasses.add(type)
 		}
+	}
+	
+	private def void gatherConditionFromEvent(IMethod method) {
+		var annotation = method.findAnnotation("EventHandler")
+		if (annotation === null) {
+			return
+		}
+		val pairs = annotation.memberValuePairs
+		if (pairs === null) {
+			return
+		}
+		pairs.filter[memberName == "precondition" && value instanceof String]
+				.map[value as String].forEach[s|
+					val condition = allMethods.findFirst[elementName == s && parameterTypes.elementsEqual(method.parameterTypes)]
+					eventFunctionToConditionFunction.put(method, condition)
+				]
 	}
 
 	private def void gatherCallsFromK3(IMethod function) {
@@ -193,11 +238,11 @@ class K3StepExtractor {
 			val f = function
 			val member = cl.member
 			val method = getContainingAspectMethod(member as IMethod)
-			allk3Methods// Filter out non-k3 methods
-			.filter[m|m == method]// And add 'function' to the called methods of each calling k3 method
+			allk3Methods // Filter out non-k3 methods
+			.filter[m|m == method] // And add 'function' to the called methods of each calling k3 method
 			.forEach [ m |
 				var calledMethods = k3MethodToCalledMethods.get(m)
-				if (calledMethods == null) {
+				if (calledMethods === null) {
 					calledMethods = new HashSet
 					k3MethodToCalledMethods.put(m, calledMethods)
 				}
@@ -209,9 +254,9 @@ class K3StepExtractor {
 	private def void gatherCallsFromSuper(IMethod function) {
 		val callingSites = CallHierarchyHelper.getCallLocationsOf(function)
 		callingSites.forEach [ cl |
-			allSuperMethods// TODO unfold lambdas
+			allSuperMethods // TODO unfold lambdas
 			// Filter out non-super methods
-			.filter[m|m == cl.member]// And set 'function' to be the called method of each calling super method
+			.filter[m|m == cl.member] // And set 'function' to be the called method of each calling super method
 			.forEach[m|superMethodTok3Method.put(m, function)]
 		]
 	}
@@ -221,12 +266,12 @@ class K3StepExtractor {
 			val methodName = method.elementName
 			val declaringType = method.declaringType
 			val superClasses = classToSuperClasses.get(declaringType)
-			if (superClasses != null) {
+			if (superClasses !== null) {
 				superClasses.forEach [ c |
 					val overridenMethod = c.methods.findFirst[m|m.elementName.equals(methodName)]
-					if (overridenMethod != null) {
+					if (overridenMethod !== null) {
 						var overridingMethods = methodToOverridingMethods.get(overridenMethod)
-						if (overridingMethods == null) {
+						if (overridingMethods === null) {
 							overridingMethods = new HashSet
 							methodToOverridingMethods.put(overridenMethod, overridingMethods)
 						}
@@ -259,13 +304,13 @@ class K3StepExtractor {
 		// We establish the base callgraph.
 		allMethods.forEach [ m |
 			val k3m = methodToK3Method.get(m)
-			if (k3m != null) {
+			if (k3m !== null) {
 				val calledMethods = k3MethodToCalledMethods.get(k3m)
-				if (calledMethods != null) {
+				if (calledMethods !== null) {
 					calledMethods.forEach [ c |
 						if (allMethods.contains(c)) {
 							var tmp = callGraph.get(m)
-							if (tmp == null) {
+							if (tmp === null) {
 								tmp = new HashSet
 								callGraph.put(m, tmp)
 							}
@@ -276,7 +321,9 @@ class K3StepExtractor {
 			}
 		]
 
-		val callGraphTotalLengthComputer = [|callGraph.values.map[s|s.size].reduce[i1, i2|i1 + i2]]
+		val callGraphTotalLengthComputer = [|
+			if (callGraph.empty) {0} else {callGraph.values.map[s|s.size].reduce[i1, i2|i1 + i2]}
+		]
 
 		// For each method, we add to its called methods the methods that can be called
 		// from each of its overriding methods.
@@ -284,7 +331,7 @@ class K3StepExtractor {
 		var previousTotalLength = -1
 		while (totalLength > previousTotalLength) {
 			allMethods.forEach [ m |
-				val calledMethods = if (callGraph.get(m) == null) {
+				val calledMethods = if (callGraph.get(m) === null) {
 						val tmp = new HashSet
 						callGraph.put(m, tmp)
 						tmp
@@ -292,10 +339,10 @@ class K3StepExtractor {
 						callGraph.get(m)
 					}
 				val overridingMethods = methodToOverridingMethods.get(m)
-				if (overridingMethods != null) {
+				if (overridingMethods !== null) {
 					overridingMethods.forEach [ n |
 						val calledByOverride = callGraph.get(n)
-						if (calledByOverride != null) {
+						if (calledByOverride !== null) {
 							calledMethods.addAll(calledByOverride)
 						}
 					]
@@ -312,11 +359,11 @@ class K3StepExtractor {
 		while (totalLength > previousTotalLength) {
 			allMethods.forEach [ m |
 				val calledMethods = callGraph.get(m)
-				if (calledMethods != null) {
+				if (calledMethods !== null) {
 					val tmp = new HashSet
 					calledMethods.forEach [ n |
 						val overridingMethods = methodToOverridingMethods.get(n)
-						if (overridingMethods != null) {
+						if (overridingMethods !== null) {
 							tmp.addAll(overridingMethods)
 						}
 					]
@@ -329,7 +376,7 @@ class K3StepExtractor {
 
 		allMethods.forEach [ m |
 			var calledMethods = callGraph.get(m)
-			if (calledMethods == null) {
+			if (calledMethods === null) {
 				calledMethods = new HashSet
 				callGraph.put(m, calledMethods)
 			}
@@ -339,17 +386,17 @@ class K3StepExtractor {
 		// We then add in the support for calls to super methods.
 		allMethods.forEach [ m |
 			val k3m = methodToK3Method.get(m)
-			if (k3m != null) {
+			if (k3m !== null) {
 				val calledMethods = k3MethodToCalledMethods.get(k3m)
-				if (calledMethods != null) {
+				if (calledMethods !== null) {
 					calledMethods.forEach [ c |
 						if (allSuperMethods.contains(c)) {
 							val actualk3Method = superMethodTok3Method.get(c)
-							if (actualk3Method != null) {
+							if (actualk3Method !== null) {
 								val actualMethod = k3MethodToMethod.get(actualk3Method)
-								if (actualMethod != null && allMethods.contains(actualMethod)) {
+								if (actualMethod !== null && allMethods.contains(actualMethod)) {
 									var tmp = callGraph.get(m)
-									if (tmp == null) {
+									if (tmp === null) {
 										tmp = new HashSet
 										callGraph.put(m, tmp)
 									}
@@ -360,13 +407,6 @@ class K3StepExtractor {
 					]
 				}
 			}
-		]
-
-		println("Callgraph : \n\n")
-		callGraph.forEach [ m, s |
-			println(m.declaringType.elementName + "." + m.elementName + " : \n" + s.map [ n |
-				n.declaringType.elementName + "." + n.elementName
-			].reduce[s1, s2|s1 + ", " + s2] + "\n")
 		]
 
 		// Next we create the Rule objects with all that
@@ -407,43 +447,71 @@ class K3StepExtractor {
 		]
 	}
 
-	/**
-	 * Return true if 'method' is tagged with "@Step"
-	 */
-	private def boolean isStep(IMethod method) {
-		testAnnotation(method, "Step")
-	}
-
-	/**
-	 * Return true if 'method' is tagged with "@EventProcessor"
-	 */
-	private def boolean isEvent(IMethod method) {
-		val annotation = method.annotations.findFirst [ a |
-			val name = a.elementName
+	private def IAnnotation findAnnotation(IMethod method, String annotationSimpleName) {
+		// TODO compare with: fr.inria.diverse.k3.al.annotationprocessor.XXX
+		return method.annotations.findFirst [ annot |
+			val name = annot.elementName // may be qualified
 			val lastDotIndex = name.lastIndexOf('.')
 			var simpleName = name
 			if (lastDotIndex !== -1) {
 				simpleName = name.substring(lastDotIndex + 1)
 			}
-			return simpleName == "Step"
+			return simpleName.equals(annotationSimpleName)
 		]
-		annotation != null && annotation.memberValuePairs.exists [ p |
-			p.memberName == "eventHandler" && p.value instanceof Boolean && p.value as Boolean
-		]
+	}
+
+	/**
+	 * Return true if 'method' is tagged with "@Step"
+	 */
+	private def boolean isStep(IMethod method) {
+		method.testAnnotation("Step")
+	}
+
+	/**
+	 * Return true if 'method' is tagged with "@EventHandler"
+	 */
+	private def boolean isEventHandler(IMethod method) {
+		method.testAnnotation("EventHandler")
+	}
+	
+	/**
+	 * Return true if 'method' is tagged with "@EventEmitter"
+	 */
+	private def boolean isEventEmitter(IMethod method) {
+		method.testAnnotation("EventEmitter")
 	}
 
 	/**
 	 * Return true if 'method' is tagged with "@OverrideAspectMethod"
 	 */
 	private def boolean isOverride(IMethod method) {
-		testAnnotation(method, "OverrideAspectMethod")
+		method.testAnnotation("OverrideAspectMethod")
 	}
 
 	/**
-	 * Return true if 'method' is tagged with "@Main"
+	 * Return true if 'method' is tagged with "@EventHandler" and has startEvent = true
 	 */
-	private def boolean isMain(IMethod method) {
-		testAnnotation(method, "Main")
+	private def boolean isStart(IMethod method) {
+		var annotation = method.findAnnotation("EventHandler")
+		val pairs = annotation?.memberValuePairs
+		if (pairs === null) {
+			return false
+		}
+		val value = pairs.findFirst[memberName == "startEvent" && value instanceof Boolean]?.value
+		return if (value === null) false else value as Boolean
+	}
+	
+	/**
+	 * Return true if 'method' is tagged with "@EventHandler" and has interruptible = true
+	 */
+	private def boolean isInterruptible(IMethod method) {
+		var annotation = method.findAnnotation("EventHandler")
+		val pairs = annotation?.memberValuePairs
+		if (pairs === null) {
+			return false
+		}
+		val value = pairs.findFirst[memberName == "interruptible" && value instanceof Boolean]?.value
+		return if (value === null) false else value as Boolean
 	}
 
 	/**

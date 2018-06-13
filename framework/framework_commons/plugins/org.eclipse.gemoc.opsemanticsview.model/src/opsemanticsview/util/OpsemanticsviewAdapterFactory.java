@@ -1,13 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2017 Inria and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     Inria - initial API and implementation
- *******************************************************************************/
 /**
  */
 package opsemanticsview.util;
@@ -90,6 +80,14 @@ public class OpsemanticsviewAdapterFactory extends AdapterFactoryImpl {
 				return createExecutionToASEntryAdapter();
 			}
 			@Override
+			public Adapter caseEventHandler(EventHandler object) {
+				return createEventHandlerAdapter();
+			}
+			@Override
+			public Adapter caseEventEmitter(EventEmitter object) {
+				return createEventEmitterAdapter();
+			}
+			@Override
 			public Adapter defaultCase(EObject object) {
 				return createEObjectAdapter();
 			}
@@ -148,6 +146,34 @@ public class OpsemanticsviewAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createExecutionToASEntryAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link opsemanticsview.EventHandler <em>Event Handler</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see opsemanticsview.EventHandler
+	 * @generated
+	 */
+	public Adapter createEventHandlerAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link opsemanticsview.EventEmitter <em>Event Emitter</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see opsemanticsview.EventEmitter
+	 * @generated
+	 */
+	public Adapter createEventEmitterAdapter() {
 		return null;
 	}
 

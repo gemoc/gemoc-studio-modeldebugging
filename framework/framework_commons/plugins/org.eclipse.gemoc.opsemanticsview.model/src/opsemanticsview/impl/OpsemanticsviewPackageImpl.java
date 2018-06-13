@@ -1,17 +1,9 @@
-/*******************************************************************************
- * Copyright (c) 2017 Inria and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     Inria - initial API and implementation
- *******************************************************************************/
 /**
  */
 package opsemanticsview.impl;
 
+import opsemanticsview.EventEmitter;
+import opsemanticsview.EventHandler;
 import opsemanticsview.ExecutionToASEntry;
 import opsemanticsview.OperationalSemanticsView;
 import opsemanticsview.OpsemanticsviewFactory;
@@ -52,6 +44,20 @@ public class OpsemanticsviewPackageImpl extends EPackageImpl implements Opsemant
 	 * @generated
 	 */
 	private EClass executionToASEntryEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass eventHandlerEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass eventEmitterEClass = null;
 
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
@@ -254,15 +260,6 @@ public class OpsemanticsviewPackageImpl extends EPackageImpl implements Opsemant
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getRule_Main() {
-		return (EAttribute)ruleEClass.getEStructuralFeatures().get(7);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EClass getExecutionToASEntry() {
 		return executionToASEntryEClass;
 	}
@@ -283,6 +280,51 @@ public class OpsemanticsviewPackageImpl extends EPackageImpl implements Opsemant
 	 */
 	public EReference getExecutionToASEntry_ASclass() {
 		return (EReference)executionToASEntryEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEventHandler() {
+		return eventHandlerEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getEventHandler_Condition() {
+		return (EReference)eventHandlerEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getEventHandler_Interruptible() {
+		return (EAttribute)eventHandlerEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getEventHandler_Start() {
+		return (EAttribute)eventHandlerEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEventEmitter() {
+		return eventEmitterEClass;
 	}
 
 	/**
@@ -329,11 +371,17 @@ public class OpsemanticsviewPackageImpl extends EPackageImpl implements Opsemant
 		createEReference(ruleEClass, RULE__OVERRIDES);
 		createEReference(ruleEClass, RULE__CONTAINING_CLASS);
 		createEAttribute(ruleEClass, RULE__ABSTRACT);
-		createEAttribute(ruleEClass, RULE__MAIN);
 
 		executionToASEntryEClass = createEClass(EXECUTION_TO_AS_ENTRY);
 		createEReference(executionToASEntryEClass, EXECUTION_TO_AS_ENTRY__EXECUTION_CLASS);
 		createEReference(executionToASEntryEClass, EXECUTION_TO_AS_ENTRY__ASCLASS);
+
+		eventHandlerEClass = createEClass(EVENT_HANDLER);
+		createEReference(eventHandlerEClass, EVENT_HANDLER__CONDITION);
+		createEAttribute(eventHandlerEClass, EVENT_HANDLER__INTERRUPTIBLE);
+		createEAttribute(eventHandlerEClass, EVENT_HANDLER__START);
+
+		eventEmitterEClass = createEClass(EVENT_EMITTER);
 	}
 
 	/**
@@ -364,6 +412,8 @@ public class OpsemanticsviewPackageImpl extends EPackageImpl implements Opsemant
 		// Set bounds for type parameters
 
 		// Add supertypes to classes
+		eventHandlerEClass.getESuperTypes().add(this.getRule());
+		eventEmitterEClass.getESuperTypes().add(this.getRule());
 
 		// Initialize classes, features, and operations; add parameters
 		initEClass(operationalSemanticsViewEClass, OperationalSemanticsView.class, "OperationalSemanticsView", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -382,11 +432,17 @@ public class OpsemanticsviewPackageImpl extends EPackageImpl implements Opsemant
 		initEReference(getRule_Overrides(), this.getRule(), this.getRule_OverridenBy(), "overrides", null, 0, 1, Rule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getRule_ContainingClass(), ecorePackage.getEClass(), null, "containingClass", null, 0, 1, Rule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getRule_Abstract(), ecorePackage.getEBoolean(), "abstract", null, 1, 1, Rule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getRule_Main(), ecorePackage.getEBoolean(), "main", null, 0, 1, Rule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(executionToASEntryEClass, ExecutionToASEntry.class, "ExecutionToASEntry", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getExecutionToASEntry_ExecutionClass(), ecorePackage.getEClass(), null, "executionClass", null, 1, 1, ExecutionToASEntry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getExecutionToASEntry_ASclass(), ecorePackage.getEClass(), null, "ASclass", null, 1, 1, ExecutionToASEntry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(eventHandlerEClass, EventHandler.class, "EventHandler", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getEventHandler_Condition(), ecorePackage.getEOperation(), null, "condition", null, 0, 1, EventHandler.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getEventHandler_Interruptible(), ecorePackage.getEBoolean(), "interruptible", null, 0, 1, EventHandler.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getEventHandler_Start(), ecorePackage.getEBoolean(), "start", null, 0, 1, EventHandler.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(eventEmitterEClass, EventEmitter.class, "EventEmitter", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		// Create resource
 		createResource(eNS_URI);

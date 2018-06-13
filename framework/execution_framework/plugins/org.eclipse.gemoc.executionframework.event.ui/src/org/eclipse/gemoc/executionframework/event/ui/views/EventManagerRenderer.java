@@ -16,13 +16,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.gemoc.executionframework.event.manager.EventInstance;
 import org.eclipse.gemoc.executionframework.event.manager.IEventManager;
+import org.eclipse.gemoc.executionframework.event.model.event.EventOccurrence;
 import org.eclipse.gemoc.trace.commons.model.trace.Step;
 import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine;
 import org.eclipse.gemoc.xdsmlframework.api.engine_addon.IEngineAddon;
+import org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.Event;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -50,19 +50,19 @@ public class EventManagerRenderer extends Pane implements IEngineAddon {
 
 	private Resource executedModel;
 
-	private final ObservableList<EClass> eventList = FXCollections.observableArrayList();
+	private final ObservableList<Event> eventList = FXCollections.observableArrayList();
 
-	private final ObservableList<EventInstance> pushedEvents = FXCollections.observableArrayList();
+	private final ObservableList<EventOccurrence> pushedEvents = FXCollections.observableArrayList();
 
-	private final Map<EClass, EventTableView> eventTypeToEventTableView = new HashMap<>();
+	private final Map<Event, EventTableView> eventTypeToEventTableView = new HashMap<>();
 
-	private final Map<EClass, List<EventInstance>> eventTypeToSelectedEvents = new HashMap<>();
+	private final Map<Event, List<EventOccurrence>> eventTypeToSelectedEvents = new HashMap<>();
 
 	private final ScrollPane scrollPane = new ScrollPane();
 
-	private final ListView<EClass> eventListView = new ListView<>(eventList);
+	private final ListView<Event> eventListView = new ListView<>(eventList);
 
-	private final ListView<EventInstance> pushedEventListView = new ListView<>(pushedEvents);
+	private final ListView<EventOccurrence> pushedEventListView = new ListView<>(pushedEvents);
 
 	private final BorderPane borderPane = new BorderPane();
 
@@ -95,14 +95,14 @@ public class EventManagerRenderer extends Pane implements IEngineAddon {
 
 		header.getChildren().addAll(pushButton, sendButton);
 
-		eventListView.setCellFactory((l) -> new ComboBoxListCell<EClass>(new StringConverter<EClass>() {
+		eventListView.setCellFactory((l) -> new ComboBoxListCell<Event>(new StringConverter<Event>() {
 			@Override
-			public String toString(EClass object) {
+			public String toString(Event object) {
 				return object.getName();
 			}
 
 			@Override
-			public EClass fromString(String string) {
+			public Event fromString(String string) {
 				return null;
 			}
 		}));
@@ -122,7 +122,7 @@ public class EventManagerRenderer extends Pane implements IEngineAddon {
 		scrollPane.setBorder(Border.EMPTY);
 		scrollPane.minHeightProperty().bind(leftPanel.heightProperty());
 		scrollPane.maxHeightProperty().bind(leftPanel.heightProperty());
-		final ListChangeListener<EClass> eventTypesChangeListener = c -> {
+		final ListChangeListener<Event> eventTypesChangeListener = c -> {
 			while (c.next()) {
 				c.getRemoved().stream().forEach(e -> {
 					eventTypeToEventTableView.remove(e);
@@ -131,10 +131,10 @@ public class EventManagerRenderer extends Pane implements IEngineAddon {
 				c.getAddedSubList().stream().forEach(e -> {
 					final EventTableView tableView = new EventTableView(e, executedModel, eventManager);
 					eventTypeToEventTableView.put(e, tableView);
-					final List<EventInstance> selectedEvents = new ArrayList<>();
+					final List<EventOccurrence> selectedEvents = new ArrayList<>();
 					eventTypeToSelectedEvents.put(e, selectedEvents);
 
-					final ListChangeListener<EventInstance> selectedEventsChangeListener = c1 -> {
+					final ListChangeListener<EventOccurrence> selectedEventsChangeListener = c1 -> {
 						while (c1.next()) {
 							selectedEvents.removeAll(c1.getRemoved());
 							selectedEvents.addAll(c1.getAddedSubList());
@@ -154,12 +154,12 @@ public class EventManagerRenderer extends Pane implements IEngineAddon {
 	 * Sets the manager linked to this ui
 	 * @param eventManager the event manager
 	 */
-	public void setEventInterpreter(IEventManager eventManager) {
+	public void setEventManager(IEventManager eventManager) {
 		Runnable runnable = () -> {
 			this.eventManager = eventManager;
 			eventList.clear();
 			if (eventManager != null) {
-//				eventList.addAll(this.eventManager.getEventClasses());
+				eventList.addAll(this.eventManager.getEvents());
 			}
 		};
 		if (!Platform.isFxApplicationThread()) {
@@ -178,7 +178,7 @@ public class EventManagerRenderer extends Pane implements IEngineAddon {
 			final EventTableView tableView = e.getValue();
 			tableView.refreshEvents();
 		});
-		final EClass selectedItem = eventListView.getSelectionModel().getSelectedItem();
+		final Event selectedItem = eventListView.getSelectionModel().getSelectedItem();
 		if (selectedItem != null) {
 			final EventTableView selectedTableView = eventTypeToEventTableView.get(selectedItem);
 			if (selectedTableView != null) {
@@ -198,7 +198,7 @@ public class EventManagerRenderer extends Pane implements IEngineAddon {
 	public void engineInitialized(IExecutionEngine<?> executionEngine) {
 		Set<IEventManager> eventManagers = executionEngine.getAddonsTypedBy(IEventManager.class);
 		if (!eventManagers.isEmpty()) {
-			setEventInterpreter(eventManagers.iterator().next());
+			setEventManager(eventManagers.iterator().next());
 		}
 	}
 

@@ -49,7 +49,8 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 public class DSLLaunchConfigurationTab extends org.eclipse.gemoc.dsl.debug.ide.ui.launch.DSLLaunchConfigurationTab {
 
 	/**
-	 * The {@link Text} used for the * {@link AbstractDSLLaunchConfigurationDelegateSiriusUI#SIRIUS_RESOURCE_URI}.
+	 * The {@link Text} used for the
+	 * {@link AbstractDSLLaunchConfigurationDelegateSiriusUI#SIRIUS_RESOURCE_URI}.
 	 */
 	private Text siriusResourceURIText;
 

@@ -58,6 +58,8 @@ public abstract class AbstractExecutionEngine<C extends IExecutionContext<R, ?, 
 	protected boolean _started = false;
 	protected boolean _isStopped = false;
 
+	protected String _name;
+
 	public Thread thread;
 	public boolean stopOnAddonError = false;
 	public Throwable error = null;
@@ -121,7 +123,7 @@ public abstract class AbstractExecutionEngine<C extends IExecutionContext<R, ?, 
 	}
 
 	public String getName() {
-		return engineKindName() + " " + _executionContext.getRunConfiguration().getExecutedModelURI();
+		return _name == null ? engineKindName() + " " + _executionContext.getRunConfiguration().getExecutedModelURI() : _name;
 	}
 
 	private void addonError(IEngineAddon addon, Exception e) {
@@ -320,7 +322,7 @@ public abstract class AbstractExecutionEngine<C extends IExecutionContext<R, ?, 
 	public final void startSynchronous() {
 		try {
 			notifyEngineAboutToStart();
-			Activator.getDefault().gemocRunningEngineRegistry.registerEngine(getName(), AbstractExecutionEngine.this);
+			_name = Activator.getDefault().gemocRunningEngineRegistry.registerEngine(getName(), AbstractExecutionEngine.this);
 			setEngineStatus(EngineStatus.RunStatus.Running);
 			beforeStart();
 			notifyEngineStarted();
@@ -331,12 +333,10 @@ public abstract class AbstractExecutionEngine<C extends IExecutionContext<R, ?, 
 				// transaction
 				commitCurrentTransaction();
 			}
-
 		} catch (EngineStoppedException stopException) {
 			// not really an error, simply print the stop exception
 			// message
 			Activator.getDefault().info("Engine stopped by the user : " + stopException.getMessage());
-
 		} catch (Throwable e) {
 			error = e;
 			e.printStackTrace();

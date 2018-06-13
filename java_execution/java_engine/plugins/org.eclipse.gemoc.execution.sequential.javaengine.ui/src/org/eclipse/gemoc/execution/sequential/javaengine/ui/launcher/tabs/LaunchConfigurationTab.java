@@ -43,11 +43,12 @@ public abstract class LaunchConfigurationTab extends AbstractLaunchConfiguration
 	 * @param labelString
 	 *            the label of the input text to create
 	 */
-	protected void createTextLabelLayout(Composite parent, String labelString) {
+	protected Label createTextLabelLayout(Composite parent, String labelString) {
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		parent.setLayoutData(gd);
 		Label inputLabel = new Label(parent, SWT.NONE);
 		inputLabel.setText(labelString); //$NON-NLS-1$
+		return inputLabel;
 		//gd = new GridData();
 		//gd.horizontalSpan = 2;
 		//inputLabel.setLayoutData(gd);

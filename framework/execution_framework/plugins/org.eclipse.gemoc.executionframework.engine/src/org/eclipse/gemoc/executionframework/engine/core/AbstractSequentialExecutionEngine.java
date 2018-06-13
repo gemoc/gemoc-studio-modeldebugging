@@ -12,6 +12,7 @@ package org.eclipse.gemoc.executionframework.engine.core;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Set;
 
 import org.eclipse.emf.ecore.EClass;
@@ -78,7 +79,6 @@ public abstract class AbstractSequentialExecutionEngine<C extends IExecutionCont
 
 	@Override
 	protected final void performStart() {
-		initializeModel();
 		notifyEngineInitialized();
 		executeEntryPoint();
 		Activator.getDefault().info("Execution finished");
@@ -111,17 +111,21 @@ public abstract class AbstractSequentialExecutionEngine<C extends IExecutionCont
 	 * step was done through a RecordingCommand, it can be given.
 	 */
 	protected final void beforeExecutionStep(Object caller, String className, String operationName, RecordingCommand rc) {
+		beforeExecutionStep(caller, className, operationName, new Object[] {}, rc);
+	}
+	
+	protected final void beforeExecutionStep(Object caller, String className, String operationName, Object[] parameters, RecordingCommand rc) {
 		if (caller != null && caller instanceof EObject && editingDomain != null) {
 			// Call expected to be done from an EMF model, hence EObjects
 			EObject callerCast = (EObject) caller;
 			// We create a step
-			Step<?> step = createStep(callerCast, className, operationName);
+			Step<?> step = createStep(callerCast, className, parameters, operationName);
 
 			beforeExecutionStep(step, rc);
 		}
 	}
 
-	private Step<?> createStep(EObject caller, String className, String methodName) {
+	private Step<?> createStep(EObject caller, String className, Object[] parameters, String methodName) {
 		MSE mse = findOrCreateMSE(caller, className, methodName);
 		Step<?> result;
 		if (traceAddon == null) {
@@ -134,7 +138,7 @@ public abstract class AbstractSequentialExecutionEngine<C extends IExecutionCont
 		} else {
 			result = traceAddon.getFactory().createStep(mse, new ArrayList<Object>(), new ArrayList<Object>());
 		}
-
+		result.getMseoccurrence().getParameters().addAll(Arrays.asList(parameters));
 		return result;
 	}
 
@@ -232,7 +236,7 @@ public abstract class AbstractSequentialExecutionEngine<C extends IExecutionCont
 		}
 		return mse;
 	}
-
+	
 	@Override
 	protected void beforeStart() {
 
