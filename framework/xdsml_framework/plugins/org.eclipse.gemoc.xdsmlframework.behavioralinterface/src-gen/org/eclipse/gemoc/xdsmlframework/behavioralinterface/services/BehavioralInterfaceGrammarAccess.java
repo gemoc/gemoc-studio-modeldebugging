@@ -81,37 +81,46 @@ public class BehavioralInterfaceGrammarAccess extends AbstractGrammarElementFind
 		private final RuleCall cNameFQNParserRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
 		private final Keyword cRuleKeyword_2 = (Keyword)cGroup.eContents().get(2);
 		private final Keyword cEqualsSignKeyword_3 = (Keyword)cGroup.eContents().get(3);
-		private final Assignment cRuleAssignment_4 = (Assignment)cGroup.eContents().get(4);
-		private final RuleCall cRuleFQNParserRuleCall_4_0 = (RuleCall)cRuleAssignment_4.eContents().get(0);
-		private final Group cGroup_5 = (Group)cGroup.eContents().get(5);
-		private final Keyword cParamsKeyword_5_0 = (Keyword)cGroup_5.eContents().get(0);
-		private final Assignment cParamsAssignment_5_1 = (Assignment)cGroup_5.eContents().get(1);
-		private final RuleCall cParamsEventParameterParserRuleCall_5_1_0 = (RuleCall)cParamsAssignment_5_1.eContents().get(0);
-		private final Group cGroup_5_2 = (Group)cGroup_5.eContents().get(2);
-		private final Keyword cCommaKeyword_5_2_0 = (Keyword)cGroup_5_2.eContents().get(0);
-		private final Assignment cParamsAssignment_5_2_1 = (Assignment)cGroup_5_2.eContents().get(1);
-		private final RuleCall cParamsEventParameterParserRuleCall_5_2_1_0 = (RuleCall)cParamsAssignment_5_2_1.eContents().get(0);
-		private final Group cGroup_6 = (Group)cGroup.eContents().get(6);
-		private final Keyword cInterruptibleKeyword_6_0 = (Keyword)cGroup_6.eContents().get(0);
-		private final Keyword cEqualsSignKeyword_6_1 = (Keyword)cGroup_6.eContents().get(1);
-		private final Assignment cInterruptibleAssignment_6_2 = (Assignment)cGroup_6.eContents().get(2);
-		private final Alternatives cInterruptibleAlternatives_6_2_0 = (Alternatives)cInterruptibleAssignment_6_2.eContents().get(0);
-		private final Keyword cInterruptibleTrueKeyword_6_2_0_0 = (Keyword)cInterruptibleAlternatives_6_2_0.eContents().get(0);
-		private final Keyword cInterruptibleFalseKeyword_6_2_0_1 = (Keyword)cInterruptibleAlternatives_6_2_0.eContents().get(1);
+		private final Assignment cRuleDeclaringTypeAssignment_4 = (Assignment)cGroup.eContents().get(4);
+		private final RuleCall cRuleDeclaringTypeFQNParserRuleCall_4_0 = (RuleCall)cRuleDeclaringTypeAssignment_4.eContents().get(0);
+		private final Keyword cColonColonKeyword_5 = (Keyword)cGroup.eContents().get(5);
+		private final Assignment cRuleAssignment_6 = (Assignment)cGroup.eContents().get(6);
+		private final RuleCall cRuleIDTerminalRuleCall_6_0 = (RuleCall)cRuleAssignment_6.eContents().get(0);
 		private final Group cGroup_7 = (Group)cGroup.eContents().get(7);
-		private final Keyword cPreconditionKeyword_7_0 = (Keyword)cGroup_7.eContents().get(0);
+		private final Keyword cParamsKeyword_7_0 = (Keyword)cGroup_7.eContents().get(0);
 		private final Keyword cEqualsSignKeyword_7_1 = (Keyword)cGroup_7.eContents().get(1);
-		private final Assignment cPreconditionAssignment_7_2 = (Assignment)cGroup_7.eContents().get(2);
-		private final RuleCall cPreconditionFQNParserRuleCall_7_2_0 = (RuleCall)cPreconditionAssignment_7_2.eContents().get(0);
+		private final Assignment cParamsAssignment_7_2 = (Assignment)cGroup_7.eContents().get(2);
+		private final RuleCall cParamsEventParameterParserRuleCall_7_2_0 = (RuleCall)cParamsAssignment_7_2.eContents().get(0);
+		private final Group cGroup_7_3 = (Group)cGroup_7.eContents().get(3);
+		private final Keyword cCommaKeyword_7_3_0 = (Keyword)cGroup_7_3.eContents().get(0);
+		private final Assignment cParamsAssignment_7_3_1 = (Assignment)cGroup_7_3.eContents().get(1);
+		private final RuleCall cParamsEventParameterParserRuleCall_7_3_1_0 = (RuleCall)cParamsAssignment_7_3_1.eContents().get(0);
+		private final Group cGroup_8 = (Group)cGroup.eContents().get(8);
+		private final Keyword cInterruptibleKeyword_8_0 = (Keyword)cGroup_8.eContents().get(0);
+		private final Keyword cEqualsSignKeyword_8_1 = (Keyword)cGroup_8.eContents().get(1);
+		private final Assignment cInterruptibleAssignment_8_2 = (Assignment)cGroup_8.eContents().get(2);
+		private final Alternatives cInterruptibleAlternatives_8_2_0 = (Alternatives)cInterruptibleAssignment_8_2.eContents().get(0);
+		private final Keyword cInterruptibleTrueKeyword_8_2_0_0 = (Keyword)cInterruptibleAlternatives_8_2_0.eContents().get(0);
+		private final Keyword cInterruptibleFalseKeyword_8_2_0_1 = (Keyword)cInterruptibleAlternatives_8_2_0.eContents().get(1);
+		private final Group cGroup_9 = (Group)cGroup.eContents().get(9);
+		private final Keyword cPreconditionKeyword_9_0 = (Keyword)cGroup_9.eContents().get(0);
+		private final Keyword cEqualsSignKeyword_9_1 = (Keyword)cGroup_9.eContents().get(1);
+		private final Assignment cPreconditionDeclaringTypeAssignment_9_2 = (Assignment)cGroup_9.eContents().get(2);
+		private final RuleCall cPreconditionDeclaringTypeFQNParserRuleCall_9_2_0 = (RuleCall)cPreconditionDeclaringTypeAssignment_9_2.eContents().get(0);
+		private final Keyword cColonColonKeyword_9_3 = (Keyword)cGroup_9.eContents().get(3);
+		private final Assignment cPreconditionAssignment_9_4 = (Assignment)cGroup_9.eContents().get(4);
+		private final RuleCall cPreconditionIDTerminalRuleCall_9_4_0 = (RuleCall)cPreconditionAssignment_9_4.eContents().get(0);
 		
 		//InputEvent:
 		//	'input' name=FQN
-		//	'rule' '=' rule=FQN ('params' params+=EventParameter (',' params+=EventParameter)*)? ('interruptible' '='
-		//	interruptible?=('true' | 'false'))? ('precondition' '=' precondition=FQN)?;
+		//	'rule' '=' ruleDeclaringType=FQN '::' rule=ID ('params' '=' params+=EventParameter (',' params+=EventParameter)*)?
+		//	('interruptible' '=' interruptible?=('true' | 'false'))? ('precondition' '=' preconditionDeclaringType=FQN '::'
+		//	precondition=ID)?;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//'input' name=FQN 'rule' '=' rule=FQN ('params' params+=EventParameter (',' params+=EventParameter)*)? ('interruptible'
-		//'=' interruptible?=('true' | 'false'))? ('precondition' '=' precondition=FQN)?
+		//'input' name=FQN 'rule' '=' ruleDeclaringType=FQN '::' rule=ID ('params' '=' params+=EventParameter (','
+		//params+=EventParameter)*)? ('interruptible' '=' interruptible?=('true' | 'false'))? ('precondition' '='
+		//preconditionDeclaringType=FQN '::' precondition=ID)?
 		public Group getGroup() { return cGroup; }
 		
 		//'input'
@@ -129,71 +138,92 @@ public class BehavioralInterfaceGrammarAccess extends AbstractGrammarElementFind
 		//'='
 		public Keyword getEqualsSignKeyword_3() { return cEqualsSignKeyword_3; }
 		
-		//rule=FQN
-		public Assignment getRuleAssignment_4() { return cRuleAssignment_4; }
+		//ruleDeclaringType=FQN
+		public Assignment getRuleDeclaringTypeAssignment_4() { return cRuleDeclaringTypeAssignment_4; }
 		
 		//FQN
-		public RuleCall getRuleFQNParserRuleCall_4_0() { return cRuleFQNParserRuleCall_4_0; }
+		public RuleCall getRuleDeclaringTypeFQNParserRuleCall_4_0() { return cRuleDeclaringTypeFQNParserRuleCall_4_0; }
 		
-		//('params' params+=EventParameter (',' params+=EventParameter)*)?
-		public Group getGroup_5() { return cGroup_5; }
+		//'::'
+		public Keyword getColonColonKeyword_5() { return cColonColonKeyword_5; }
 		
-		//'params'
-		public Keyword getParamsKeyword_5_0() { return cParamsKeyword_5_0; }
+		//rule=ID
+		public Assignment getRuleAssignment_6() { return cRuleAssignment_6; }
 		
-		//params+=EventParameter
-		public Assignment getParamsAssignment_5_1() { return cParamsAssignment_5_1; }
+		//ID
+		public RuleCall getRuleIDTerminalRuleCall_6_0() { return cRuleIDTerminalRuleCall_6_0; }
 		
-		//EventParameter
-		public RuleCall getParamsEventParameterParserRuleCall_5_1_0() { return cParamsEventParameterParserRuleCall_5_1_0; }
-		
-		//(',' params+=EventParameter)*
-		public Group getGroup_5_2() { return cGroup_5_2; }
-		
-		//','
-		public Keyword getCommaKeyword_5_2_0() { return cCommaKeyword_5_2_0; }
-		
-		//params+=EventParameter
-		public Assignment getParamsAssignment_5_2_1() { return cParamsAssignment_5_2_1; }
-		
-		//EventParameter
-		public RuleCall getParamsEventParameterParserRuleCall_5_2_1_0() { return cParamsEventParameterParserRuleCall_5_2_1_0; }
-		
-		//('interruptible' '=' interruptible?=('true' | 'false'))?
-		public Group getGroup_6() { return cGroup_6; }
-		
-		//'interruptible'
-		public Keyword getInterruptibleKeyword_6_0() { return cInterruptibleKeyword_6_0; }
-		
-		//'='
-		public Keyword getEqualsSignKeyword_6_1() { return cEqualsSignKeyword_6_1; }
-		
-		//interruptible?=('true' | 'false')
-		public Assignment getInterruptibleAssignment_6_2() { return cInterruptibleAssignment_6_2; }
-		
-		//('true' | 'false')
-		public Alternatives getInterruptibleAlternatives_6_2_0() { return cInterruptibleAlternatives_6_2_0; }
-		
-		//'true'
-		public Keyword getInterruptibleTrueKeyword_6_2_0_0() { return cInterruptibleTrueKeyword_6_2_0_0; }
-		
-		//'false'
-		public Keyword getInterruptibleFalseKeyword_6_2_0_1() { return cInterruptibleFalseKeyword_6_2_0_1; }
-		
-		//('precondition' '=' precondition=FQN)?
+		//('params' '=' params+=EventParameter (',' params+=EventParameter)*)?
 		public Group getGroup_7() { return cGroup_7; }
 		
-		//'precondition'
-		public Keyword getPreconditionKeyword_7_0() { return cPreconditionKeyword_7_0; }
+		//'params'
+		public Keyword getParamsKeyword_7_0() { return cParamsKeyword_7_0; }
 		
 		//'='
 		public Keyword getEqualsSignKeyword_7_1() { return cEqualsSignKeyword_7_1; }
 		
-		//precondition=FQN
-		public Assignment getPreconditionAssignment_7_2() { return cPreconditionAssignment_7_2; }
+		//params+=EventParameter
+		public Assignment getParamsAssignment_7_2() { return cParamsAssignment_7_2; }
+		
+		//EventParameter
+		public RuleCall getParamsEventParameterParserRuleCall_7_2_0() { return cParamsEventParameterParserRuleCall_7_2_0; }
+		
+		//(',' params+=EventParameter)*
+		public Group getGroup_7_3() { return cGroup_7_3; }
+		
+		//','
+		public Keyword getCommaKeyword_7_3_0() { return cCommaKeyword_7_3_0; }
+		
+		//params+=EventParameter
+		public Assignment getParamsAssignment_7_3_1() { return cParamsAssignment_7_3_1; }
+		
+		//EventParameter
+		public RuleCall getParamsEventParameterParserRuleCall_7_3_1_0() { return cParamsEventParameterParserRuleCall_7_3_1_0; }
+		
+		//('interruptible' '=' interruptible?=('true' | 'false'))?
+		public Group getGroup_8() { return cGroup_8; }
+		
+		//'interruptible'
+		public Keyword getInterruptibleKeyword_8_0() { return cInterruptibleKeyword_8_0; }
+		
+		//'='
+		public Keyword getEqualsSignKeyword_8_1() { return cEqualsSignKeyword_8_1; }
+		
+		//interruptible?=('true' | 'false')
+		public Assignment getInterruptibleAssignment_8_2() { return cInterruptibleAssignment_8_2; }
+		
+		//('true' | 'false')
+		public Alternatives getInterruptibleAlternatives_8_2_0() { return cInterruptibleAlternatives_8_2_0; }
+		
+		//'true'
+		public Keyword getInterruptibleTrueKeyword_8_2_0_0() { return cInterruptibleTrueKeyword_8_2_0_0; }
+		
+		//'false'
+		public Keyword getInterruptibleFalseKeyword_8_2_0_1() { return cInterruptibleFalseKeyword_8_2_0_1; }
+		
+		//('precondition' '=' preconditionDeclaringType=FQN '::' precondition=ID)?
+		public Group getGroup_9() { return cGroup_9; }
+		
+		//'precondition'
+		public Keyword getPreconditionKeyword_9_0() { return cPreconditionKeyword_9_0; }
+		
+		//'='
+		public Keyword getEqualsSignKeyword_9_1() { return cEqualsSignKeyword_9_1; }
+		
+		//preconditionDeclaringType=FQN
+		public Assignment getPreconditionDeclaringTypeAssignment_9_2() { return cPreconditionDeclaringTypeAssignment_9_2; }
 		
 		//FQN
-		public RuleCall getPreconditionFQNParserRuleCall_7_2_0() { return cPreconditionFQNParserRuleCall_7_2_0; }
+		public RuleCall getPreconditionDeclaringTypeFQNParserRuleCall_9_2_0() { return cPreconditionDeclaringTypeFQNParserRuleCall_9_2_0; }
+		
+		//'::'
+		public Keyword getColonColonKeyword_9_3() { return cColonColonKeyword_9_3; }
+		
+		//precondition=ID
+		public Assignment getPreconditionAssignment_9_4() { return cPreconditionAssignment_9_4; }
+		
+		//ID
+		public RuleCall getPreconditionIDTerminalRuleCall_9_4_0() { return cPreconditionIDTerminalRuleCall_9_4_0; }
 	}
 	public class OutputEventElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.eclipse.gemoc.xdsmlframework.behavioralinterface.BehavioralInterface.OutputEvent");
@@ -201,26 +231,29 @@ public class BehavioralInterfaceGrammarAccess extends AbstractGrammarElementFind
 		private final Keyword cOutputKeyword_0 = (Keyword)cGroup.eContents().get(0);
 		private final Assignment cNameAssignment_1 = (Assignment)cGroup.eContents().get(1);
 		private final RuleCall cNameFQNParserRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
-		private final Keyword cColonKeyword_2 = (Keyword)cGroup.eContents().get(2);
-		private final Keyword cRuleKeyword_3 = (Keyword)cGroup.eContents().get(3);
-		private final Keyword cEqualsSignKeyword_4 = (Keyword)cGroup.eContents().get(4);
-		private final Assignment cRuleAssignment_5 = (Assignment)cGroup.eContents().get(5);
-		private final RuleCall cRuleFQNParserRuleCall_5_0 = (RuleCall)cRuleAssignment_5.eContents().get(0);
-		private final Group cGroup_6 = (Group)cGroup.eContents().get(6);
-		private final Keyword cParamsKeyword_6_0 = (Keyword)cGroup_6.eContents().get(0);
-		private final Assignment cParamsAssignment_6_1 = (Assignment)cGroup_6.eContents().get(1);
-		private final RuleCall cParamsEventParameterParserRuleCall_6_1_0 = (RuleCall)cParamsAssignment_6_1.eContents().get(0);
-		private final Group cGroup_6_2 = (Group)cGroup_6.eContents().get(2);
-		private final Keyword cCommaKeyword_6_2_0 = (Keyword)cGroup_6_2.eContents().get(0);
-		private final Assignment cParamsAssignment_6_2_1 = (Assignment)cGroup_6_2.eContents().get(1);
-		private final RuleCall cParamsEventParameterParserRuleCall_6_2_1_0 = (RuleCall)cParamsAssignment_6_2_1.eContents().get(0);
+		private final Keyword cRuleKeyword_2 = (Keyword)cGroup.eContents().get(2);
+		private final Keyword cEqualsSignKeyword_3 = (Keyword)cGroup.eContents().get(3);
+		private final Assignment cRuleDeclaringTypeAssignment_4 = (Assignment)cGroup.eContents().get(4);
+		private final RuleCall cRuleDeclaringTypeFQNParserRuleCall_4_0 = (RuleCall)cRuleDeclaringTypeAssignment_4.eContents().get(0);
+		private final Keyword cColonColonKeyword_5 = (Keyword)cGroup.eContents().get(5);
+		private final Assignment cRuleAssignment_6 = (Assignment)cGroup.eContents().get(6);
+		private final RuleCall cRuleIDTerminalRuleCall_6_0 = (RuleCall)cRuleAssignment_6.eContents().get(0);
+		private final Group cGroup_7 = (Group)cGroup.eContents().get(7);
+		private final Keyword cParamsKeyword_7_0 = (Keyword)cGroup_7.eContents().get(0);
+		private final Assignment cParamsAssignment_7_1 = (Assignment)cGroup_7.eContents().get(1);
+		private final RuleCall cParamsEventParameterParserRuleCall_7_1_0 = (RuleCall)cParamsAssignment_7_1.eContents().get(0);
+		private final Group cGroup_7_2 = (Group)cGroup_7.eContents().get(2);
+		private final Keyword cCommaKeyword_7_2_0 = (Keyword)cGroup_7_2.eContents().get(0);
+		private final Assignment cParamsAssignment_7_2_1 = (Assignment)cGroup_7_2.eContents().get(1);
+		private final RuleCall cParamsEventParameterParserRuleCall_7_2_1_0 = (RuleCall)cParamsAssignment_7_2_1.eContents().get(0);
 		
 		//OutputEvent:
-		//	'output' name=FQN ':'
-		//	'rule' '=' rule=FQN ('params' params+=EventParameter (',' params+=EventParameter)*)?;
+		//	'output' name=FQN
+		//	'rule' '=' ruleDeclaringType=FQN '::' rule=ID ('params' params+=EventParameter (',' params+=EventParameter)*)?;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//'output' name=FQN ':' 'rule' '=' rule=FQN ('params' params+=EventParameter (',' params+=EventParameter)*)?
+		//'output' name=FQN 'rule' '=' ruleDeclaringType=FQN '::' rule=ID ('params' params+=EventParameter (','
+		//params+=EventParameter)*)?
 		public Group getGroup() { return cGroup; }
 		
 		//'output'
@@ -232,60 +265,67 @@ public class BehavioralInterfaceGrammarAccess extends AbstractGrammarElementFind
 		//FQN
 		public RuleCall getNameFQNParserRuleCall_1_0() { return cNameFQNParserRuleCall_1_0; }
 		
-		//':'
-		public Keyword getColonKeyword_2() { return cColonKeyword_2; }
-		
 		//'rule'
-		public Keyword getRuleKeyword_3() { return cRuleKeyword_3; }
+		public Keyword getRuleKeyword_2() { return cRuleKeyword_2; }
 		
 		//'='
-		public Keyword getEqualsSignKeyword_4() { return cEqualsSignKeyword_4; }
+		public Keyword getEqualsSignKeyword_3() { return cEqualsSignKeyword_3; }
 		
-		//rule=FQN
-		public Assignment getRuleAssignment_5() { return cRuleAssignment_5; }
+		//ruleDeclaringType=FQN
+		public Assignment getRuleDeclaringTypeAssignment_4() { return cRuleDeclaringTypeAssignment_4; }
 		
 		//FQN
-		public RuleCall getRuleFQNParserRuleCall_5_0() { return cRuleFQNParserRuleCall_5_0; }
+		public RuleCall getRuleDeclaringTypeFQNParserRuleCall_4_0() { return cRuleDeclaringTypeFQNParserRuleCall_4_0; }
+		
+		//'::'
+		public Keyword getColonColonKeyword_5() { return cColonColonKeyword_5; }
+		
+		//rule=ID
+		public Assignment getRuleAssignment_6() { return cRuleAssignment_6; }
+		
+		//ID
+		public RuleCall getRuleIDTerminalRuleCall_6_0() { return cRuleIDTerminalRuleCall_6_0; }
 		
 		//('params' params+=EventParameter (',' params+=EventParameter)*)?
-		public Group getGroup_6() { return cGroup_6; }
+		public Group getGroup_7() { return cGroup_7; }
 		
 		//'params'
-		public Keyword getParamsKeyword_6_0() { return cParamsKeyword_6_0; }
+		public Keyword getParamsKeyword_7_0() { return cParamsKeyword_7_0; }
 		
 		//params+=EventParameter
-		public Assignment getParamsAssignment_6_1() { return cParamsAssignment_6_1; }
+		public Assignment getParamsAssignment_7_1() { return cParamsAssignment_7_1; }
 		
 		//EventParameter
-		public RuleCall getParamsEventParameterParserRuleCall_6_1_0() { return cParamsEventParameterParserRuleCall_6_1_0; }
+		public RuleCall getParamsEventParameterParserRuleCall_7_1_0() { return cParamsEventParameterParserRuleCall_7_1_0; }
 		
 		//(',' params+=EventParameter)*
-		public Group getGroup_6_2() { return cGroup_6_2; }
+		public Group getGroup_7_2() { return cGroup_7_2; }
 		
 		//','
-		public Keyword getCommaKeyword_6_2_0() { return cCommaKeyword_6_2_0; }
+		public Keyword getCommaKeyword_7_2_0() { return cCommaKeyword_7_2_0; }
 		
 		//params+=EventParameter
-		public Assignment getParamsAssignment_6_2_1() { return cParamsAssignment_6_2_1; }
+		public Assignment getParamsAssignment_7_2_1() { return cParamsAssignment_7_2_1; }
 		
 		//EventParameter
-		public RuleCall getParamsEventParameterParserRuleCall_6_2_1_0() { return cParamsEventParameterParserRuleCall_6_2_1_0; }
+		public RuleCall getParamsEventParameterParserRuleCall_7_2_1_0() { return cParamsEventParameterParserRuleCall_7_2_1_0; }
 	}
 	public class EventParameterElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.eclipse.gemoc.xdsmlframework.behavioralinterface.BehavioralInterface.EventParameter");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Assignment cNameAssignment_0 = (Assignment)cGroup.eContents().get(0);
 		private final RuleCall cNameFQNParserRuleCall_0_0 = (RuleCall)cNameAssignment_0.eContents().get(0);
-		private final Assignment cTypeAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final RuleCall cTypeFQNParserRuleCall_1_0 = (RuleCall)cTypeAssignment_1.eContents().get(0);
-		private final Assignment cManyAssignment_2 = (Assignment)cGroup.eContents().get(2);
-		private final Keyword cManyAsteriskKeyword_2_0 = (Keyword)cManyAssignment_2.eContents().get(0);
+		private final Keyword cColonKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Assignment cTypeAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final RuleCall cTypeFQNParserRuleCall_2_0 = (RuleCall)cTypeAssignment_2.eContents().get(0);
+		private final Assignment cManyAssignment_3 = (Assignment)cGroup.eContents().get(3);
+		private final Keyword cManyAsteriskKeyword_3_0 = (Keyword)cManyAssignment_3.eContents().get(0);
 		
 		//EventParameter:
-		//	name=FQN type=FQN many?='*';
+		//	name=FQN ':' type=FQN many?='*'?;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//name=FQN type=FQN many?='*'
+		//name=FQN ':' type=FQN many?='*'?
 		public Group getGroup() { return cGroup; }
 		
 		//name=FQN
@@ -294,17 +334,20 @@ public class BehavioralInterfaceGrammarAccess extends AbstractGrammarElementFind
 		//FQN
 		public RuleCall getNameFQNParserRuleCall_0_0() { return cNameFQNParserRuleCall_0_0; }
 		
+		//':'
+		public Keyword getColonKeyword_1() { return cColonKeyword_1; }
+		
 		//type=FQN
-		public Assignment getTypeAssignment_1() { return cTypeAssignment_1; }
+		public Assignment getTypeAssignment_2() { return cTypeAssignment_2; }
 		
 		//FQN
-		public RuleCall getTypeFQNParserRuleCall_1_0() { return cTypeFQNParserRuleCall_1_0; }
+		public RuleCall getTypeFQNParserRuleCall_2_0() { return cTypeFQNParserRuleCall_2_0; }
 		
-		//many?='*'
-		public Assignment getManyAssignment_2() { return cManyAssignment_2; }
+		//many?='*'?
+		public Assignment getManyAssignment_3() { return cManyAssignment_3; }
 		
 		//'*'
-		public Keyword getManyAsteriskKeyword_2_0() { return cManyAsteriskKeyword_2_0; }
+		public Keyword getManyAsteriskKeyword_3_0() { return cManyAsteriskKeyword_3_0; }
 	}
 	public class FQNElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "org.eclipse.gemoc.xdsmlframework.behavioralinterface.BehavioralInterface.FQN");
@@ -409,8 +452,9 @@ public class BehavioralInterfaceGrammarAccess extends AbstractGrammarElementFind
 	
 	//InputEvent:
 	//	'input' name=FQN
-	//	'rule' '=' rule=FQN ('params' params+=EventParameter (',' params+=EventParameter)*)? ('interruptible' '='
-	//	interruptible?=('true' | 'false'))? ('precondition' '=' precondition=FQN)?;
+	//	'rule' '=' ruleDeclaringType=FQN '::' rule=ID ('params' '=' params+=EventParameter (',' params+=EventParameter)*)?
+	//	('interruptible' '=' interruptible?=('true' | 'false'))? ('precondition' '=' preconditionDeclaringType=FQN '::'
+	//	precondition=ID)?;
 	public InputEventElements getInputEventAccess() {
 		return pInputEvent;
 	}
@@ -420,8 +464,8 @@ public class BehavioralInterfaceGrammarAccess extends AbstractGrammarElementFind
 	}
 	
 	//OutputEvent:
-	//	'output' name=FQN ':'
-	//	'rule' '=' rule=FQN ('params' params+=EventParameter (',' params+=EventParameter)*)?;
+	//	'output' name=FQN
+	//	'rule' '=' ruleDeclaringType=FQN '::' rule=ID ('params' params+=EventParameter (',' params+=EventParameter)*)?;
 	public OutputEventElements getOutputEventAccess() {
 		return pOutputEvent;
 	}
@@ -431,7 +475,7 @@ public class BehavioralInterfaceGrammarAccess extends AbstractGrammarElementFind
 	}
 	
 	//EventParameter:
-	//	name=FQN type=FQN many?='*';
+	//	name=FQN ':' type=FQN many?='*'?;
 	public EventParameterElements getEventParameterAccess() {
 		return pEventParameter;
 	}

@@ -13,6 +13,7 @@ package org.eclipse.gemoc.executionframework.engine.core;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.core.runtime.CoreException;
@@ -61,6 +62,10 @@ public class RunConfiguration implements IRunConfiguration {
 	}
 
 	protected Boolean getAttribute(String attributeName, Boolean defaultValue) throws CoreException {
+		return _launchConfiguration.getAttribute(attributeName, defaultValue);
+	}
+
+	protected Map<String, String> getAttribute(String attributeName, Map<String, String> defaultValue) throws CoreException {
 		return _launchConfiguration.getAttribute(attributeName, defaultValue);
 	}
 

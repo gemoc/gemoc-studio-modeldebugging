@@ -14,7 +14,7 @@ import org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup;
 import org.eclipse.debug.ui.CommonTab;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
-import org.eclipse.gemoc.execution.sequential.javaengine.ui.launcher.tabs.EventBasedLaunchConfigurationAddonsTab2;
+import org.eclipse.gemoc.execution.sequential.javaengine.ui.launcher.tabs.EventBasedLaunchConfigurationAddonsTab;
 import org.eclipse.gemoc.execution.sequential.javaengine.ui.launcher.tabs.EventBasedLaunchConfigurationMainTab;
 
 public class EventBasedLauncherTabGroup extends AbstractLaunchConfigurationTabGroup {
@@ -25,7 +25,7 @@ public class EventBasedLauncherTabGroup extends AbstractLaunchConfigurationTabGr
 	@Override
 	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
 		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] { new EventBasedLaunchConfigurationMainTab(),
-				new EventBasedLaunchConfigurationAddonsTab2(), new CommonTab() };
+				new EventBasedLaunchConfigurationAddonsTab(), new CommonTab() };
 		setTabs(tabs);
 	}
 

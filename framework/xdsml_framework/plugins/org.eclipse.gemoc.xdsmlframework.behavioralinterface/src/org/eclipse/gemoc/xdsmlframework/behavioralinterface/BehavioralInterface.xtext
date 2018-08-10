@@ -1,5 +1,8 @@
 grammar org.eclipse.gemoc.xdsmlframework.behavioralinterface.BehavioralInterface with org.eclipse.xtext.common.Terminals
 
+import "http://www.eclipse.org/xtext/common/JavaVMTypes" as jvmTypes
+import "http://www.eclipse.org/xtext/xbase/Xbase" as xbase
+
 generate behavioralInterface "http://www.eclipse.org/gemoc/xdsmlframework/behavioralinterface/BehavioralInterface"
 
 BehavioralInterface:
@@ -11,18 +14,18 @@ Event returns Event:
 
 InputEvent returns InputEvent:
 	'input' name=FQN
-	'rule' '=' rule=FQN
-	('params' params+=EventParameter (',' params+=EventParameter)*)?
+	'rule' '=' ruleDeclaringType=FQN '::' rule=ID
+	('params' '=' params+=EventParameter (',' params+=EventParameter)*)?
 	('interruptible' '=' interruptible?=('true'|'false'))?
-	('precondition' '=' precondition=FQN)?;
+	('precondition' '=' preconditionDeclaringType=FQN '::' precondition=ID)?;
 
 OutputEvent returns OutputEvent:
-	'output' name=FQN ':'
-	'rule' '=' rule=FQN
+	'output' name=FQN
+	'rule' '=' ruleDeclaringType=FQN '::' rule=ID
 	('params' params+=EventParameter (',' params+=EventParameter)*)?;
 
 EventParameter returns EventParameter:
-	name=FQN type=FQN (many?='*');
+	name=FQN ':' type=FQN (many?='*')?;
 
-FQN: ID ('.' ID)*;
-
+FQN:
+	ID('.' ID)*;

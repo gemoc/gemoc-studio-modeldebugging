@@ -10,10 +10,14 @@
  *******************************************************************************/
 package org.eclipse.gemoc.execution.sequential.javaengine.ui.launcher.tabs;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
@@ -29,6 +33,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.gemoc.commons.eclipse.emf.URIHelper;
 import org.eclipse.gemoc.commons.eclipse.ui.dialogs.SelectAnyIFileDialog;
 import org.eclipse.gemoc.commons.value.model.value.BooleanAttributeValue;
@@ -44,7 +49,6 @@ import org.eclipse.gemoc.commons.value.model.value.ValuePackage;
 import org.eclipse.gemoc.dsl.debug.ide.launch.AbstractDSLLaunchConfigurationDelegate;
 import org.eclipse.gemoc.dsl.debug.ide.sirius.ui.launch.AbstractDSLLaunchConfigurationDelegateSiriusUI;
 import org.eclipse.gemoc.execution.sequential.javaengine.EventBasedRunConfiguration;
-import org.eclipse.gemoc.execution.sequential.javaengine.PlainK3ExecutionEngine;
 import org.eclipse.gemoc.execution.sequential.javaengine.ui.Activator;
 import org.eclipse.gemoc.execution.sequential.javaengine.ui.launcher.LauncherMessages;
 import org.eclipse.gemoc.executionframework.engine.commons.DslHelper;
@@ -55,6 +59,8 @@ import org.eclipse.gemoc.executionframework.event.model.event.EventOccurrenceArg
 import org.eclipse.gemoc.executionframework.ui.utils.ENamedElementQualifiedNameLabelProvider;
 import org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.BehavioralInterface;
 import org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.Event;
+import org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.EventParameter;
+import org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.InputEvent;
 import org.eclipse.gemoc.xdsmlframework.ui.utils.dialogs.SelectAIRDIFileDialog;
 import org.eclipse.gemoc.xdsmlframework.ui.utils.dialogs.SelectAnyEObjectDialog;
 import org.eclipse.jface.dialogs.Dialog;
@@ -79,6 +85,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
+import org.osgi.framework.Bundle;
 
 /**
  * Sequential engine launch configuration main tab
@@ -87,34 +94,26 @@ import org.eclipse.ui.dialogs.ElementListSelectionDialog;
  */
 public class EventBasedLaunchConfigurationMainTab extends LaunchConfigurationTab {
 
-	protected Composite _parent;
+	private Text _modelLocationText;
+	private Text _animatorLocationText;
+	private Text _melangeQueryText;
+	private Button _animationFirstBreak;
+	private Button _waitForEvents;
+	private Text _startEventText;
+	private Combo _languageCombo;
 
-	protected Text _modelLocationText;
-	protected Text _siriusRepresentationLocationText;
-	protected Button _animateButton;
-	protected Text _delayText;
-	protected Text _melangeQueryText;
-	protected Button _animationFirstBreak;
-	protected Button _waitForEvents;
-	protected Text _startEventText;
-	protected Combo _languageCombo;
-
-	private BehavioralInterface behavioralInterface;
+	private BehavioralInterface _behavioralInterface;
+	private Bundle _bundle;
 
 	private EventOccurrence _startEventOccurrence = null;
 	private Group _startEventParametersGroup;
 	private final List<Text> _startEventParameters = new ArrayList<>();
 
+	private final Map<String, String> paramToArg = new HashMap<>();
 	private final Set<String> selectedEventEmitters = new HashSet<>();
-
-	/**
-	 * default width for the grids
-	 */
-	public int gridDefaultWidth = 200;
 
 	@Override
 	public void createControl(Composite parent) {
-		_parent = parent;
 		Composite area = new Composite(parent, SWT.NULL);
 		GridLayout gl = new GridLayout(1, false);
 		gl.marginHeight = 0;
@@ -150,26 +149,43 @@ public class EventBasedLaunchConfigurationMainTab extends LaunchConfigurationTab
 	@Override
 	public void initializeFrom(ILaunchConfiguration configuration) {
 		try {
-			EventBasedRunConfiguration runConfiguration = new EventBasedRunConfiguration(configuration);
-			_modelLocationText.setText(URIHelper.removePlatformScheme(runConfiguration.getExecutedModelURI()));
+			
+			clearStartEventGroup();
+			
+			final EventBasedRunConfiguration runConfiguration = new EventBasedRunConfiguration(configuration);
+			final URI modelUri = runConfiguration.getExecutedModelURI();
+			final URI animatorUri = runConfiguration.getAnimatorURI();
+			final String languageName = runConfiguration.getLanguageName();
 
-			if (runConfiguration.getAnimatorURI() != null)
-				_siriusRepresentationLocationText
-						.setText(URIHelper.removePlatformScheme(runConfiguration.getAnimatorURI()));
-			else
-				_siriusRepresentationLocationText.setText("");
+			if (modelUri != null) {
+				_modelLocationText.setText(URIHelper.removePlatformScheme(modelUri));
+			} else {
+				_modelLocationText.setText("");
+			}
 
-			_delayText.setText(Integer.toString(runConfiguration.getAnimationDelay()));
+			if (animatorUri != null) {
+				_animatorLocationText.setText(URIHelper.removePlatformScheme(animatorUri));
+			} else {
+				_animatorLocationText.setText("");
+			}
+
+			if (languageName != null) {
+				_languageCombo.setText(languageName);
+				loadLanguage(languageName);
+				if (_behavioralInterface != null) {
+					_startEventOccurrence = runConfiguration.getStartEventOccurrence();
+					if (_startEventOccurrence != null) {
+						_startEventText.setText(_startEventOccurrence.getEvent().getName());
+						loadEventOccurrenceParameters(_startEventParametersGroup, _startEventOccurrence);
+					}
+				}
+			} else {
+				_languageCombo.setText("");
+			}
+
 			_animationFirstBreak.setSelection(runConfiguration.getBreakStart());
 			_waitForEvents.setSelection(runConfiguration.getWaitForEvent());
 
-			final String languageName = runConfiguration.getLanguageName();
-			_languageCombo.setText(languageName);
-			behavioralInterface = EventBasedDslHelper.getBehavioralInterface(languageName);
-			final EventOccurrence startEvent = runConfiguration.getStartEventOccurrence();
-			if (startEvent != null) {
-				loadEventOccurrenceParameters(_startEventParametersGroup, startEvent);
-			}
 		} catch (CoreException e) {
 			Activator.error(e.getMessage(), e);
 		}
@@ -177,20 +193,20 @@ public class EventBasedLaunchConfigurationMainTab extends LaunchConfigurationTab
 
 	@Override
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
-		configuration.setAttribute(AbstractDSLLaunchConfigurationDelegate.RESOURCE_URI,
-				this._modelLocationText.getText());
-		configuration.setAttribute(AbstractDSLLaunchConfigurationDelegateSiriusUI.SIRIUS_RESOURCE_URI,
-				this._siriusRepresentationLocationText.getText());
-		final String delayText = _delayText.getText();
-		if (!delayText.isEmpty()) {
-			configuration.setAttribute(EventBasedRunConfiguration.LAUNCH_DELAY, Integer.parseInt(delayText));
-		}
+		configuration.setAttribute(EventBasedRunConfiguration.DEBUG_MODEL_ID, Activator.DEBUG_MODEL_ID);
 		configuration.setAttribute(EventBasedRunConfiguration.LAUNCH_SELECTED_LANGUAGE, _languageCombo.getText());
 		configuration.setAttribute(EventBasedRunConfiguration.LAUNCH_MELANGE_QUERY, _melangeQueryText.getText());
 		configuration.setAttribute(EventBasedRunConfiguration.LAUNCH_BREAK_START, _animationFirstBreak.getSelection());
 		configuration.setAttribute(EventBasedRunConfiguration.WAIT_FOR_EVENT, _waitForEvents.getSelection());
-		configuration.setAttribute(EventBasedRunConfiguration.START_EVENT_URI, _startEventText.getText());
-		configuration.setAttribute(EventBasedRunConfiguration.DEBUG_MODEL_ID, Activator.DEBUG_MODEL_ID);
+		configuration.setAttribute(AbstractDSLLaunchConfigurationDelegate.RESOURCE_URI,
+				this._modelLocationText.getText());
+		configuration.setAttribute(AbstractDSLLaunchConfigurationDelegateSiriusUI.SIRIUS_RESOURCE_URI,
+				this._animatorLocationText.getText());
+		if (_startEventOccurrence != null) {
+			final Event event = _startEventOccurrence.getEvent();
+			configuration.setAttribute(EventBasedRunConfiguration.START_EVENT, event.getName());
+			configuration.setAttribute(EventBasedRunConfiguration.START_EVENT_OCCURRENCE_ARGS, paramToArg);
+		}
 	}
 
 	@Override
@@ -205,7 +221,7 @@ public class EventBasedLaunchConfigurationMainTab extends LaunchConfigurationTab
 	 */
 	private ModifyListener fBasicModifyListener = new ModifyListener() {
 		@Override
-		public void modifyText(ModifyEvent arg0) {
+		public void modifyText(ModifyEvent e) {
 			updateLaunchConfigurationDialog();
 		}
 	};
@@ -232,8 +248,6 @@ public class EventBasedLaunchConfigurationMainTab extends LaunchConfigurationTab
 		modelLocationButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent evt) {
-				// handleModelLocationButtonSelected();
-				// TODO launch the appropriate selector
 				SelectAnyIFileDialog dialog = new SelectAnyIFileDialog();
 				if (dialog.open() == Dialog.OK) {
 					String modelPath = ((IResource) dialog.getResult()[0]).getFullPath().toPortableString();
@@ -250,35 +264,22 @@ public class EventBasedLaunchConfigurationMainTab extends LaunchConfigurationTab
 	private Composite createAnimationLayout(Composite parent, Font font) {
 		createTextLabelLayout(parent, "Animator");
 
-		_siriusRepresentationLocationText = new Text(parent, SWT.SINGLE | SWT.BORDER);
-		_siriusRepresentationLocationText.setLayoutData(createStandardLayout());
-		_siriusRepresentationLocationText.setFont(font);
-		_siriusRepresentationLocationText.addModifyListener(fBasicModifyListener);
+		_animatorLocationText = new Text(parent, SWT.SINGLE | SWT.BORDER);
+		_animatorLocationText.setLayoutData(createStandardLayout());
+		_animatorLocationText.setFont(font);
+		_animatorLocationText.addModifyListener(fBasicModifyListener);
 		Button siriusRepresentationLocationButton = createPushButton(parent, "Browse", null);
 		siriusRepresentationLocationButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent evt) {
-				// handleModelLocationButtonSelected();
-				// TODO launch the appropriate selector
 				SelectAIRDIFileDialog dialog = new SelectAIRDIFileDialog();
 				if (dialog.open() == Dialog.OK) {
 					String modelPath = ((IResource) dialog.getResult()[0]).getFullPath().toPortableString();
-					_siriusRepresentationLocationText.setText(modelPath);
+					_animatorLocationText.setText(modelPath);
 					updateLaunchConfigurationDialog();
 				}
 			}
 		});
-
-		createTextLabelLayout(parent, "Delay");
-		_delayText = new Text(parent, SWT.SINGLE | SWT.BORDER);
-		_delayText.setLayoutData(createStandardLayout());
-		_delayText.addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent e) {
-				updateLaunchConfigurationDialog();
-			}
-		});
-		createTextLabelLayout(parent, "(in milliseconds)");
 
 		new Label(parent, SWT.NONE).setText("");
 		_animationFirstBreak = new Button(parent, SWT.CHECK);
@@ -320,7 +321,7 @@ public class EventBasedLaunchConfigurationMainTab extends LaunchConfigurationTab
 			public void widgetSelected(SelectionEvent e) {
 				// String selection = _languageCombo.getText();
 				// List<String> modelTypeNames = MelangeHelper.getModelTypes(selection);
-				behavioralInterface = EventBasedDslHelper.getBehavioralInterface(_languageCombo.getText());
+				loadLanguage(_languageCombo.getText());
 				updateLaunchConfigurationDialog();
 			}
 		});
@@ -336,10 +337,15 @@ public class EventBasedLaunchConfigurationMainTab extends LaunchConfigurationTab
 		return parent;
 	}
 
+	private void loadLanguage(String languageName) {
+		_behavioralInterface = EventBasedDslHelper.getBehavioralInterface(languageName);
+		_bundle = DslHelper.getDslBundle(languageName);
+	}
+
 	private ElementListSelectionDialog getStartEventSelectionDialog() {
 		final Set<Event> events = new HashSet<>();
-		if (behavioralInterface != null) {
-			events.addAll(behavioralInterface.getEvents());
+		if (_behavioralInterface != null) {
+			events.addAll(_behavioralInterface.getEvents());
 		}
 
 		final ILabelProvider labelProvider = new LabelProvider() {
@@ -360,10 +366,11 @@ public class EventBasedLaunchConfigurationMainTab extends LaunchConfigurationTab
 		return dialog;
 	}
 
-	private void addStartEventParameterRow(Composite parent, String name, Class<?> type, String param) {
+	private void addStartEventParameterRow(Composite parent, EventParameter param, Class<?> type, String arg) {
 		if (type == null) {
 			// TODO error
 		} else {
+			final String name = param.getName() + ": " + type.getSimpleName();
 			createTextLabelLayout(parent, name);
 			final Text text = new Text(parent, SWT.SINGLE | SWT.BORDER);
 			_startEventParameters.add(text);
@@ -373,7 +380,7 @@ public class EventBasedLaunchConfigurationMainTab extends LaunchConfigurationTab
 				createTextLabelLayout(parent, "");
 			} else {
 				text.setEditable(false);
-				final Button parameterBrowseButton = createPushButton(parent, "Browse", null);
+				final Button parameterBrowseButton = createPushButton(parent, "Browse Model", null);
 				parameterBrowseButton.addSelectionListener(new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
 						Resource model = getModel();
@@ -401,8 +408,18 @@ public class EventBasedLaunchConfigurationMainTab extends LaunchConfigurationTab
 					}
 				});
 			}
-			text.setText(param);
-			text.addModifyListener(fBasicModifyListener);
+			text.setText(arg);
+			paramToArg.put(param.getName(), arg);
+			
+			ModifyListener argModifyListener = new ModifyListener() {
+				@Override
+				public void modifyText(ModifyEvent e) {
+					paramToArg.put(param.getName(), text.getText());
+					updateLaunchConfigurationDialog();
+				}
+			};
+			
+			text.addModifyListener(argModifyListener);
 		}
 	}
 
@@ -412,44 +429,53 @@ public class EventBasedLaunchConfigurationMainTab extends LaunchConfigurationTab
 		event.getParams().forEach(p -> {
 			args.stream().filter(a -> p == a.getParameter()).findFirst().ifPresent(a -> {
 				Value value = a.getValue();
-				String param = "";
+				String arg = "";
 				Class<?> type = null;
 				switch (value.eClass().getClassifierID()) {
 				case ValuePackage.SINGLE_REFERENCE_VALUE:
 					final EObject o = ((SingleReferenceValue) value).getReferenceValue();
-					param = "" + o.eResource().getURIFragment(o);
-					type = o.eClass().getInstanceClass();
+					if (o == null) {
+						arg = "";
+						try {
+							type = _bundle.loadClass(p.getType());
+						} catch (ClassNotFoundException e) {
+							e.printStackTrace();
+						}
+					} else {
+						arg = "" + o.eResource().getURIFragment(o);
+						type = o.eClass().getInstanceClass();
+					}
 					break;
 				case ValuePackage.BOOLEAN_ATTRIBUTE_VALUE:
-					param = "" + ((BooleanAttributeValue) value).isAttributeValue();
+					arg = "" + ((BooleanAttributeValue) value).isAttributeValue();
 					type = Boolean.class;
 					break;
 				case ValuePackage.BOOLEAN_OBJECT_ATTRIBUTE_VALUE:
-					param = "" + ((BooleanObjectAttributeValue) value).getAttributeValue();
+					arg = "" + ((BooleanObjectAttributeValue) value).getAttributeValue();
 					type = Boolean.class;
 					break;
 				case ValuePackage.INTEGER_ATTRIBUTE_VALUE:
-					param = "" + ((IntegerAttributeValue) value).getAttributeValue();
+					arg = "" + ((IntegerAttributeValue) value).getAttributeValue();
 					type = Integer.class;
 					break;
 				case ValuePackage.INTEGER_OBJECT_ATTRIBUTE_VALUE:
-					param = "" + ((IntegerObjectAttributeValue) value).getAttributeValue();
+					arg = "" + ((IntegerObjectAttributeValue) value).getAttributeValue();
 					type = Integer.class;
 					break;
 				case ValuePackage.FLOAT_ATTRIBUTE_VALUE:
-					param = "" + ((FloatAttributeValue) value).getAttributeValue();
+					arg = "" + ((FloatAttributeValue) value).getAttributeValue();
 					type = Float.class;
 					break;
 				case ValuePackage.FLOAT_OBJECT_ATTRIBUTE_VALUE:
-					param = "" + ((FloatObjectAttributeValue) value).getAttributeValue();
+					arg = "" + ((FloatObjectAttributeValue) value).getAttributeValue();
 					type = Float.class;
 					break;
 				case ValuePackage.STRING_ATTRIBUTE_VALUE:
-					param = "" + ((StringAttributeValue) value).getAttributeValue();
+					arg = "" + ((StringAttributeValue) value).getAttributeValue();
 					type = String.class;
 					break;
 				}
-				addStartEventParameterRow(parent, type.getSimpleName(), type, param);
+				addStartEventParameterRow(parent, p, type, arg);
 			});
 		});
 		final GridData gridData = createStandardLayout();
@@ -488,9 +514,11 @@ public class EventBasedLaunchConfigurationMainTab extends LaunchConfigurationTab
 					final ElementListSelectionDialog dialog = getStartEventSelectionDialog();
 					int res = dialog.open();
 					if (res == WizardDialog.OK) {
-						if (_startEventOccurrence == null || !_startEventOccurrence.equals(dialog.getFirstResult())) {
+						final InputEvent event = (InputEvent) (dialog.getFirstResult());
+						if (_startEventOccurrence == null || !_startEventOccurrence.getEvent().equals(event)) {
 							clearStartEventGroup();
-							_startEventOccurrence = (EventOccurrence) (dialog.getFirstResult());
+							_startEventText.setText(event.getName());
+							_startEventOccurrence = EventBasedDslHelper.createEventOccurrence(event);
 							loadEventOccurrenceParameters(_startEventParametersGroup, _startEventOccurrence);
 							parent.requestLayout();
 							updateLaunchConfigurationDialog();
@@ -506,6 +534,7 @@ public class EventBasedLaunchConfigurationMainTab extends LaunchConfigurationTab
 	private void clearStartEventGroup() {
 		Arrays.asList(_startEventParametersGroup.getChildren()).forEach(c -> c.dispose());
 		_startEventParameters.clear();
+		_startEventText.setText("");
 	}
 
 	private Composite createEventEmittersLayout(Composite parent, Font font,
@@ -542,14 +571,7 @@ public class EventBasedLaunchConfigurationMainTab extends LaunchConfigurationTab
 		super.updateLaunchConfigurationDialog();
 		_melangeQueryText.setText(computeMelangeQuery());
 	}
-
-	/**
-	 * compute the Melange query for loading the given model as the requested
-	 * language If the language is already the good one, the query will be empty.
-	 * (ie. melange downcast is not used)
-	 * 
-	 * @return
-	 */
+	
 	protected String computeMelangeQuery() {
 		String result = "";
 		String languageName = this._languageCombo.getText();
@@ -578,9 +600,21 @@ public class EventBasedLaunchConfigurationMainTab extends LaunchConfigurationTab
 	private Resource currentModelResource;
 
 	private Resource getModel() {
-		URI modelURI = URI.createPlatformResourceURI(_modelLocationText.getText(), true);
-		if (currentModelResource == null || !currentModelResource.getURI().equals(modelURI)) {
-			currentModelResource = PlainK3ExecutionEngine.loadModel(modelURI);
+		final String uri = _modelLocationText.getText();
+		if (uri.isEmpty()) {
+			currentModelResource = null;
+		} else {
+			URI modelURI = URI.createPlatformResourceURI(_modelLocationText.getText(), true);
+			if (currentModelResource == null || !currentModelResource.getURI().equals(modelURI)) {
+				ResourceSet resourceSet = new ResourceSetImpl();
+				currentModelResource = resourceSet.createResource(modelURI);
+				try {
+					currentModelResource.load(Collections.emptyMap());
+				} catch (IOException e) {
+					e.printStackTrace();
+					currentModelResource = null;
+				}
+			}
 		}
 		return currentModelResource;
 	}

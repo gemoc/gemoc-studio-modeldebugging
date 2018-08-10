@@ -10,11 +10,17 @@
  *******************************************************************************/
 package org.eclipse.gemoc.execution.sequential.javaengine;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.impl.InternalTransactionalEditingDomain;
+import org.eclipse.gemoc.commons.value.model.value.ManyReferenceValue;
+import org.eclipse.gemoc.commons.value.model.value.SingleReferenceValue;
+import org.eclipse.gemoc.commons.value.model.value.Value;
 import org.eclipse.gemoc.executionframework.engine.core.AbstractCommandBasedSequentialExecutionEngine;
 import org.eclipse.gemoc.executionframework.engine.core.EngineStoppedException;
 import org.eclipse.gemoc.executionframework.event.manager.GenericEventManager;
@@ -28,7 +34,7 @@ import fr.inria.diverse.k3.al.annotationprocessor.stepmanager.StepCommand;
 import fr.inria.diverse.k3.al.annotationprocessor.stepmanager.StepManagerRegistry;
 
 public class EventBasedExecutionEngine extends
-		AbstractCommandBasedSequentialExecutionEngine<SequentialModelExecutionContext<EventBasedRunConfiguration>, EventBasedRunConfiguration>
+		AbstractCommandBasedSequentialExecutionEngine<EventBasedModelExecutionContext, EventBasedRunConfiguration>
 		implements IStepManager {
 
 	private GenericEventManager eventManager = null;
@@ -151,13 +157,27 @@ public class EventBasedExecutionEngine extends
 		return false;
 	}
 
-	private void convertEventToExecutedResource(EventOccurrence event, Resource executedResource) {
-		event.eClass().getEAllReferences().forEach(r -> {
-			final EObject parameter = (EObject) event.eGet(r);
-			final Resource parameterResource = parameter.eResource();
-			final String uriFragment = parameterResource.getURIFragment(parameter);
-			final EObject effectiveParameter = executedResource.getEObject(uriFragment);
-			event.eSet(r, effectiveParameter);
+	private void convertEventToExecutedResource(EventOccurrence eventOccurrence, Resource executedResource) {
+		eventOccurrence.getArgs().forEach(a -> {
+			final Value value = a.getValue();
+			if (value instanceof SingleReferenceValue) {
+				final SingleReferenceValue v = ((SingleReferenceValue) value);
+				final EObject parameter = v.getReferenceValue();
+				final Resource parameterResource = parameter.eResource();
+				final String uriFragment = parameterResource.getURIFragment(parameter);
+				final EObject effectiveParameter = executedResource.getEObject(uriFragment);
+				v.setReferenceValue(effectiveParameter);
+			} else if (value instanceof ManyReferenceValue) {
+				final ManyReferenceValue v = ((ManyReferenceValue) value);
+				final List<EObject> parameters = v.getReferenceValues();
+				final List<EObject> effectiveParameters = parameters.stream().map(p -> {
+					final Resource parameterResource = p.eResource();
+					final String uriFragment = parameterResource.getURIFragment(p);
+					return executedResource.getEObject(uriFragment);
+				}).collect(Collectors.toList());
+				parameters.clear();
+				parameters.addAll(effectiveParameters);
+			}
 		});
 	}
 
@@ -180,13 +200,12 @@ public class EventBasedExecutionEngine extends
 	}
 
 	@Override
-	protected void prepareEntryPoint(SequentialModelExecutionContext<EventBasedRunConfiguration> executionContext) {
+	protected void prepareEntryPoint(EventBasedModelExecutionContext executionContext) {
 		// TODO Auto-generated method stub
 	}
 
 	@Override
-	protected void prepareInitializeModel(
-			SequentialModelExecutionContext<EventBasedRunConfiguration> executionContext) {
+	protected void prepareInitializeModel(EventBasedModelExecutionContext executionContext) {
 		// TODO Auto-generated method stub
 	}
 }

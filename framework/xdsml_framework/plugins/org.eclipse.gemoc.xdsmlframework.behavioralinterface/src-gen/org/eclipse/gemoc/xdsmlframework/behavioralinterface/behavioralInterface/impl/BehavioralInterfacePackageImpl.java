@@ -179,7 +179,7 @@ public class BehavioralInterfacePackageImpl extends EPackageImpl implements Beha
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getEvent_Rule()
+  public EAttribute getEvent_RuleDeclaringType()
   {
     return (EAttribute)eventEClass.getEStructuralFeatures().get(1);
   }
@@ -189,9 +189,19 @@ public class BehavioralInterfacePackageImpl extends EPackageImpl implements Beha
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getEvent_Rule()
+  {
+    return (EAttribute)eventEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EReference getEvent_Params()
   {
-    return (EReference)eventEClass.getEStructuralFeatures().get(2);
+    return (EReference)eventEClass.getEStructuralFeatures().get(3);
   }
 
   /**
@@ -219,9 +229,19 @@ public class BehavioralInterfacePackageImpl extends EPackageImpl implements Beha
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getInputEvent_Precondition()
+  public EAttribute getInputEvent_PreconditionDeclaringType()
   {
     return (EAttribute)inputEventEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getInputEvent_Precondition()
+  {
+    return (EAttribute)inputEventEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -310,11 +330,13 @@ public class BehavioralInterfacePackageImpl extends EPackageImpl implements Beha
 
     eventEClass = createEClass(EVENT);
     createEAttribute(eventEClass, EVENT__NAME);
+    createEAttribute(eventEClass, EVENT__RULE_DECLARING_TYPE);
     createEAttribute(eventEClass, EVENT__RULE);
     createEReference(eventEClass, EVENT__PARAMS);
 
     inputEventEClass = createEClass(INPUT_EVENT);
     createEAttribute(inputEventEClass, INPUT_EVENT__INTERRUPTIBLE);
+    createEAttribute(inputEventEClass, INPUT_EVENT__PRECONDITION_DECLARING_TYPE);
     createEAttribute(inputEventEClass, INPUT_EVENT__PRECONDITION);
 
     outputEventEClass = createEClass(OUTPUT_EVENT);
@@ -364,11 +386,13 @@ public class BehavioralInterfacePackageImpl extends EPackageImpl implements Beha
 
     initEClass(eventEClass, Event.class, "Event", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getEvent_Name(), ecorePackage.getEString(), "name", null, 0, 1, Event.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getEvent_RuleDeclaringType(), ecorePackage.getEString(), "ruleDeclaringType", null, 0, 1, Event.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getEvent_Rule(), ecorePackage.getEString(), "rule", null, 0, 1, Event.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getEvent_Params(), this.getEventParameter(), null, "params", null, 0, -1, Event.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(inputEventEClass, InputEvent.class, "InputEvent", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getInputEvent_Interruptible(), ecorePackage.getEBoolean(), "interruptible", null, 0, 1, InputEvent.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getInputEvent_PreconditionDeclaringType(), ecorePackage.getEString(), "preconditionDeclaringType", null, 0, 1, InputEvent.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getInputEvent_Precondition(), ecorePackage.getEString(), "precondition", null, 0, 1, InputEvent.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(outputEventEClass, OutputEvent.class, "OutputEvent", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);

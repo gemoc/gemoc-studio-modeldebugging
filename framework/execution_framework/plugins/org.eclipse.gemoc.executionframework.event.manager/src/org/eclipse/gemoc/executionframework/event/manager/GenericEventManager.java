@@ -1,10 +1,5 @@
 package org.eclipse.gemoc.executionframework.event.manager;
 
-import java.lang.invoke.CallSite;
-import java.lang.invoke.LambdaConversionException;
-import java.lang.invoke.LambdaMetafactory;
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -25,6 +20,16 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.gemoc.commons.value.model.value.BooleanAttributeValue;
+import org.eclipse.gemoc.commons.value.model.value.BooleanObjectAttributeValue;
+import org.eclipse.gemoc.commons.value.model.value.FloatAttributeValue;
+import org.eclipse.gemoc.commons.value.model.value.FloatObjectAttributeValue;
+import org.eclipse.gemoc.commons.value.model.value.IntegerAttributeValue;
+import org.eclipse.gemoc.commons.value.model.value.IntegerObjectAttributeValue;
+import org.eclipse.gemoc.commons.value.model.value.SingleReferenceValue;
+import org.eclipse.gemoc.commons.value.model.value.StringAttributeValue;
+import org.eclipse.gemoc.commons.value.model.value.Value;
+import org.eclipse.gemoc.commons.value.model.value.ValuePackage;
 import org.eclipse.gemoc.dsl.Dsl;
 import org.eclipse.gemoc.executionframework.event.model.event.EventFactory;
 import org.eclipse.gemoc.executionframework.event.model.event.EventOccurrence;
@@ -52,9 +57,9 @@ public class GenericEventManager implements IEventManager {
 
 	private BehavioralInterface behavioralInterface;
 
-	private Map<Event, MethodHandle> eventToMethod = new HashMap<>();
+	private Map<String, Method> eventNameToMethod = new HashMap<>();
 
-	private Map<Event, MethodHandle> eventToPrecondition = new HashMap<>();
+	private Map<Event, Method> eventToPrecondition = new HashMap<>();
 
 	public GenericEventManager(String languageName) {
 		loadLanguage(languageName);
@@ -73,7 +78,7 @@ public class GenericEventManager implements IEventManager {
 	@Override
 	public boolean canSendEvent(EventOccurrence eventOccurrence) {
 		final Event event = eventOccurrence.getEvent();
-		final MethodHandle precondition = eventToPrecondition.get(event);
+		final Method precondition = eventToPrecondition.get(event);
 		if (precondition != null && !((Boolean) performCall(precondition))) {
 			return false;
 		} else {
@@ -111,7 +116,7 @@ public class GenericEventManager implements IEventManager {
 					eventOccurrence = inputEventOccurrenceQueue.poll();
 				}
 				while (eventOccurrence != null) {
-					final boolean interruptible = false;// TODO event.getEvent().interruptible;
+					final boolean interruptible = ((InputEvent) eventOccurrence.getEvent()).isInterruptible();
 					if (!interruptible) {
 						canManageEvents = false;
 						dispatchEvent(eventOccurrence);
@@ -134,21 +139,18 @@ public class GenericEventManager implements IEventManager {
 	public void stepExecuted(IExecutionEngine<?> engine, Step<?> stepExecuted) {
 		final MSEOccurrence mseOcc = stepExecuted.getMseoccurrence();
 		final MSE mse = mseOcc.getMse();
-		behavioralInterface.getEvents().stream()
-				.filter(e -> e instanceof OutputEvent)
-				.filter(e -> e.getRule().substring(e.getRule().lastIndexOf(".")).equals(mse.getAction().getName()))
+		behavioralInterface.getEvents().stream().filter(e -> e instanceof OutputEvent)
+				.filter(e -> e.getRule().equals(mse.getAction().getName()))
 				.findFirst().map(e -> {
 					final EventOccurrence occ = EventFactory.eINSTANCE.createEventOccurrence();
 					occ.setEvent(e);
 					return occ;
-				})
-				.ifPresent(occ -> listeners.forEach(l -> l.eventReceived(occ)));
+				}).ifPresent(occ -> listeners.forEach(l -> l.eventReceived(occ)));
 	}
 
 	@Override
 	public Set<Event> getEvents() {
-		return behavioralInterface == null ? Collections.emptySet()
-				: new HashSet<>(behavioralInterface.getEvents());
+		return behavioralInterface == null ? Collections.emptySet() : new HashSet<>(behavioralInterface.getEvents());
 	}
 
 	@Override
@@ -158,25 +160,52 @@ public class GenericEventManager implements IEventManager {
 
 	private void dispatchEvent(EventOccurrence eventOccurrence) {
 		if (eventOccurrence.eClass().equals(EventPackage.Literals.STOP_EVENT_OCCURRENCE)) {
-			
+
 		} else {
 			final Event event = eventOccurrence.getEvent();
-			final MethodHandle rule = eventToMethod.get(event);
+			final Method rule = eventNameToMethod.get(event.getName());
 			if (canSendEvent(eventOccurrence)) {
-				performCall(rule);
+				performCall(rule, eventOccurrence.getArgs().stream().map(a -> {
+					final Value value = a.getValue();
+					Object effectiveValue = null;
+					switch(value.eClass().getClassifierID()) {
+					case ValuePackage.SINGLE_REFERENCE_VALUE:
+						effectiveValue = ((SingleReferenceValue) value).getReferenceValue();
+						break;
+					case ValuePackage.BOOLEAN_ATTRIBUTE_VALUE:
+						effectiveValue = ((BooleanAttributeValue) value).isAttributeValue();
+						break;
+					case ValuePackage.BOOLEAN_OBJECT_ATTRIBUTE_VALUE:
+						effectiveValue = ((BooleanObjectAttributeValue) value).getAttributeValue();
+						break;
+					case ValuePackage.INTEGER_ATTRIBUTE_VALUE:
+						effectiveValue = ((IntegerAttributeValue) value).getAttributeValue();
+						break;
+					case ValuePackage.INTEGER_OBJECT_ATTRIBUTE_VALUE:
+						effectiveValue = ((IntegerObjectAttributeValue) value).getAttributeValue();
+						break;
+					case ValuePackage.FLOAT_ATTRIBUTE_VALUE:
+						effectiveValue = ((FloatAttributeValue) value).getAttributeValue();
+						break;
+					case ValuePackage.FLOAT_OBJECT_ATTRIBUTE_VALUE:
+						effectiveValue = ((FloatObjectAttributeValue) value).getAttributeValue();
+						break;
+					case ValuePackage.STRING_ATTRIBUTE_VALUE:
+						effectiveValue = ((StringAttributeValue) value).getAttributeValue();
+						break;
+					}
+					return effectiveValue;
+				}).toArray());
 			}
 		}
 	}
-	
-	private Object performCall(MethodHandle toCall, Object... parameters) {
+
+	private Object performCall(Method toCall, Object... parameters) {
 		Object result = null;
 		try {
-			final CallSite preconditionCallSite = LambdaMetafactory.metafactory(lookup, "applyRule", toCall.type(), toCall.type(), toCall, toCall.type());
-			result = preconditionCallSite.getTarget().invokeExact();
-		} catch (LambdaConversionException e) {
-			e.printStackTrace();
-		} catch (Throwable e) {
-			e.printStackTrace();
+			result = toCall.invoke(null, parameters);
+		} catch (Throwable e1) {
+			e1.printStackTrace();
 		}
 		return result;
 	}
@@ -216,11 +245,15 @@ public class GenericEventManager implements IEventManager {
 
 				final BehavioralInterface behavioralInterface = dsl.getEntries().stream()
 						.filter(e -> e.getKey().equals("behavioral-interface")).findFirst()
-						.map(bi -> URI.createURI(bi.getValue().replace("platform:/resource", "platform:/plugin"), true))
-						.map(uri -> (BehavioralInterface) (resSet.getResource(uri, true).getContents().get(0)))
+						.map(bi -> 
+						URI.createURI(bi.getValue().replace("platform:/resource", "platform:/plugin"), true)
+						)
+						.map(uri -> 
+						(BehavioralInterface) (resSet.getResource(uri, true).getContents().get(0))
+						)
 						.orElse(null);
 
-				validateLanguage(behavioralInterface, classes, packages);
+				validateLanguage(behavioralInterface, classes, packages, bundle);
 			}
 		}
 	}
@@ -258,41 +291,32 @@ public class GenericEventManager implements IEventManager {
 		return result;
 	}
 
-	private boolean validateLanguage(BehavioralInterface bi, List<Class<?>> os, List<EPackage> as) {
+	private boolean validateLanguage(BehavioralInterface bi, List<Class<?>> os, List<EPackage> as, Bundle bundle) {
 		final Class<?>[] emptyClassArray = new Class<?>[0];
 		final boolean diagnostic = bi.getEvents().stream().allMatch(evt -> {
-			final Class<?>[] parameters = evt.getParams().stream().map(p -> {
-				Class<?> result = null;
-				try {
-					result = Class.forName(p.getType());
-				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
-				}
-				return result;
-			}).collect(Collectors.toList()).toArray(emptyClassArray);
-			final String rule = evt.getRule();
-			final MethodHandle ruleHandle = findMethod(rule, parameters, os);
-			if (ruleHandle == null) {
-				return false;
-			} else {
-				eventToMethod.put(evt, ruleHandle);
-			}
+			final Class<?>[] parameters = evt.getParams().stream().map(p -> loadClass(p.getType(), bundle))
+					.collect(Collectors.toList()).toArray(emptyClassArray);
+			final String rule = evt.getRuleDeclaringType() + "." + evt.getRule();
+			final Method ruleMethod = findMethod(rule, parameters, os);
+			eventNameToMethod.put(evt.getName(), ruleMethod);
 			if (evt instanceof InputEvent) {
 				// Try to load precondition method if a precondition is specified
-				final String precondition = ((InputEvent) evt).getPrecondition();
+				final InputEvent inputEvent= ((InputEvent) evt);
+				final String pType = inputEvent.getPreconditionDeclaringType();
+				final String precondition = pType == null ? inputEvent.getPrecondition() : pType + "." + inputEvent.getPrecondition();
 				if (precondition != null && !precondition.isEmpty()) {
-					final MethodHandle preconditionHandle = findMethod(precondition, parameters, os);
-					if (preconditionHandle == null) {
+					final Method preconditionMethod = findMethod(precondition, parameters, os);
+					if (preconditionMethod == null) {
 						return false;
 					} else {
-						eventToPrecondition.put(evt, ruleHandle);
+						eventToPrecondition.put(evt, preconditionMethod);
 					}
 				}
 			}
 			return true;
 		});
 		if (!diagnostic) {
-			eventToMethod.clear();
+			eventNameToMethod.clear();
 			eventToPrecondition.clear();
 		} else {
 			behavioralInterface = bi;
@@ -300,22 +324,17 @@ public class GenericEventManager implements IEventManager {
 		return diagnostic;
 	}
 
-	private final MethodHandles.Lookup lookup = MethodHandles.lookup();
-
-	private MethodHandle findMethod(String methodFqn, Class<?>[] parameters, List<Class<?>> os) {
+	private Method findMethod(String methodFqn, Class<?>[] parameters, List<Class<?>> os) {
 		final int lastDot = methodFqn.lastIndexOf(".");
 		final String classFqn = methodFqn.substring(0, lastDot);
-		final String methodName = methodFqn.substring(lastDot);
+		final String methodName = methodFqn.substring(lastDot + 1);
 		return os.stream().filter(c -> c.getName().equals(classFqn)).findFirst().map(c -> {
-			MethodHandle result = null;
+			Method result = null;
 			try {
-				Method m = c.getDeclaredMethod(methodName, parameters);
-				result = lookup.unreflect(m);
+				result = c.getDeclaredMethod(methodName, parameters);
 			} catch (NoSuchMethodException e) {
 				e.printStackTrace();
 			} catch (SecurityException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
 				e.printStackTrace();
 			}
 			return result;

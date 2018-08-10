@@ -3,6 +3,8 @@
  */
 package org.eclipse.gemoc.xdsmlframework.behavioralinterface.validation
 
+import org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.InputEvent
+import org.eclipse.xtext.validation.Check
 
 /**
  * This class contains custom validation rules. 
@@ -11,15 +13,12 @@ package org.eclipse.gemoc.xdsmlframework.behavioralinterface.validation
  */
 class BehavioralInterfaceValidator extends AbstractBehavioralInterfaceValidator {
 	
-//	public static val INVALID_NAME = 'invalidName'
-//
-//	@Check
-//	def checkGreetingStartsWithCapital(Greeting greeting) {
-//		if (!Character.isUpperCase(greeting.name.charAt(0))) {
-//			warning('Name should start with a capital', 
-//					BehavioralInterfacePackage.Literals.GREETING__NAME,
-//					INVALID_NAME)
+	@Check
+	def checkPreconditionParameters(InputEvent inputEvent) {
+//		val ruleParameters = inputEvent.rule.parameters
+//		val preconditionParameters = inputEvent.precondition.parameters
+//		if (!ruleParameters.elementsEqual(preconditionParameters)) {
+//			warning('Precondition must have the same parameters as execution rule', BehavioralInterfacePackage.Literals.INPUT_EVENT__PRECONDITION)
 //		}
-//	}
-	
+	}
 }

@@ -17,9 +17,7 @@ import org.eclipse.xtext.Action;
 import org.eclipse.xtext.Parameter;
 import org.eclipse.xtext.ParserRule;
 import org.eclipse.xtext.serializer.ISerializationContext;
-import org.eclipse.xtext.serializer.acceptor.SequenceFeeder;
 import org.eclipse.xtext.serializer.sequencer.AbstractDelegatingSemanticSequencer;
-import org.eclipse.xtext.serializer.sequencer.ITransientValueService.ValueTransient;
 
 @SuppressWarnings("all")
 public class BehavioralInterfaceSemanticSequencer extends AbstractDelegatingSemanticSequencer {
@@ -69,22 +67,10 @@ public class BehavioralInterfaceSemanticSequencer extends AbstractDelegatingSema
 	 *     EventParameter returns EventParameter
 	 *
 	 * Constraint:
-	 *     (name=FQN type=FQN many?='*')
+	 *     (name=FQN type=FQN many?='*'?)
 	 */
 	protected void sequence_EventParameter(ISerializationContext context, EventParameter semanticObject) {
-		if (errorAcceptor != null) {
-			if (transientValues.isValueTransient(semanticObject, BehavioralInterfacePackage.Literals.EVENT_PARAMETER__NAME) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, BehavioralInterfacePackage.Literals.EVENT_PARAMETER__NAME));
-			if (transientValues.isValueTransient(semanticObject, BehavioralInterfacePackage.Literals.EVENT_PARAMETER__TYPE) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, BehavioralInterfacePackage.Literals.EVENT_PARAMETER__TYPE));
-			if (transientValues.isValueTransient(semanticObject, BehavioralInterfacePackage.Literals.EVENT_PARAMETER__MANY) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, BehavioralInterfacePackage.Literals.EVENT_PARAMETER__MANY));
-		}
-		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
-		feeder.accept(grammarAccess.getEventParameterAccess().getNameFQNParserRuleCall_0_0(), semanticObject.getName());
-		feeder.accept(grammarAccess.getEventParameterAccess().getTypeFQNParserRuleCall_1_0(), semanticObject.getType());
-		feeder.accept(grammarAccess.getEventParameterAccess().getManyAsteriskKeyword_2_0(), semanticObject.isMany());
-		feeder.finish();
+		genericSequencer.createSequence(context, semanticObject);
 	}
 	
 	
@@ -94,7 +80,14 @@ public class BehavioralInterfaceSemanticSequencer extends AbstractDelegatingSema
 	 *     InputEvent returns InputEvent
 	 *
 	 * Constraint:
-	 *     (name=FQN rule=FQN (params+=EventParameter params+=EventParameter*)? (interruptible?='true' | interruptible?='false')? precondition=FQN?)
+	 *     (
+	 *         name=FQN 
+	 *         ruleDeclaringType=FQN 
+	 *         rule=ID 
+	 *         (params+=EventParameter params+=EventParameter*)? 
+	 *         (interruptible?='true' | interruptible?='false')? 
+	 *         (preconditionDeclaringType=FQN precondition=ID)?
+	 *     )
 	 */
 	protected void sequence_InputEvent(ISerializationContext context, InputEvent semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
@@ -107,7 +100,7 @@ public class BehavioralInterfaceSemanticSequencer extends AbstractDelegatingSema
 	 *     OutputEvent returns OutputEvent
 	 *
 	 * Constraint:
-	 *     (name=FQN rule=FQN (params+=EventParameter params+=EventParameter*)?)
+	 *     (name=FQN ruleDeclaringType=FQN rule=ID (params+=EventParameter params+=EventParameter*)?)
 	 */
 	protected void sequence_OutputEvent(ISerializationContext context, OutputEvent semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);

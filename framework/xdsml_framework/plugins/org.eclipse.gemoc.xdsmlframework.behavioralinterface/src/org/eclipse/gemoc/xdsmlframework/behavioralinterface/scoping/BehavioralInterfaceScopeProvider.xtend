@@ -11,4 +11,30 @@ package org.eclipse.gemoc.xdsmlframework.behavioralinterface.scoping
  */
 class BehavioralInterfaceScopeProvider extends AbstractBehavioralInterfaceScopeProvider {
 
+//	public final static SimpleAttributeResolver<EObject, String> SIMPLENAME_RESOLVER = SimpleAttributeResolver.
+//		newResolver(String, "simpleName")
+//
+//	def dispatch getDispatchedScope(Event context, EReference reference) {
+//		// NOTE: context is NOT a XFeatureCall but already the ServiceCall ..
+//		if (reference == XbasePackage.Literals.XABSTRACT_FEATURE_CALL__FEATURE) {
+//			val jvmDeclaredType = context.ruleDeclaringType.type as JvmDeclaredType
+//			// TODO This probably does not allow methods in parent classes - OK to use OverrideHelper here in a ScopeProvider? TDD it.
+//			val ops = jvmDeclaredType.declaredOperations
+//			return Scopes.scopeFor(ops, QualifiedName.wrapper(SIMPLENAME_RESOLVER), IScope.NULLSCOPE)
+//		}
+//		super.getScope(context, reference)
+//	}
+//
+//	def dispatch getDispatchedScope(EObject context, EReference reference) {
+//		super.getScope(context, reference)
+//	}
+//
+//	// This is required for proper handling of null context - 'dispatch' doesn't do the right thing otherwise
+//	override getScope(EObject context, EReference reference) {
+//		if (context === null || context.eResource() === null || context.eResource().getResourceSet() === null) {
+//			return IScope.NULLSCOPE;
+//		}
+//		getDispatchedScope(context, reference)
+//	}
+
 }

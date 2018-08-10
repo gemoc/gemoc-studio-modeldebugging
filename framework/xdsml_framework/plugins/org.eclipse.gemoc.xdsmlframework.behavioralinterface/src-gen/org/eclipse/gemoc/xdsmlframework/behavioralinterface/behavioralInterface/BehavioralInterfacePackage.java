@@ -114,13 +114,22 @@ public interface BehavioralInterfacePackage extends EPackage
   int EVENT__NAME = 0;
 
   /**
+   * The feature id for the '<em><b>Rule Declaring Type</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int EVENT__RULE_DECLARING_TYPE = 1;
+
+  /**
    * The feature id for the '<em><b>Rule</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int EVENT__RULE = 1;
+  int EVENT__RULE = 2;
 
   /**
    * The feature id for the '<em><b>Params</b></em>' containment reference list.
@@ -129,7 +138,7 @@ public interface BehavioralInterfacePackage extends EPackage
    * @generated
    * @ordered
    */
-  int EVENT__PARAMS = 2;
+  int EVENT__PARAMS = 3;
 
   /**
    * The number of structural features of the '<em>Event</em>' class.
@@ -138,7 +147,7 @@ public interface BehavioralInterfacePackage extends EPackage
    * @generated
    * @ordered
    */
-  int EVENT_FEATURE_COUNT = 3;
+  int EVENT_FEATURE_COUNT = 4;
 
   /**
    * The meta object id for the '{@link org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.impl.InputEventImpl <em>Input Event</em>}' class.
@@ -158,6 +167,15 @@ public interface BehavioralInterfacePackage extends EPackage
    * @ordered
    */
   int INPUT_EVENT__NAME = EVENT__NAME;
+
+  /**
+   * The feature id for the '<em><b>Rule Declaring Type</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int INPUT_EVENT__RULE_DECLARING_TYPE = EVENT__RULE_DECLARING_TYPE;
 
   /**
    * The feature id for the '<em><b>Rule</b></em>' attribute.
@@ -187,13 +205,22 @@ public interface BehavioralInterfacePackage extends EPackage
   int INPUT_EVENT__INTERRUPTIBLE = EVENT_FEATURE_COUNT + 0;
 
   /**
+   * The feature id for the '<em><b>Precondition Declaring Type</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int INPUT_EVENT__PRECONDITION_DECLARING_TYPE = EVENT_FEATURE_COUNT + 1;
+
+  /**
    * The feature id for the '<em><b>Precondition</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int INPUT_EVENT__PRECONDITION = EVENT_FEATURE_COUNT + 1;
+  int INPUT_EVENT__PRECONDITION = EVENT_FEATURE_COUNT + 2;
 
   /**
    * The number of structural features of the '<em>Input Event</em>' class.
@@ -202,7 +229,7 @@ public interface BehavioralInterfacePackage extends EPackage
    * @generated
    * @ordered
    */
-  int INPUT_EVENT_FEATURE_COUNT = EVENT_FEATURE_COUNT + 2;
+  int INPUT_EVENT_FEATURE_COUNT = EVENT_FEATURE_COUNT + 3;
 
   /**
    * The meta object id for the '{@link org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.impl.OutputEventImpl <em>Output Event</em>}' class.
@@ -222,6 +249,15 @@ public interface BehavioralInterfacePackage extends EPackage
    * @ordered
    */
   int OUTPUT_EVENT__NAME = EVENT__NAME;
+
+  /**
+   * The feature id for the '<em><b>Rule Declaring Type</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int OUTPUT_EVENT__RULE_DECLARING_TYPE = EVENT__RULE_DECLARING_TYPE;
 
   /**
    * The feature id for the '<em><b>Rule</b></em>' attribute.
@@ -351,6 +387,17 @@ public interface BehavioralInterfacePackage extends EPackage
   EAttribute getEvent_Name();
 
   /**
+   * Returns the meta object for the attribute '{@link org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.Event#getRuleDeclaringType <em>Rule Declaring Type</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Rule Declaring Type</em>'.
+   * @see org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.Event#getRuleDeclaringType()
+   * @see #getEvent()
+   * @generated
+   */
+  EAttribute getEvent_RuleDeclaringType();
+
+  /**
    * Returns the meta object for the attribute '{@link org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.Event#getRule <em>Rule</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -392,6 +439,17 @@ public interface BehavioralInterfacePackage extends EPackage
    * @generated
    */
   EAttribute getInputEvent_Interruptible();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.InputEvent#getPreconditionDeclaringType <em>Precondition Declaring Type</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Precondition Declaring Type</em>'.
+   * @see org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.InputEvent#getPreconditionDeclaringType()
+   * @see #getInputEvent()
+   * @generated
+   */
+  EAttribute getInputEvent_PreconditionDeclaringType();
 
   /**
    * Returns the meta object for the attribute '{@link org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.InputEvent#getPrecondition <em>Precondition</em>}'.
@@ -525,6 +583,14 @@ public interface BehavioralInterfacePackage extends EPackage
     EAttribute EVENT__NAME = eINSTANCE.getEvent_Name();
 
     /**
+     * The meta object literal for the '<em><b>Rule Declaring Type</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute EVENT__RULE_DECLARING_TYPE = eINSTANCE.getEvent_RuleDeclaringType();
+
+    /**
      * The meta object literal for the '<em><b>Rule</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -557,6 +623,14 @@ public interface BehavioralInterfacePackage extends EPackage
      * @generated
      */
     EAttribute INPUT_EVENT__INTERRUPTIBLE = eINSTANCE.getInputEvent_Interruptible();
+
+    /**
+     * The meta object literal for the '<em><b>Precondition Declaring Type</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute INPUT_EVENT__PRECONDITION_DECLARING_TYPE = eINSTANCE.getInputEvent_PreconditionDeclaringType();
 
     /**
      * The meta object literal for the '<em><b>Precondition</b></em>' attribute feature.

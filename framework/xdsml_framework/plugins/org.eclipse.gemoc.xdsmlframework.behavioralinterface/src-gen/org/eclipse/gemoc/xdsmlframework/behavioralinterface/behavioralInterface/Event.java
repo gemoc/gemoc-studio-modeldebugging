@@ -17,6 +17,7 @@ import org.eclipse.emf.ecore.EObject;
  * </p>
  * <ul>
  *   <li>{@link org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.Event#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.Event#getRuleDeclaringType <em>Rule Declaring Type</em>}</li>
  *   <li>{@link org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.Event#getRule <em>Rule</em>}</li>
  *   <li>{@link org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.Event#getParams <em>Params</em>}</li>
  * </ul>
@@ -52,6 +53,32 @@ public interface Event extends EObject
    * @generated
    */
   void setName(String value);
+
+  /**
+   * Returns the value of the '<em><b>Rule Declaring Type</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Rule Declaring Type</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Rule Declaring Type</em>' attribute.
+   * @see #setRuleDeclaringType(String)
+   * @see org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.BehavioralInterfacePackage#getEvent_RuleDeclaringType()
+   * @model
+   * @generated
+   */
+  String getRuleDeclaringType();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.Event#getRuleDeclaringType <em>Rule Declaring Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Rule Declaring Type</em>' attribute.
+   * @see #getRuleDeclaringType()
+   * @generated
+   */
+  void setRuleDeclaringType(String value);
 
   /**
    * Returns the value of the '<em><b>Rule</b></em>' attribute.

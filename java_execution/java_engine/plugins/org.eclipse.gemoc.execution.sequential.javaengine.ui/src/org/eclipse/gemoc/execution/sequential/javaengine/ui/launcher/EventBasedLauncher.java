@@ -17,8 +17,8 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.gemoc.commons.eclipse.messagingsystem.api.MessagingSystem;
 import org.eclipse.gemoc.commons.eclipse.ui.ViewHelper;
 import org.eclipse.gemoc.execution.sequential.javaengine.EventBasedExecutionEngine;
+import org.eclipse.gemoc.execution.sequential.javaengine.EventBasedModelExecutionContext;
 import org.eclipse.gemoc.execution.sequential.javaengine.EventBasedRunConfiguration;
-import org.eclipse.gemoc.execution.sequential.javaengine.SequentialModelExecutionContext;
 import org.eclipse.gemoc.execution.sequential.javaengine.ui.Activator;
 import org.eclipse.gemoc.executionframework.engine.commons.EngineContextException;
 import org.eclipse.gemoc.executionframework.engine.ui.launcher.AbstractSequentialGemocLauncher;
@@ -26,18 +26,18 @@ import org.eclipse.gemoc.executionframework.ui.views.engine.EnginesStatusView;
 import org.eclipse.gemoc.xdsmlframework.api.core.ExecutionMode;
 import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine;
 
-public class EventBasedLauncher extends AbstractSequentialGemocLauncher<SequentialModelExecutionContext<EventBasedRunConfiguration>, EventBasedRunConfiguration> {
+public class EventBasedLauncher extends AbstractSequentialGemocLauncher<EventBasedModelExecutionContext, EventBasedRunConfiguration> {
 
 	public final static String TYPE_ID = Activator.PLUGIN_ID + ".launcher";
 
 
 
 	@Override
-	protected IExecutionEngine<SequentialModelExecutionContext<EventBasedRunConfiguration>> createExecutionEngine(
+	protected IExecutionEngine<EventBasedModelExecutionContext> createExecutionEngine(
 			EventBasedRunConfiguration runConfiguration, ExecutionMode executionMode)
 			throws CoreException, EngineContextException {
 		EventBasedExecutionEngine executionEngine = new EventBasedExecutionEngine();
-		SequentialModelExecutionContext<EventBasedRunConfiguration> executioncontext = new SequentialModelExecutionContext<EventBasedRunConfiguration>(runConfiguration, executionMode);
+		EventBasedModelExecutionContext executioncontext = new EventBasedModelExecutionContext(runConfiguration, executionMode);
 		executioncontext.getExecutionPlatform().getModelLoader().setProgressMonitor(this.launchProgressMonitor);
 		executioncontext.initializeResourceModel();
 		executionEngine.initialize(executioncontext);

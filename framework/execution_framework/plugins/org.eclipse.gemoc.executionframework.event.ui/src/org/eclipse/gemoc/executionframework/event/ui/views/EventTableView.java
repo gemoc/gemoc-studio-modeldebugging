@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.gemoc.executionframework.event.ui.views;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
@@ -31,6 +33,7 @@ import org.eclipse.gemoc.commons.value.model.value.IntegerAttributeValue;
 import org.eclipse.gemoc.commons.value.model.value.IntegerObjectAttributeValue;
 import org.eclipse.gemoc.commons.value.model.value.SingleReferenceValue;
 import org.eclipse.gemoc.commons.value.model.value.StringAttributeValue;
+import org.eclipse.gemoc.commons.value.model.value.Value;
 import org.eclipse.gemoc.commons.value.model.value.ValueFactory;
 import org.eclipse.gemoc.commons.value.model.value.ValuePackage;
 import org.eclipse.gemoc.executionframework.event.manager.IEventManager;
@@ -43,14 +46,23 @@ import org.eclipse.xtext.naming.DefaultDeclarativeQualifiedNameProvider;
 import org.eclipse.xtext.naming.QualifiedName;
 
 import javafx.application.Platform;
-import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.converter.BooleanStringConverter;
 import javafx.util.converter.FloatStringConverter;
@@ -66,13 +78,19 @@ public class EventTableView extends TableView<EventOccurrence> {
 
 	private final EPackage ePackage;
 
-	private final Map<EventParameter, EClass> referenceToParameterClass = new HashMap<>();
+	private final Map<EventParameter, TableColumn<EventOccurrence, Object>> parameterToColumn = new HashMap<>();
 
-	private final Map<EventParameter, List<EObject>> referenceToMatchingModelElements = new HashMap<>();
+	private final Map<EventOccurrence, Map<EventParameter, SimpleObjectProperty<Object>>> eventParameterToProperty = new HashMap<>();
+
+	private final Map<EventParameter, EClass> parameterToParameterClass = new HashMap<>();
+
+	private final Map<EventParameter, List<EObject>> parameterToMatchingModelElements = new HashMap<>();
 
 	private final ObservableList<EventOccurrence> eventOccurrences = FXCollections.observableArrayList();
 
 	private final Function<EventOccurrence, Boolean> canDisplayEventOccurrenceFunction;
+
+	private final DefaultDeclarativeQualifiedNameProvider nameprovider = new DefaultDeclarativeQualifiedNameProvider();
 
 	public EventTableView(final Event event, final Resource executedModel, final IEventManager eventManager) {
 		this.event = event;
@@ -160,8 +178,8 @@ public class EventTableView extends TableView<EventOccurrence> {
 			}
 				break;
 			default: {
-				final TableColumn<EventOccurrence, String> col = new TableColumn<EventOccurrence, String>(name);
-				col.setCellValueFactory(new EventReferencePropertyValueFactory(p));
+				final TableColumn<EventOccurrence, Object> col = new TableColumn<EventOccurrence, Object>(name);
+				parameterToColumn.put(p, col);
 				columns.add(col);
 			}
 			}
@@ -171,7 +189,7 @@ public class EventTableView extends TableView<EventOccurrence> {
 
 	public void refreshEvents() {
 		Platform.runLater(() -> {
-			referenceToMatchingModelElements.clear();
+			parameterToMatchingModelElements.clear();
 			gatherPotentialParameters();
 
 			final List<EventOccurrence> newEventOccurrences = computeAllPossibleEventOccurrences().stream()
@@ -193,6 +211,42 @@ public class EventTableView extends TableView<EventOccurrence> {
 						return eventOccurrence;
 					}).filter(eventOccurrence -> canDisplayEventOccurrenceFunction.apply(eventOccurrence))
 					.collect(Collectors.toList());
+
+			parameterToColumn.forEach((p, col) -> {
+				final List<EObject> elements = parameterToMatchingModelElements.get(p);
+				if (elements == null || elements.isEmpty()) {
+					col.setCellValueFactory(new EventReferencePropertyValueFactory(p));
+					col.setCellFactory(fileChooserTableCellForTableColumn(p, f -> {
+						if (f != null) {
+							final URI uri = URI.createFileURI(f.getAbsolutePath());
+							Resource res = null;
+							try {
+								res = executedModel.getResourceSet().getResource(uri, true);
+							} catch (Exception e) {
+							}
+							if (res != null && !res.getContents().isEmpty()) {
+								final EObject element = res.getContents().get(0);
+								final EClass parameterType = parameterToParameterClass.get(p);
+								if (element.eClass() == parameterType
+										|| element.eClass().getEAllSuperTypes().contains(parameterType)) {
+									eventOccurrences.forEach(o -> {
+										o.getArgs().removeAll(o.getArgs().stream().filter(a -> a.getParameter() == p)
+												.collect(Collectors.toList()));
+										o.getArgs().add(createArgument(p, element));
+									});
+									return element;
+								} else {
+									return null;
+								}
+							}
+						}
+						return null;
+					}));
+				} else {
+					col.setCellValueFactory(new EventReferencePropertyValueFactory(p));
+					col.setCellFactory(tableCellForTableColumn());
+				}
+			});
 
 			final List<EventOccurrence> toRemove = eventOccurrences.stream()
 					.filter(eventOccurrence -> !canDisplayEventOccurrenceFunction.apply(eventOccurrence))
@@ -300,25 +354,25 @@ public class EventTableView extends TableView<EventOccurrence> {
 			default:
 				ePackage.getEClassifiers().stream()
 						.filter(c -> c instanceof EClass && ((EClass) c).getInstanceClassName().equals(type))
-						.findFirst().map(c -> (EClass) c).ifPresent(c -> referenceToParameterClass.put(p, c));
+						.findFirst().map(c -> (EClass) c).ifPresent(c -> parameterToParameterClass.put(p, c));
 			}
 		});
 	}
 
 	private void gatherPotentialParameters() {
-		final Set<EventParameter> eventParameters = referenceToParameterClass.keySet();
+		final Set<EventParameter> eventParameters = parameterToParameterClass.keySet();
 		executedModel.getAllContents().forEachRemaining(modelElement -> {
 			final EClass elementClass = modelElement.eClass();
 			eventParameters.stream().filter(r -> {
-				final EClass parameterClass = referenceToParameterClass.get(r);
+				final EClass parameterClass = parameterToParameterClass.get(r);
 				return (parameterClass.getEPackage() == elementClass.getEPackage()
 						&& elementClass.getClassifierID() == parameterClass.getClassifierID())
 						|| elementClass.getEAllSuperTypes().contains(parameterClass);
 			}).forEach(r -> {
-				List<EObject> elements = referenceToMatchingModelElements.get(r);
+				List<EObject> elements = parameterToMatchingModelElements.get(r);
 				if (elements == null) {
 					elements = new ArrayList<>();
-					referenceToMatchingModelElements.put(r, elements);
+					parameterToMatchingModelElements.put(r, elements);
 				}
 				elements.add(modelElement);
 			});
@@ -327,10 +381,10 @@ public class EventTableView extends TableView<EventOccurrence> {
 
 	private List<Map<EventParameter, EObject>> computeAllPossibleEventOccurrences() {
 		final List<Map<EventParameter, EObject>> result = new ArrayList<>();
-		final int nbEventOccurrences = referenceToMatchingModelElements.values().stream().map(l -> l.size())
+		final int nbEventOccurrences = parameterToMatchingModelElements.values().stream().map(l -> l.size())
 				.reduce((i1, i2) -> i1 * i2).orElse(0);
 		final List<Map.Entry<EventParameter, List<EObject>>> entries = new ArrayList<>(
-				referenceToMatchingModelElements.entrySet());
+				parameterToMatchingModelElements.entrySet());
 		for (int i = 0; i < nbEventOccurrences; i++) {
 			int j = 1;
 			final Map<EventParameter, EObject> parametersAssociation = new HashMap<>();
@@ -344,36 +398,39 @@ public class EventTableView extends TableView<EventOccurrence> {
 		return result;
 	}
 
-	static class EventReferencePropertyValueFactory
-			implements Callback<CellDataFeatures<EventOccurrence, String>, ObservableValue<String>> {
+	class EventReferencePropertyValueFactory
+			implements Callback<CellDataFeatures<EventOccurrence, Object>, ObservableValue<Object>> {
 
 		private final EventParameter parameter;
-		private final DefaultDeclarativeQualifiedNameProvider nameprovider = new DefaultDeclarativeQualifiedNameProvider();
-		private final Function<Object, String> stringGetter = (o) -> {
-			if (o instanceof EObject) {
-				QualifiedName qname = nameprovider.getFullyQualifiedName((EObject) o);
-				if (qname != null) {
-					return qname.toString();
-				}
-			}
-			final String string = o.toString();
-			return string.substring(string.lastIndexOf(".") + 1);
-		};
 
 		public EventReferencePropertyValueFactory(EventParameter parameter) {
 			this.parameter = parameter;
 		}
 
 		@Override
-		public ObservableValue<String> call(CellDataFeatures<EventOccurrence, String> p) {
-			EventOccurrence eventOccurrence = p.getValue();
-			return eventOccurrence.getArgs().stream().filter(a -> a.getParameter() == parameter).findFirst()
-					.map(a -> a.getValue().eGet(ValuePackage.Literals.SINGLE_REFERENCE_VALUE__REFERENCE_VALUE))
-					.map(v -> new ReadOnlyObjectWrapper<String>(stringGetter.apply(v))).orElse(null);
+		public ObservableValue<Object> call(CellDataFeatures<EventOccurrence, Object> p) {
+			final List<EObject> modelElements = parameterToMatchingModelElements.get(parameter);
+			SimpleObjectProperty<Object> result = null;
+			if (modelElements == null || modelElements.isEmpty()) {
+				result = eventParameterToProperty.computeIfAbsent(p.getValue(), v -> new HashMap<>())
+						.computeIfAbsent(parameter, param -> new SimpleObjectProperty<Object>(null));
+			} else {
+				EventOccurrence eventOccurrence = p.getValue();
+				result = eventOccurrence.getArgs().stream().filter(a -> a.getParameter() == parameter).findFirst()
+						.map(a -> {
+							final Value value = a.getValue();
+							if (value == null) {
+								return null;
+							} else {
+								return value.eGet(ValuePackage.Literals.SINGLE_REFERENCE_VALUE__REFERENCE_VALUE);
+							}
+						}).map(v -> new SimpleObjectProperty<Object>(v)).orElse(new SimpleObjectProperty<Object>(null));
+			}
+			return result;
 		}
 	}
 
-	static class EventAttributePropertyValueFactory<T>
+	class EventAttributePropertyValueFactory<T>
 			implements Callback<CellDataFeatures<EventOccurrence, T>, ObservableValue<T>> {
 
 		private final EventParameter parameter;
@@ -412,7 +469,100 @@ public class EventTableView extends TableView<EventOccurrence> {
 					break;
 				}
 				return a.getValue().eGet(f);
-			}).map(v -> new ReadOnlyObjectWrapper<T>((T) v)).orElse(null);
+			}).map(v -> new SimpleObjectProperty<T>((T) v)).orElse(new SimpleObjectProperty<T>(null));
+		}
+	}
+
+	private final Function<Object, String> namingFunction = o -> {
+		if (o == null) {
+			return "";
+		}
+		if (o instanceof EObject) {
+			final EObject eObject = (EObject) o;
+			final QualifiedName fqn = nameprovider.apply(eObject);
+			if (fqn == null || fqn.isEmpty()) {
+				return eObject.eResource().getURIFragment(eObject);
+			}
+			return fqn.getLastSegment();
+		}
+		final String s = o.toString();
+		return s.substring(s.lastIndexOf(".") + 1);
+	};
+
+	private Callback<TableColumn<EventOccurrence, Object>, TableCell<EventOccurrence, Object>> tableCellForTableColumn() {
+		return col -> new ReferenceTableCell();
+	}
+
+	private Callback<TableColumn<EventOccurrence, Object>, TableCell<EventOccurrence, Object>> fileChooserTableCellForTableColumn(
+			EventParameter parameter, Function<File, Object> fileHandler) {
+		return col -> new FileChooserTableCell(parameter, fileHandler);
+	}
+
+	class ReferenceTableCell extends TableCell<EventOccurrence, Object> {
+
+		public ReferenceTableCell() {
+			super();
+			setEditable(false);
+		}
+
+		@Override
+		protected void updateItem(Object item, boolean empty) {
+			super.updateItem(item, empty);
+			setText(namingFunction.apply(item));
+		}
+
+	}
+
+	class FileChooserTableCell extends TableCell<EventOccurrence, Object> {
+
+		private EventParameter parameter;
+		private FileChooser fileChooser;
+		private Function<File, Object> fileHandler;
+		private Label label;
+		private Button button;
+
+		private final EventHandler<ActionEvent> browseHandler = e -> {
+			final File f = fileChooser.showOpenDialog(new Stage());
+			final Object item = fileHandler.apply(f);
+			final Map<EventParameter, SimpleObjectProperty<Object>> parameterToProperty = eventParameterToProperty
+					.get(getTableRow().getItem());
+			if (parameterToProperty != null) {
+				final SimpleObjectProperty<Object> property = parameterToProperty.get(parameter);
+				if (property != null) {
+					property.set(item);
+				}
+			}
+		};
+
+		public FileChooserTableCell(EventParameter parameter, Function<File, Object> fileHandler) {
+			super();
+			setEditable(false);
+			this.parameter = parameter;
+			this.fileHandler = fileHandler;
+			fileChooser = new FileChooser();
+		}
+
+		private void setupGraphic() {
+			label = new Label("");
+			label.setAlignment(Pos.CENTER_LEFT);
+			button = new Button("...");
+			button.setOnAction(browseHandler);
+			final BorderPane pane = new BorderPane();
+			pane.setLeft(label);
+			pane.setRight(button);
+			setGraphic(pane);
+		}
+
+		@Override
+		protected void updateItem(Object item, boolean empty) {
+			super.updateItem(item, empty);
+			if (!empty) {
+				if (button == null) {
+					setupGraphic();
+				}
+
+				label.setText(namingFunction.apply(item));
+			}
 		}
 	}
 }

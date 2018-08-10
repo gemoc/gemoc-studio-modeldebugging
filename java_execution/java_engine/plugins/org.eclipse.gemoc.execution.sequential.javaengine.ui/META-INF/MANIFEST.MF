@@ -18,7 +18,6 @@ Require-Bundle: org.eclipse.core.expressions;bundle-version="3.4.400",
  org.eclipse.gemoc.execution.sequential.javaxdsml.api;bundle-version="0.1.0",
  org.eclipse.gemoc.executionframework.ui,
  org.eclipse.gemoc.execution.sequential.javaengine;bundle-version="0.1.0",
- org.eclipse.gemoc.trace.gemoc.api;bundle-version="1.0.0",
  org.eclipse.gemoc.executionframework.engine,
  org.eclipse.gemoc.executionframework.engine.ui,
  org.eclipse.ui.ide;bundle-version="3.10.2",
@@ -34,9 +33,8 @@ Require-Bundle: org.eclipse.core.expressions;bundle-version="3.4.400",
  org.eclipse.gemoc.dsl;bundle-version="3.0.0",
  org.eclipse.gemoc.executionframework.event.manager,
  org.eclipse.gemoc.executionframework.event.model,
- org.eclipse.gemoc.dsl.debug.ide.ui;bundle-version="3.0.0",
- org.eclipse.gemoc.commons.value.model,
- org.eclipse.gemoc.trace.commons.model
+ fr.inria.diverse.k3.al.annotationprocessor.plugin;bundle-version="3.2.2",
+ org.eclipse.gemoc.dsl.debug.ide.ui;bundle-version="3.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath:  .

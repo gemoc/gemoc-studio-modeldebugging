@@ -14,6 +14,7 @@ package org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface
  * </p>
  * <ul>
  *   <li>{@link org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.InputEvent#isInterruptible <em>Interruptible</em>}</li>
+ *   <li>{@link org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.InputEvent#getPreconditionDeclaringType <em>Precondition Declaring Type</em>}</li>
  *   <li>{@link org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.InputEvent#getPrecondition <em>Precondition</em>}</li>
  * </ul>
  *
@@ -48,6 +49,32 @@ public interface InputEvent extends Event
    * @generated
    */
   void setInterruptible(boolean value);
+
+  /**
+   * Returns the value of the '<em><b>Precondition Declaring Type</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Precondition Declaring Type</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Precondition Declaring Type</em>' attribute.
+   * @see #setPreconditionDeclaringType(String)
+   * @see org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.BehavioralInterfacePackage#getInputEvent_PreconditionDeclaringType()
+   * @model
+   * @generated
+   */
+  String getPreconditionDeclaringType();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.InputEvent#getPreconditionDeclaringType <em>Precondition Declaring Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Precondition Declaring Type</em>' attribute.
+   * @see #getPreconditionDeclaringType()
+   * @generated
+   */
+  void setPreconditionDeclaringType(String value);
 
   /**
    * Returns the value of the '<em><b>Precondition</b></em>' attribute.

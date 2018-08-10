@@ -207,33 +207,59 @@ ruleInputEvent returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getInputEventAccess().getRuleFQNParserRuleCall_4_0());
+					newCompositeNode(grammarAccess.getInputEventAccess().getRuleDeclaringTypeFQNParserRuleCall_4_0());
 				}
-				lv_rule_4_0=ruleFQN
+				lv_ruleDeclaringType_4_0=ruleFQN
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getInputEventRule());
 					}
 					set(
 						$current,
-						"rule",
-						lv_rule_4_0,
+						"ruleDeclaringType",
+						lv_ruleDeclaringType_4_0,
 						"org.eclipse.gemoc.xdsmlframework.behavioralinterface.BehavioralInterface.FQN");
 					afterParserOrEnumRuleCall();
 				}
 			)
 		)
+		otherlv_5='::'
+		{
+			newLeafNode(otherlv_5, grammarAccess.getInputEventAccess().getColonColonKeyword_5());
+		}
 		(
-			otherlv_5='params'
+			(
+				lv_rule_6_0=RULE_ID
+				{
+					newLeafNode(lv_rule_6_0, grammarAccess.getInputEventAccess().getRuleIDTerminalRuleCall_6_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getInputEventRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"rule",
+						lv_rule_6_0,
+						"org.eclipse.xtext.common.Terminals.ID");
+				}
+			)
+		)
+		(
+			otherlv_7='params'
 			{
-				newLeafNode(otherlv_5, grammarAccess.getInputEventAccess().getParamsKeyword_5_0());
+				newLeafNode(otherlv_7, grammarAccess.getInputEventAccess().getParamsKeyword_7_0());
+			}
+			otherlv_8='='
+			{
+				newLeafNode(otherlv_8, grammarAccess.getInputEventAccess().getEqualsSignKeyword_7_1());
 			}
 			(
 				(
 					{
-						newCompositeNode(grammarAccess.getInputEventAccess().getParamsEventParameterParserRuleCall_5_1_0());
+						newCompositeNode(grammarAccess.getInputEventAccess().getParamsEventParameterParserRuleCall_7_2_0());
 					}
-					lv_params_6_0=ruleEventParameter
+					lv_params_9_0=ruleEventParameter
 					{
 						if ($current==null) {
 							$current = createModelElementForParent(grammarAccess.getInputEventRule());
@@ -241,23 +267,23 @@ ruleInputEvent returns [EObject current=null]
 						add(
 							$current,
 							"params",
-							lv_params_6_0,
+							lv_params_9_0,
 							"org.eclipse.gemoc.xdsmlframework.behavioralinterface.BehavioralInterface.EventParameter");
 						afterParserOrEnumRuleCall();
 					}
 				)
 			)
 			(
-				otherlv_7=','
+				otherlv_10=','
 				{
-					newLeafNode(otherlv_7, grammarAccess.getInputEventAccess().getCommaKeyword_5_2_0());
+					newLeafNode(otherlv_10, grammarAccess.getInputEventAccess().getCommaKeyword_7_3_0());
 				}
 				(
 					(
 						{
-							newCompositeNode(grammarAccess.getInputEventAccess().getParamsEventParameterParserRuleCall_5_2_1_0());
+							newCompositeNode(grammarAccess.getInputEventAccess().getParamsEventParameterParserRuleCall_7_3_1_0());
 						}
-						lv_params_8_0=ruleEventParameter
+						lv_params_11_0=ruleEventParameter
 						{
 							if ($current==null) {
 								$current = createModelElementForParent(grammarAccess.getInputEventRule());
@@ -265,7 +291,7 @@ ruleInputEvent returns [EObject current=null]
 							add(
 								$current,
 								"params",
-								lv_params_8_0,
+								lv_params_11_0,
 								"org.eclipse.gemoc.xdsmlframework.behavioralinterface.BehavioralInterface.EventParameter");
 							afterParserOrEnumRuleCall();
 						}
@@ -274,20 +300,20 @@ ruleInputEvent returns [EObject current=null]
 			)*
 		)?
 		(
-			otherlv_9='interruptible'
+			otherlv_12='interruptible'
 			{
-				newLeafNode(otherlv_9, grammarAccess.getInputEventAccess().getInterruptibleKeyword_6_0());
+				newLeafNode(otherlv_12, grammarAccess.getInputEventAccess().getInterruptibleKeyword_8_0());
 			}
-			otherlv_10='='
+			otherlv_13='='
 			{
-				newLeafNode(otherlv_10, grammarAccess.getInputEventAccess().getEqualsSignKeyword_6_1());
+				newLeafNode(otherlv_13, grammarAccess.getInputEventAccess().getEqualsSignKeyword_8_1());
 			}
 			(
 				(
 					(
-						lv_interruptible_11_1='true'
+						lv_interruptible_14_1='true'
 						{
-							newLeafNode(lv_interruptible_11_1, grammarAccess.getInputEventAccess().getInterruptibleTrueKeyword_6_2_0_0());
+							newLeafNode(lv_interruptible_14_1, grammarAccess.getInputEventAccess().getInterruptibleTrueKeyword_8_2_0_0());
 						}
 						{
 							if ($current==null) {
@@ -296,9 +322,9 @@ ruleInputEvent returns [EObject current=null]
 							setWithLastConsumed($current, "interruptible", true, null);
 						}
 						    |
-						lv_interruptible_11_2='false'
+						lv_interruptible_14_2='false'
 						{
-							newLeafNode(lv_interruptible_11_2, grammarAccess.getInputEventAccess().getInterruptibleFalseKeyword_6_2_0_1());
+							newLeafNode(lv_interruptible_14_2, grammarAccess.getInputEventAccess().getInterruptibleFalseKeyword_8_2_0_1());
 						}
 						{
 							if ($current==null) {
@@ -311,30 +337,52 @@ ruleInputEvent returns [EObject current=null]
 			)
 		)?
 		(
-			otherlv_12='precondition'
+			otherlv_15='precondition'
 			{
-				newLeafNode(otherlv_12, grammarAccess.getInputEventAccess().getPreconditionKeyword_7_0());
+				newLeafNode(otherlv_15, grammarAccess.getInputEventAccess().getPreconditionKeyword_9_0());
 			}
-			otherlv_13='='
+			otherlv_16='='
 			{
-				newLeafNode(otherlv_13, grammarAccess.getInputEventAccess().getEqualsSignKeyword_7_1());
+				newLeafNode(otherlv_16, grammarAccess.getInputEventAccess().getEqualsSignKeyword_9_1());
 			}
 			(
 				(
 					{
-						newCompositeNode(grammarAccess.getInputEventAccess().getPreconditionFQNParserRuleCall_7_2_0());
+						newCompositeNode(grammarAccess.getInputEventAccess().getPreconditionDeclaringTypeFQNParserRuleCall_9_2_0());
 					}
-					lv_precondition_14_0=ruleFQN
+					lv_preconditionDeclaringType_17_0=ruleFQN
 					{
 						if ($current==null) {
 							$current = createModelElementForParent(grammarAccess.getInputEventRule());
 						}
 						set(
 							$current,
-							"precondition",
-							lv_precondition_14_0,
+							"preconditionDeclaringType",
+							lv_preconditionDeclaringType_17_0,
 							"org.eclipse.gemoc.xdsmlframework.behavioralinterface.BehavioralInterface.FQN");
 						afterParserOrEnumRuleCall();
+					}
+				)
+			)
+			otherlv_18='::'
+			{
+				newLeafNode(otherlv_18, grammarAccess.getInputEventAccess().getColonColonKeyword_9_3());
+			}
+			(
+				(
+					lv_precondition_19_0=RULE_ID
+					{
+						newLeafNode(lv_precondition_19_0, grammarAccess.getInputEventAccess().getPreconditionIDTerminalRuleCall_9_4_0());
+					}
+					{
+						if ($current==null) {
+							$current = createModelElement(grammarAccess.getInputEventRule());
+						}
+						setWithLastConsumed(
+							$current,
+							"precondition",
+							lv_precondition_19_0,
+							"org.eclipse.xtext.common.Terminals.ID");
 					}
 				)
 			)
@@ -381,48 +429,66 @@ ruleOutputEvent returns [EObject current=null]
 				}
 			)
 		)
-		otherlv_2=':'
+		otherlv_2='rule'
 		{
-			newLeafNode(otherlv_2, grammarAccess.getOutputEventAccess().getColonKeyword_2());
+			newLeafNode(otherlv_2, grammarAccess.getOutputEventAccess().getRuleKeyword_2());
 		}
-		otherlv_3='rule'
+		otherlv_3='='
 		{
-			newLeafNode(otherlv_3, grammarAccess.getOutputEventAccess().getRuleKeyword_3());
-		}
-		otherlv_4='='
-		{
-			newLeafNode(otherlv_4, grammarAccess.getOutputEventAccess().getEqualsSignKeyword_4());
+			newLeafNode(otherlv_3, grammarAccess.getOutputEventAccess().getEqualsSignKeyword_3());
 		}
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getOutputEventAccess().getRuleFQNParserRuleCall_5_0());
+					newCompositeNode(grammarAccess.getOutputEventAccess().getRuleDeclaringTypeFQNParserRuleCall_4_0());
 				}
-				lv_rule_5_0=ruleFQN
+				lv_ruleDeclaringType_4_0=ruleFQN
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getOutputEventRule());
 					}
 					set(
 						$current,
-						"rule",
-						lv_rule_5_0,
+						"ruleDeclaringType",
+						lv_ruleDeclaringType_4_0,
 						"org.eclipse.gemoc.xdsmlframework.behavioralinterface.BehavioralInterface.FQN");
 					afterParserOrEnumRuleCall();
 				}
 			)
 		)
+		otherlv_5='::'
+		{
+			newLeafNode(otherlv_5, grammarAccess.getOutputEventAccess().getColonColonKeyword_5());
+		}
 		(
-			otherlv_6='params'
+			(
+				lv_rule_6_0=RULE_ID
+				{
+					newLeafNode(lv_rule_6_0, grammarAccess.getOutputEventAccess().getRuleIDTerminalRuleCall_6_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getOutputEventRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"rule",
+						lv_rule_6_0,
+						"org.eclipse.xtext.common.Terminals.ID");
+				}
+			)
+		)
+		(
+			otherlv_7='params'
 			{
-				newLeafNode(otherlv_6, grammarAccess.getOutputEventAccess().getParamsKeyword_6_0());
+				newLeafNode(otherlv_7, grammarAccess.getOutputEventAccess().getParamsKeyword_7_0());
 			}
 			(
 				(
 					{
-						newCompositeNode(grammarAccess.getOutputEventAccess().getParamsEventParameterParserRuleCall_6_1_0());
+						newCompositeNode(grammarAccess.getOutputEventAccess().getParamsEventParameterParserRuleCall_7_1_0());
 					}
-					lv_params_7_0=ruleEventParameter
+					lv_params_8_0=ruleEventParameter
 					{
 						if ($current==null) {
 							$current = createModelElementForParent(grammarAccess.getOutputEventRule());
@@ -430,23 +496,23 @@ ruleOutputEvent returns [EObject current=null]
 						add(
 							$current,
 							"params",
-							lv_params_7_0,
+							lv_params_8_0,
 							"org.eclipse.gemoc.xdsmlframework.behavioralinterface.BehavioralInterface.EventParameter");
 						afterParserOrEnumRuleCall();
 					}
 				)
 			)
 			(
-				otherlv_8=','
+				otherlv_9=','
 				{
-					newLeafNode(otherlv_8, grammarAccess.getOutputEventAccess().getCommaKeyword_6_2_0());
+					newLeafNode(otherlv_9, grammarAccess.getOutputEventAccess().getCommaKeyword_7_2_0());
 				}
 				(
 					(
 						{
-							newCompositeNode(grammarAccess.getOutputEventAccess().getParamsEventParameterParserRuleCall_6_2_1_0());
+							newCompositeNode(grammarAccess.getOutputEventAccess().getParamsEventParameterParserRuleCall_7_2_1_0());
 						}
-						lv_params_9_0=ruleEventParameter
+						lv_params_10_0=ruleEventParameter
 						{
 							if ($current==null) {
 								$current = createModelElementForParent(grammarAccess.getOutputEventRule());
@@ -454,7 +520,7 @@ ruleOutputEvent returns [EObject current=null]
 							add(
 								$current,
 								"params",
-								lv_params_9_0,
+								lv_params_10_0,
 								"org.eclipse.gemoc.xdsmlframework.behavioralinterface.BehavioralInterface.EventParameter");
 							afterParserOrEnumRuleCall();
 						}
@@ -500,12 +566,16 @@ ruleEventParameter returns [EObject current=null]
 				}
 			)
 		)
+		otherlv_1=':'
+		{
+			newLeafNode(otherlv_1, grammarAccess.getEventParameterAccess().getColonKeyword_1());
+		}
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getEventParameterAccess().getTypeFQNParserRuleCall_1_0());
+					newCompositeNode(grammarAccess.getEventParameterAccess().getTypeFQNParserRuleCall_2_0());
 				}
-				lv_type_1_0=ruleFQN
+				lv_type_2_0=ruleFQN
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getEventParameterRule());
@@ -513,7 +583,7 @@ ruleEventParameter returns [EObject current=null]
 					set(
 						$current,
 						"type",
-						lv_type_1_0,
+						lv_type_2_0,
 						"org.eclipse.gemoc.xdsmlframework.behavioralinterface.BehavioralInterface.FQN");
 					afterParserOrEnumRuleCall();
 				}
@@ -521,9 +591,9 @@ ruleEventParameter returns [EObject current=null]
 		)
 		(
 			(
-				lv_many_2_0='*'
+				lv_many_3_0='*'
 				{
-					newLeafNode(lv_many_2_0, grammarAccess.getEventParameterAccess().getManyAsteriskKeyword_2_0());
+					newLeafNode(lv_many_3_0, grammarAccess.getEventParameterAccess().getManyAsteriskKeyword_3_0());
 				}
 				{
 					if ($current==null) {
@@ -532,7 +602,7 @@ ruleEventParameter returns [EObject current=null]
 					setWithLastConsumed($current, "many", true, "*");
 				}
 			)
-		)
+		)?
 	)
 ;
 

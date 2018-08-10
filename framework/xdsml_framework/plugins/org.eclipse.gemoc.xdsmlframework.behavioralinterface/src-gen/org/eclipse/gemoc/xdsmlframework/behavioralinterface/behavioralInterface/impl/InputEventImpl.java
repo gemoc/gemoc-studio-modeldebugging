@@ -21,6 +21,7 @@ import org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.
  * </p>
  * <ul>
  *   <li>{@link org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.impl.InputEventImpl#isInterruptible <em>Interruptible</em>}</li>
+ *   <li>{@link org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.impl.InputEventImpl#getPreconditionDeclaringType <em>Precondition Declaring Type</em>}</li>
  *   <li>{@link org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.impl.InputEventImpl#getPrecondition <em>Precondition</em>}</li>
  * </ul>
  *
@@ -47,6 +48,26 @@ public class InputEventImpl extends EventImpl implements InputEvent
    * @ordered
    */
   protected boolean interruptible = INTERRUPTIBLE_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getPreconditionDeclaringType() <em>Precondition Declaring Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getPreconditionDeclaringType()
+   * @generated
+   * @ordered
+   */
+  protected static final String PRECONDITION_DECLARING_TYPE_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getPreconditionDeclaringType() <em>Precondition Declaring Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getPreconditionDeclaringType()
+   * @generated
+   * @ordered
+   */
+  protected String preconditionDeclaringType = PRECONDITION_DECLARING_TYPE_EDEFAULT;
 
   /**
    * The default value of the '{@link #getPrecondition() <em>Precondition</em>}' attribute.
@@ -117,6 +138,29 @@ public class InputEventImpl extends EventImpl implements InputEvent
    * <!-- end-user-doc -->
    * @generated
    */
+  public String getPreconditionDeclaringType()
+  {
+    return preconditionDeclaringType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setPreconditionDeclaringType(String newPreconditionDeclaringType)
+  {
+    String oldPreconditionDeclaringType = preconditionDeclaringType;
+    preconditionDeclaringType = newPreconditionDeclaringType;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BehavioralInterfacePackage.INPUT_EVENT__PRECONDITION_DECLARING_TYPE, oldPreconditionDeclaringType, preconditionDeclaringType));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public String getPrecondition()
   {
     return precondition;
@@ -147,6 +191,8 @@ public class InputEventImpl extends EventImpl implements InputEvent
     {
       case BehavioralInterfacePackage.INPUT_EVENT__INTERRUPTIBLE:
         return isInterruptible();
+      case BehavioralInterfacePackage.INPUT_EVENT__PRECONDITION_DECLARING_TYPE:
+        return getPreconditionDeclaringType();
       case BehavioralInterfacePackage.INPUT_EVENT__PRECONDITION:
         return getPrecondition();
     }
@@ -165,6 +211,9 @@ public class InputEventImpl extends EventImpl implements InputEvent
     {
       case BehavioralInterfacePackage.INPUT_EVENT__INTERRUPTIBLE:
         setInterruptible((Boolean)newValue);
+        return;
+      case BehavioralInterfacePackage.INPUT_EVENT__PRECONDITION_DECLARING_TYPE:
+        setPreconditionDeclaringType((String)newValue);
         return;
       case BehavioralInterfacePackage.INPUT_EVENT__PRECONDITION:
         setPrecondition((String)newValue);
@@ -186,6 +235,9 @@ public class InputEventImpl extends EventImpl implements InputEvent
       case BehavioralInterfacePackage.INPUT_EVENT__INTERRUPTIBLE:
         setInterruptible(INTERRUPTIBLE_EDEFAULT);
         return;
+      case BehavioralInterfacePackage.INPUT_EVENT__PRECONDITION_DECLARING_TYPE:
+        setPreconditionDeclaringType(PRECONDITION_DECLARING_TYPE_EDEFAULT);
+        return;
       case BehavioralInterfacePackage.INPUT_EVENT__PRECONDITION:
         setPrecondition(PRECONDITION_EDEFAULT);
         return;
@@ -205,6 +257,8 @@ public class InputEventImpl extends EventImpl implements InputEvent
     {
       case BehavioralInterfacePackage.INPUT_EVENT__INTERRUPTIBLE:
         return interruptible != INTERRUPTIBLE_EDEFAULT;
+      case BehavioralInterfacePackage.INPUT_EVENT__PRECONDITION_DECLARING_TYPE:
+        return PRECONDITION_DECLARING_TYPE_EDEFAULT == null ? preconditionDeclaringType != null : !PRECONDITION_DECLARING_TYPE_EDEFAULT.equals(preconditionDeclaringType);
       case BehavioralInterfacePackage.INPUT_EVENT__PRECONDITION:
         return PRECONDITION_EDEFAULT == null ? precondition != null : !PRECONDITION_EDEFAULT.equals(precondition);
     }
@@ -224,6 +278,8 @@ public class InputEventImpl extends EventImpl implements InputEvent
     StringBuffer result = new StringBuffer(super.toString());
     result.append(" (interruptible: ");
     result.append(interruptible);
+    result.append(", preconditionDeclaringType: ");
+    result.append(preconditionDeclaringType);
     result.append(", precondition: ");
     result.append(precondition);
     result.append(')');

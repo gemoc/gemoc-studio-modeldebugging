@@ -12,11 +12,13 @@
     </genClasses>
     <genClasses ecoreClass="BehavioralInterface.ecore#//Event">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BehavioralInterface.ecore#//Event/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BehavioralInterface.ecore#//Event/ruleDeclaringType"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BehavioralInterface.ecore#//Event/rule"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BehavioralInterface.ecore#//Event/params"/>
     </genClasses>
     <genClasses ecoreClass="BehavioralInterface.ecore#//InputEvent">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BehavioralInterface.ecore#//InputEvent/interruptible"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BehavioralInterface.ecore#//InputEvent/preconditionDeclaringType"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BehavioralInterface.ecore#//InputEvent/precondition"/>
     </genClasses>
     <genClasses ecoreClass="BehavioralInterface.ecore#//OutputEvent"/>

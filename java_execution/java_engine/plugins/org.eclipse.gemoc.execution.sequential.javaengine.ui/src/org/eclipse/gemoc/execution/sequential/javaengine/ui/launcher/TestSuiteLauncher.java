@@ -42,8 +42,8 @@ import org.eclipse.gemoc.dsl.debug.ide.adapter.IDSLCurrentInstructionListener;
 import org.eclipse.gemoc.dsl.debug.ide.event.DSLDebugEventDispatcher;
 import org.eclipse.gemoc.dsl.debug.ide.launch.AbstractDSLLaunchConfigurationDelegate;
 import org.eclipse.gemoc.execution.sequential.javaengine.EventBasedExecutionEngine;
+import org.eclipse.gemoc.execution.sequential.javaengine.EventBasedModelExecutionContext;
 import org.eclipse.gemoc.execution.sequential.javaengine.EventBasedRunConfiguration;
-import org.eclipse.gemoc.execution.sequential.javaengine.SequentialModelExecutionContext;
 import org.eclipse.gemoc.execution.sequential.javaengine.ui.Activator;
 import org.eclipse.gemoc.executionframework.engine.commons.EngineContextException;
 import org.eclipse.gemoc.executionframework.engine.ui.launcher.AbstractGemocLauncher;
@@ -68,7 +68,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.xtext.util.Strings;
 
-public class TestSuiteLauncher extends AbstractGemocLauncher<SequentialModelExecutionContext<EventBasedRunConfiguration>> {
+public class TestSuiteLauncher extends AbstractGemocLauncher<EventBasedModelExecutionContext> {
 
 	public final static String TYPE_ID = Activator.PLUGIN_ID + ".testsuite.launcher";
 
@@ -92,7 +92,7 @@ public class TestSuiteLauncher extends AbstractGemocLauncher<SequentialModelExec
 			throws CoreException, EngineContextException {
 		// create and initialize engine
 		EventBasedExecutionEngine executionEngine = new EventBasedExecutionEngine();
-		SequentialModelExecutionContext<EventBasedRunConfiguration> executioncontext = new SequentialModelExecutionContext<EventBasedRunConfiguration>(runConfiguration, executionMode);
+		EventBasedModelExecutionContext executioncontext = new EventBasedModelExecutionContext(runConfiguration, executionMode);
 		executioncontext.getExecutionPlatform().getModelLoader().setProgressMonitor(this.launchProgressMonitor);
 		executioncontext.initializeResourceModel();
 		executionEngine.initialize(executioncontext);

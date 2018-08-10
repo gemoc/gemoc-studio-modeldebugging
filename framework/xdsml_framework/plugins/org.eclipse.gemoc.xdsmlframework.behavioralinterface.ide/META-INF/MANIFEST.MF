@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.eclipse.gemoc.xdsmlframework.behavioralinterface.ide
+Bundle-Vendor: My Company
+Bundle-Version: 1.0.0.qualifier
+Bundle-SymbolicName: org.eclipse.gemoc.xdsmlframework.behavioralinterface.ide; singleton:=true
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.gemoc.xdsmlframework.behavioralinterface,
+ org.eclipse.xtext.ide,
+ com.google.guava,
+ org.eclipse.xtext.xbase.lib,
+ org.eclipse.xtend.lib,
+ org.eclipse.xtend.lib.macro
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: org.eclipse.gemoc.xdsmlframework.behavioralinterface.ide.contentassist.antlr,
+ org.eclipse.gemoc.xdsmlframework.behavioralinterface.ide.contentassist.antlr.internal
+

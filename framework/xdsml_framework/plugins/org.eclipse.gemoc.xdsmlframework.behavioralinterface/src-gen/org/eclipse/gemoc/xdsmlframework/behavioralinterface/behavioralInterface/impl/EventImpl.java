@@ -32,6 +32,7 @@ import org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.
  * </p>
  * <ul>
  *   <li>{@link org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.impl.EventImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.impl.EventImpl#getRuleDeclaringType <em>Rule Declaring Type</em>}</li>
  *   <li>{@link org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.impl.EventImpl#getRule <em>Rule</em>}</li>
  *   <li>{@link org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.impl.EventImpl#getParams <em>Params</em>}</li>
  * </ul>
@@ -59,6 +60,26 @@ public class EventImpl extends MinimalEObjectImpl.Container implements Event
    * @ordered
    */
   protected String name = NAME_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getRuleDeclaringType() <em>Rule Declaring Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getRuleDeclaringType()
+   * @generated
+   * @ordered
+   */
+  protected static final String RULE_DECLARING_TYPE_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getRuleDeclaringType() <em>Rule Declaring Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getRuleDeclaringType()
+   * @generated
+   * @ordered
+   */
+  protected String ruleDeclaringType = RULE_DECLARING_TYPE_EDEFAULT;
 
   /**
    * The default value of the '{@link #getRule() <em>Rule</em>}' attribute.
@@ -139,6 +160,29 @@ public class EventImpl extends MinimalEObjectImpl.Container implements Event
    * <!-- end-user-doc -->
    * @generated
    */
+  public String getRuleDeclaringType()
+  {
+    return ruleDeclaringType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setRuleDeclaringType(String newRuleDeclaringType)
+  {
+    String oldRuleDeclaringType = ruleDeclaringType;
+    ruleDeclaringType = newRuleDeclaringType;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BehavioralInterfacePackage.EVENT__RULE_DECLARING_TYPE, oldRuleDeclaringType, ruleDeclaringType));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public String getRule()
   {
     return rule;
@@ -199,6 +243,8 @@ public class EventImpl extends MinimalEObjectImpl.Container implements Event
     {
       case BehavioralInterfacePackage.EVENT__NAME:
         return getName();
+      case BehavioralInterfacePackage.EVENT__RULE_DECLARING_TYPE:
+        return getRuleDeclaringType();
       case BehavioralInterfacePackage.EVENT__RULE:
         return getRule();
       case BehavioralInterfacePackage.EVENT__PARAMS:
@@ -220,6 +266,9 @@ public class EventImpl extends MinimalEObjectImpl.Container implements Event
     {
       case BehavioralInterfacePackage.EVENT__NAME:
         setName((String)newValue);
+        return;
+      case BehavioralInterfacePackage.EVENT__RULE_DECLARING_TYPE:
+        setRuleDeclaringType((String)newValue);
         return;
       case BehavioralInterfacePackage.EVENT__RULE:
         setRule((String)newValue);
@@ -245,6 +294,9 @@ public class EventImpl extends MinimalEObjectImpl.Container implements Event
       case BehavioralInterfacePackage.EVENT__NAME:
         setName(NAME_EDEFAULT);
         return;
+      case BehavioralInterfacePackage.EVENT__RULE_DECLARING_TYPE:
+        setRuleDeclaringType(RULE_DECLARING_TYPE_EDEFAULT);
+        return;
       case BehavioralInterfacePackage.EVENT__RULE:
         setRule(RULE_EDEFAULT);
         return;
@@ -267,6 +319,8 @@ public class EventImpl extends MinimalEObjectImpl.Container implements Event
     {
       case BehavioralInterfacePackage.EVENT__NAME:
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+      case BehavioralInterfacePackage.EVENT__RULE_DECLARING_TYPE:
+        return RULE_DECLARING_TYPE_EDEFAULT == null ? ruleDeclaringType != null : !RULE_DECLARING_TYPE_EDEFAULT.equals(ruleDeclaringType);
       case BehavioralInterfacePackage.EVENT__RULE:
         return RULE_EDEFAULT == null ? rule != null : !RULE_EDEFAULT.equals(rule);
       case BehavioralInterfacePackage.EVENT__PARAMS:
@@ -288,6 +342,8 @@ public class EventImpl extends MinimalEObjectImpl.Container implements Event
     StringBuffer result = new StringBuffer(super.toString());
     result.append(" (name: ");
     result.append(name);
+    result.append(", ruleDeclaringType: ");
+    result.append(ruleDeclaringType);
     result.append(", rule: ");
     result.append(rule);
     result.append(')');

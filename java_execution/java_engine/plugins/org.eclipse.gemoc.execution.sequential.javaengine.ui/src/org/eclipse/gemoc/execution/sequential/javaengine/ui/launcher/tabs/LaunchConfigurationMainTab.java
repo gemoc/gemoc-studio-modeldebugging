@@ -74,7 +74,7 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 	protected Text _modelLocationText;
 	protected Text _modelInitializationMethodText;
 	protected Text _modelInitializationArgumentsText;
-	protected Text _siriusRepresentationLocationText;
+	protected Text _animatorLocationText;
 	protected Button _animateButton;
 	protected Text _delayText;
 	protected Text _melangeQueryText;
@@ -131,19 +131,22 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 	@Override
 	public void initializeFrom(ILaunchConfiguration configuration) {
 		try {
-			K3RunConfiguration runConfiguration = new K3RunConfiguration(
+			final K3RunConfiguration runConfiguration = new K3RunConfiguration(
 					configuration);
-			_modelLocationText.setText(URIHelper
-					.removePlatformScheme(runConfiguration
-							.getExecutedModelURI()));
+			final URI modelUri = runConfiguration.getExecutedModelURI();
+			final URI animatorUri = runConfiguration.getAnimatorURI();
+			
+			if (modelUri != null) {
+				_modelLocationText.setText(URIHelper.removePlatformScheme(modelUri));	
+			} else {
+				_modelLocationText.setText("");
+			}
 
-			if (runConfiguration.getAnimatorURI() != null)
-				_siriusRepresentationLocationText
-						.setText(URIHelper
-								.removePlatformScheme(runConfiguration
-										.getAnimatorURI()));
-			else
-				_siriusRepresentationLocationText.setText("");
+			if (animatorUri != null) {
+				_animatorLocationText.setText(URIHelper.removePlatformScheme(animatorUri));
+			} else {
+				_animatorLocationText.setText("");
+			}
 			
 			_delayText.setText(Integer.toString(runConfiguration
 					.getAnimationDelay()));
@@ -171,7 +174,7 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 				this._modelLocationText.getText());
 		configuration.setAttribute(
 				AbstractDSLLaunchConfigurationDelegateSiriusUI.SIRIUS_RESOURCE_URI,
-				this._siriusRepresentationLocationText.getText());
+				this._animatorLocationText.getText());
 		configuration.setAttribute(K3RunConfiguration.LAUNCH_DELAY,
 				Integer.parseInt(_delayText.getText()));
 		configuration.setAttribute(K3RunConfiguration.LAUNCH_SELECTED_LANGUAGE,
@@ -271,11 +274,11 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 	private Composite createAnimationLayout(Composite parent, Font font) {
 		createTextLabelLayout(parent, "Animator");
 
-		_siriusRepresentationLocationText = new Text(parent, SWT.SINGLE
+		_animatorLocationText = new Text(parent, SWT.SINGLE
 				| SWT.BORDER);
-		_siriusRepresentationLocationText.setLayoutData(createStandardLayout());
-		_siriusRepresentationLocationText.setFont(font);
-		_siriusRepresentationLocationText
+		_animatorLocationText.setLayoutData(createStandardLayout());
+		_animatorLocationText.setFont(font);
+		_animatorLocationText
 				.addModifyListener(fBasicModifyListener);
 		Button siriusRepresentationLocationButton = createPushButton(parent,
 				"Browse", null);
@@ -289,7 +292,7 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 						if (dialog.open() == Dialog.OK) {
 							String modelPath = ((IResource) dialog.getResult()[0])
 									.getFullPath().toPortableString();
-							_siriusRepresentationLocationText
+							_animatorLocationText
 									.setText(modelPath);
 							updateLaunchConfigurationDialog();
 						}

@@ -16,8 +16,8 @@ import org.eclipse.gemoc.xdsmlframework.api.core.IRunConfiguration;
 public interface IEventBasedRunConfiguration extends IRunConfiguration {
 
 	// parameters that are specific to EventBasedExecutionEngine
-	public static final String START_EVENT_URI = "LAUNCH_START_EVENT";
-	public static final String START_PARAMETERS = "LAUNCH_START_EVENT_PARAMETERS";
+	public static final String START_EVENT = "LAUNCH_START_EVENT";
+	public static final String START_EVENT_OCCURRENCE_ARGS = "LAUNCH_START_EVENT_ARGS";
 	public static final String WAIT_FOR_EVENT = "LAUNCH_WAIT_FOR_EVENT";
 	
 	EventOccurrence getStartEventOccurrence();
