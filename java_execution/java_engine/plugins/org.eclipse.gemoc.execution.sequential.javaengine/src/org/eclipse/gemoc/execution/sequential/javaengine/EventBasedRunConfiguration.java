@@ -49,56 +49,59 @@ public class EventBasedRunConfiguration extends RunConfiguration implements IEve
 		super.extractInformation();
 		final String languageName = getLanguageName();
 		final BehavioralInterface behavioralInterface = EventBasedDslHelper.getBehavioralInterface(languageName);
-		final String startEvent = getAttribute(START_EVENT, "");
-		final Map<String, String> paramToArg = getAttribute(START_EVENT_OCCURRENCE_ARGS, Collections.emptyMap());
-		behavioralInterface.getEvents().stream().filter(e -> e.getName().equals(startEvent)).findFirst().ifPresent(event -> {
-			_startEventOccurrence = EventBasedDslHelper.createEventOccurrence(event);
-			final List<EventOccurrenceArgument> args = _startEventOccurrence.getArgs();
-			event.getParams().forEach(p -> {
-				args.stream().filter(a -> p == a.getParameter()).findFirst().ifPresent(a -> {
-					Value value = a.getValue();
-					String arg = paramToArg.get(p.getName());
-					switch (value.eClass().getClassifierID()) {
-					case ValuePackage.SINGLE_REFERENCE_VALUE:
-						if (arg != null) {
-							if (arg.startsWith("/")) {
-								Resource model = getModel();
-								((SingleReferenceValue) value).setReferenceValue(model.getEObject(arg));
-							} else if (arg.startsWith("platform:/resource")) {
-								URI objectURI = URI.createURI(arg);
-								ResourceSet resourceSet = new ResourceSetImpl();
-								Resource resource = resourceSet.createResource(objectURI);
-								EObject argObject = null;
-								try {
-									resource.load(Collections.emptyMap());
-									argObject = resource.getContents().stream().findFirst().orElse(null);
-								} catch (IOException e) {
-									e.printStackTrace();
-									resource = null;
+		if (behavioralInterface != null) {
+			final String startEvent = getAttribute(START_EVENT, "");
+			final Map<String, String> paramToArg = getAttribute(START_EVENT_OCCURRENCE_ARGS, Collections.emptyMap());
+			behavioralInterface.getEvents().stream().filter(e -> e.getName().equals(startEvent)).findFirst().ifPresent(event -> {
+				_startEventOccurrence = EventBasedDslHelper.createEventOccurrence(event);
+				final List<EventOccurrenceArgument> args = _startEventOccurrence.getArgs();
+				event.getParams().forEach(p -> {
+					args.stream().filter(a -> p == a.getParameter()).findFirst().ifPresent(a -> {
+						Value value = a.getValue();
+						String arg = paramToArg.get(p.getName());
+						switch (value.eClass().getClassifierID()) {
+						case ValuePackage.SINGLE_REFERENCE_VALUE:
+							if (arg != null) {
+								if (arg.startsWith("/")) {
+									Resource model = getModel();
+									((SingleReferenceValue) value).setReferenceValue(model.getEObject(arg));
+								} else if (arg.startsWith("platform:/resource")) {
+									URI objectURI = URI.createURI(arg);
+									ResourceSet resourceSet = new ResourceSetImpl();
+									Resource resource = resourceSet.createResource(objectURI);
+									EObject argObject = null;
+									try {
+										resource.load(Collections.emptyMap());
+										argObject = resource.getContents().stream().findFirst().orElse(null);
+									} catch (IOException e) {
+										e.printStackTrace();
+										resource = null;
+									}
+									((SingleReferenceValue) value).setReferenceValue(argObject);
 								}
-								((SingleReferenceValue) value).setReferenceValue(argObject);
 							}
+							break;
+						case ValuePackage.BOOLEAN_ATTRIBUTE_VALUE:
+						case ValuePackage.BOOLEAN_OBJECT_ATTRIBUTE_VALUE:
+							((BooleanAttributeValue) value).setAttributeValue(Boolean.parseBoolean(arg));
+							break;
+						case ValuePackage.INTEGER_ATTRIBUTE_VALUE:
+						case ValuePackage.INTEGER_OBJECT_ATTRIBUTE_VALUE:
+							((IntegerObjectAttributeValue) value).setAttributeValue(Integer.parseInt(arg));
+							break;
+						case ValuePackage.FLOAT_ATTRIBUTE_VALUE:
+						case ValuePackage.FLOAT_OBJECT_ATTRIBUTE_VALUE:
+							((FloatObjectAttributeValue) value).setAttributeValue(Float.parseFloat(arg));
+							break;
+						case ValuePackage.STRING_ATTRIBUTE_VALUE:
+							((StringAttributeValue) value).setAttributeValue(arg);
+							break;
 						}
-						break;
-					case ValuePackage.BOOLEAN_ATTRIBUTE_VALUE:
-					case ValuePackage.BOOLEAN_OBJECT_ATTRIBUTE_VALUE:
-						((BooleanAttributeValue) value).setAttributeValue(Boolean.parseBoolean(arg));
-						break;
-					case ValuePackage.INTEGER_ATTRIBUTE_VALUE:
-					case ValuePackage.INTEGER_OBJECT_ATTRIBUTE_VALUE:
-						((IntegerObjectAttributeValue) value).setAttributeValue(Integer.parseInt(arg));
-						break;
-					case ValuePackage.FLOAT_ATTRIBUTE_VALUE:
-					case ValuePackage.FLOAT_OBJECT_ATTRIBUTE_VALUE:
-						((FloatObjectAttributeValue) value).setAttributeValue(Float.parseFloat(arg));
-						break;
-					case ValuePackage.STRING_ATTRIBUTE_VALUE:
-						((StringAttributeValue) value).setAttributeValue(arg);
-						break;
-					}
+					});
 				});
 			});
-		});
+		}
+		
 		_waitForEvent = getAttribute(WAIT_FOR_EVENT, false);
 	}
 	

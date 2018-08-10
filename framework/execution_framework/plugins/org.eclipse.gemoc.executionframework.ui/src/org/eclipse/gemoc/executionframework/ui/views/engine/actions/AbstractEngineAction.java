@@ -61,6 +61,8 @@ public abstract class AbstractEngineAction extends Action implements IMenuCreato
 	}
 
 	public IExecutionEngine<?> getCurrentSelectedEngine() {
+	
+	
 		return _currentSelectedEngine;
 	}
 

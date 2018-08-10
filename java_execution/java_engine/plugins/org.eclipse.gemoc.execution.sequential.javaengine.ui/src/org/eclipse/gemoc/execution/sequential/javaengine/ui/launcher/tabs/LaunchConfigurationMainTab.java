@@ -93,7 +93,7 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 	 * default width for the grids
 	 */
 	public int gridDefaultWidth = 200;
-	
+
 	protected IProject _modelProject;
 
 	@Override
@@ -131,13 +131,12 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 	@Override
 	public void initializeFrom(ILaunchConfiguration configuration) {
 		try {
-			final K3RunConfiguration runConfiguration = new K3RunConfiguration(
-					configuration);
+			final K3RunConfiguration runConfiguration = new K3RunConfiguration(configuration);
 			final URI modelUri = runConfiguration.getExecutedModelURI();
 			final URI animatorUri = runConfiguration.getAnimatorURI();
-			
+
 			if (modelUri != null) {
-				_modelLocationText.setText(URIHelper.removePlatformScheme(modelUri));	
+				_modelLocationText.setText(URIHelper.removePlatformScheme(modelUri));
 			} else {
 				_modelLocationText.setText("");
 			}
@@ -147,17 +146,13 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 			} else {
 				_animatorLocationText.setText("");
 			}
-			
-			_delayText.setText(Integer.toString(runConfiguration
-					.getAnimationDelay()));
+
+			_delayText.setText(Integer.toString(runConfiguration.getAnimationDelay()));
 			_animationFirstBreak.setSelection(runConfiguration.getBreakStart());
 
-			_entryPointModelElementText.setText(runConfiguration
-					.getModelEntryPoint());
-			_entryPointMethodText.setText(runConfiguration
-					.getExecutionEntryPoint());
-			_languageCombo.setText(runConfiguration
-					.getLanguageName());
+			_entryPointModelElementText.setText(runConfiguration.getModelEntryPoint());
+			_entryPointMethodText.setText(runConfiguration.getExecutionEntryPoint());
+			_languageCombo.setText(runConfiguration.getLanguageName());
 			_modelInitializationArgumentsText.setText(runConfiguration.getModelInitializationArguments());
 
 			_entryPointModelElementLabel.setText("");
@@ -217,8 +212,10 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 	/***
 	 * Create the Fields where user enters model to execute
 	 * 
-	 * @param parent container composite
-	 * @param font used font
+	 * @param parent
+	 *            container composite
+	 * @param font
+	 *            used font
 	 * @return the created composite containing the fields
 	 */
 	public Composite createModelLayout(Composite parent, Font font) {
@@ -237,8 +234,7 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 
 				SelectAnyIFileDialog dialog = new SelectAnyIFileDialog();
 				if (dialog.open() == Dialog.OK) {
-					String modelPath = ((IResource) dialog.getResult()[0])
-							.getFullPath().toPortableString();
+					String modelPath = ((IResource) dialog.getResult()[0]).getFullPath().toPortableString();
 					_modelLocationText.setText(modelPath);
 					updateLaunchConfigurationDialog();
 					_modelProject = ((IResource) dialog.getResult()[0]).getProject();
@@ -252,12 +248,12 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 		_modelInitializationMethodText.setEditable(false);
 		createTextLabelLayout(parent, "");
 		createTextLabelLayout(parent, "Model initialization arguments");
-		_modelInitializationArgumentsText = new Text(parent, SWT.MULTI | SWT.BORDER |  SWT.WRAP | SWT.V_SCROLL);
+		_modelInitializationArgumentsText = new Text(parent, SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
 		_modelInitializationArgumentsText.setToolTipText("one argument per line");
 		GridData gridData = new GridData(GridData.FILL_BOTH);
 		gridData.heightHint = 40;
 		_modelInitializationArgumentsText.setLayoutData(gridData);
-		//_modelInitializationArgumentsText.setLayoutData(createStandardLayout());
+		// _modelInitializationArgumentsText.setLayoutData(createStandardLayout());
 		_modelInitializationArgumentsText.setFont(font);
 		_modelInitializationArgumentsText.setEditable(true);
 		_modelInitializationArgumentsText.addModifyListener(new ModifyListener() {
@@ -267,37 +263,31 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 			}
 		});
 		createTextLabelLayout(parent, "");
-		
+
 		return parent;
 	}
 
 	private Composite createAnimationLayout(Composite parent, Font font) {
 		createTextLabelLayout(parent, "Animator");
 
-		_animatorLocationText = new Text(parent, SWT.SINGLE
-				| SWT.BORDER);
+		_animatorLocationText = new Text(parent, SWT.SINGLE | SWT.BORDER);
 		_animatorLocationText.setLayoutData(createStandardLayout());
 		_animatorLocationText.setFont(font);
-		_animatorLocationText
-				.addModifyListener(fBasicModifyListener);
-		Button siriusRepresentationLocationButton = createPushButton(parent,
-				"Browse", null);
-		siriusRepresentationLocationButton
-				.addSelectionListener(new SelectionAdapter() {
-					public void widgetSelected(SelectionEvent evt) {
-						// handleModelLocationButtonSelected();
-						// TODO launch the appropriate selector
+		_animatorLocationText.addModifyListener(fBasicModifyListener);
+		Button siriusRepresentationLocationButton = createPushButton(parent, "Browse", null);
+		siriusRepresentationLocationButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent evt) {
+				// handleModelLocationButtonSelected();
+				// TODO launch the appropriate selector
 
-						SelectAIRDIFileDialog dialog = new SelectAIRDIFileDialog();
-						if (dialog.open() == Dialog.OK) {
-							String modelPath = ((IResource) dialog.getResult()[0])
-									.getFullPath().toPortableString();
-							_animatorLocationText
-									.setText(modelPath);
-							updateLaunchConfigurationDialog();
-						}
-					}
-				});
+				SelectAIRDIFileDialog dialog = new SelectAIRDIFileDialog();
+				if (dialog.open() == Dialog.OK) {
+					String modelPath = ((IResource) dialog.getResult()[0]).getFullPath().toPortableString();
+					_animatorLocationText.setText(modelPath);
+					updateLaunchConfigurationDialog();
+				}
+			}
+		});
 
 		createTextLabelLayout(parent, "Delay");
 		_delayText = new Text(parent, SWT.SINGLE | SWT.BORDER);
@@ -334,8 +324,10 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 	/***
 	 * Create the Field where user enters the language used to execute
 	 * 
-	 * @param parent container composite
-	 * @param font used font
+	 * @param parent
+	 *            container composite
+	 * @param font
+	 *            used font
 	 * @return the created composite containing the fields
 	 */
 	public Composite createLanguageLayout(Composite parent, Font font) {
@@ -350,8 +342,8 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 		_languageCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				//String selection = _languageCombo.getText();
-				//List<String> modelTypeNames = MelangeHelper.getModelTypes(selection);
+				// String selection = _languageCombo.getText();
+				// List<String> modelTypeNames = MelangeHelper.getModelTypes(selection);
 				updateLaunchConfigurationDialog();
 			}
 		});
@@ -363,7 +355,7 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 		_melangeQueryText.setFont(font);
 		_melangeQueryText.setEditable(false);
 		createTextLabelLayout(parent, "");
-		
+
 		return parent;
 	}
 
@@ -377,13 +369,12 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 		Button mainMethodBrowseButton = createPushButton(parent, "Browse", null);
 		mainMethodBrowseButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				if(_languageCombo.getText() == null){
+				if (_languageCombo.getText() == null) {
 					setErrorMessage("Please select a language.");
-				}
-				else{
+				} else {
 					Set<Class<?>> candidateAspects = K3DslHelper.getAspects(_languageCombo.getText());
-					SelectMainMethodDialog dialog = new SelectMainMethodDialog(
-							candidateAspects, new ENamedElementQualifiedNameLabelProvider());
+					SelectMainMethodDialog dialog = new SelectMainMethodDialog(candidateAspects,
+							new ENamedElementQualifiedNameLabelProvider());
 					int res = dialog.open();
 					if (res == WizardDialog.OK) {
 						Method selection = (Method) dialog.getFirstResult();
@@ -392,7 +383,7 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 				}
 			}
 		});
-		
+
 		createTextLabelLayout(parent, "Main model element path");
 		_entryPointModelElementText = new Text(parent, SWT.SINGLE | SWT.BORDER);
 		_entryPointModelElementText.setLayoutData(createStandardLayout());
@@ -400,45 +391,40 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 		_entryPointModelElementText.setEditable(false);
 		_entryPointModelElementText.addModifyListener(event -> updateMainElementName());
 		_entryPointModelElementText.addModifyListener(fBasicModifyListener);
-		Button mainModelElemBrowseButton = createPushButton(parent, "Browse",
-				null);
+		Button mainModelElemBrowseButton = createPushButton(parent, "Browse", null);
 		mainModelElemBrowseButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				Resource model = getModel();
-				if( model == null){
+				if (model == null) {
 					setErrorMessage("Please select a model to execute.");
-				}
-				else if(_entryPointMethodText.getText() == null || _entryPointMethodText.getText().equals("")){
+				} else if (_entryPointMethodText.getText() == null || _entryPointMethodText.getText().equals("")) {
 					setErrorMessage("Please select a main method.");
-				}
-				else {
+				} else {
 					SelectAnyEObjectDialog dialog = new SelectAnyEObjectDialog(
-							PlatformUI.getWorkbench()
-									.getActiveWorkbenchWindow().getShell(),
-							model.getResourceSet(),
-							new ENamedElementQualifiedNameLabelProvider()){
+							PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), model.getResourceSet(),
+							new ENamedElementQualifiedNameLabelProvider()) {
 						protected boolean select(EObject obj) {
 							String methodSignature = _entryPointMethodText.getText();
-							String firstParamType = K3DslHelper.getParametersTypeFromMethodSignature(methodSignature)[0];
-							String simpleParamType =  DslHelper.lastSegment(firstParamType);
+							String firstParamType = K3DslHelper
+									.getParametersTypeFromMethodSignature(methodSignature)[0];
+							String simpleParamType = DslHelper.lastSegment(firstParamType);
 							return obj.eClass().getName().equals(simpleParamType);
 						}
 					};
 					int res = dialog.open();
 					if (res == WizardDialog.OK) {
 						EObject selection = (EObject) dialog.getFirstResult();
-						String uriFragment = selection.eResource()
-								.getURIFragment(selection);
+						String uriFragment = selection.eResource().getURIFragment(selection);
 						_entryPointModelElementText.setText(uriFragment);
 					}
 				}
 			}
 		});
-		
+
 		createTextLabelLayout(parent, "Main model element name");
 		_entryPointModelElementLabel = new Label(parent, SWT.HORIZONTAL);
 		_entryPointModelElementLabel.setText("");
-		
+
 		return parent;
 	}
 
@@ -450,76 +436,88 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 		_modelInitializationArgumentsText.setEnabled(!_modelInitializationMethodText.getText().isEmpty());
 		_melangeQueryText.setText(computeMelangeQuery());
 	}
-	
+
 	/**
-	 * compute the Melange query for loading the given model as the requested language
-	 * If the language is already the good one, the query will be empty. (ie. melange downcast is not used)
+	 * compute the Melange query for loading the given model as the requested
+	 * language If the language is already the good one, the query will be empty.
+	 * (ie. melange downcast is not used)
+	 * 
 	 * @return
 	 */
-	protected String computeMelangeQuery(){
+	protected String computeMelangeQuery() {
 		String result = "";
 		String languageName = this._languageCombo.getText();
-		if(!this._modelLocationText.getText().isEmpty() && !languageName.isEmpty()){
+		if (!this._modelLocationText.getText().isEmpty() && !languageName.isEmpty()) {
 			Resource model = getModel();
-			List<String> modelNativeLanguages = MelangeHelper.getNativeLanguagesUsedByResource(model);			
-			if(!modelNativeLanguages.isEmpty() && !modelNativeLanguages.get(0).equals(languageName)){
-				// TODO this version consider only the first native language, we need to think about models containing elements coming from several languages
+			List<String> modelNativeLanguages = MelangeHelper.getNativeLanguagesUsedByResource(model);
+			if (!modelNativeLanguages.isEmpty() && !modelNativeLanguages.get(0).equals(languageName)) {
+				// TODO this version consider only the first native language, we need to think
+				// about models containing elements coming from several languages
 				String languageMT = MelangeHelper.getModelType(languageName);
-				if(languageMT == null){ languageMT = languageName+"MT"; } 
-				
-			//	result="?lang="+languageName+"&mt="+languageMT;
-				result="?lang="+languageName; // we need a simple downcast without adapter
+				if (languageMT == null) {
+					languageMT = languageName + "MT";
+				}
+
+				// result="?lang="+languageName+"&mt="+languageMT;
+				result = "?lang=" + languageName; // we need a simple downcast without adapter
 			}
 		}
 		return result;
 	}
-	
-	protected String getModelInitializationMethodName(){
+
+	protected String getModelInitializationMethodName() {
 		String entryPointClassName = null;
-		
+
 		final String prefix = "public static void ";
 		int startName = prefix.length();
 		int endName = _entryPointMethodText.getText().lastIndexOf("(");
-		if(endName == -1) return "";
+		if (endName == -1)
+			return "";
 		String entryMethod = _entryPointMethodText.getText().substring(startName, endName);
 		int lastDot = entryMethod.lastIndexOf(".");
-		if(lastDot != -1){
+		if (lastDot != -1) {
 			entryPointClassName = entryMethod.substring(0, lastDot);
 		}
-		
+
 		Bundle bundle = DslHelper.getDslBundle(_languageCombo.getText());
-		
-		if(entryPointClassName != null && bundle != null){
+
+		if (entryPointClassName != null && bundle != null) {
 			try {
 				Class<?> entryPointClass = bundle.loadClass(entryPointClassName);
-				for(Method m : entryPointClass.getMethods()){
-					// TODO find a better search mechanism (check signature, inheritance, aspects, etc)
-					if(m.isAnnotationPresent(fr.inria.diverse.k3.al.annotationprocessor.InitializeModel.class)){
-						return entryPointClassName+"."+m.getName();
+				for (Method m : entryPointClass.getMethods()) {
+					// TODO find a better search mechanism (check signature, inheritance, aspects,
+					// etc)
+					if (m.isAnnotationPresent(fr.inria.diverse.k3.al.annotationprocessor.InitializeModel.class)) {
+						return entryPointClassName + "." + m.getName();
 					}
 				}
-			} catch (ClassNotFoundException e) {}
+			} catch (ClassNotFoundException e) {
+			}
 		}
-			
+
 		return "";
 	}
-	
+
 	/**
-	 *  caches the current model resource in order to avoid to reload it many times
-	 *  use {@link getModel()} in order to access it.
+	 * caches the current model resource in order to avoid to reload it many times
+	 * use {@link getModel()} in order to access it.
 	 */
 	private Resource currentModelResource;
-	
+
 	private Resource getModel() {
 		URI modelURI = URI.createPlatformResourceURI(_modelLocationText.getText(), true);
-		if(currentModelResource == null || !currentModelResource.getURI().equals(modelURI)){
+		if (currentModelResource == null || !currentModelResource.getURI().equals(modelURI)) {
 			currentModelResource = PlainK3ExecutionEngine.loadModel(modelURI);
 		}
 		return currentModelResource;
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.ui.AbstractLaunchConfigurationTab#isValid(org.eclipse.debug.core.ILaunchConfiguration)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.debug.ui.AbstractLaunchConfigurationTab#isValid(org.eclipse.debug
+	 * .core.ILaunchConfiguration)
 	 */
 	@Override
 	public boolean isValid(ILaunchConfiguration config) {
@@ -528,76 +526,78 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		String modelName = _modelLocationText.getText().trim();
 		if (modelName.length() > 0) {
-			
+
 			IResource modelIResource = workspace.getRoot().findMember(modelName);
 			if (modelIResource == null || !modelIResource.exists()) {
-				setErrorMessage(NLS.bind(LauncherMessages.SequentialMainTab_model_doesnt_exist, new String[] {modelName})); 
+				setErrorMessage(
+						NLS.bind(LauncherMessages.SequentialMainTab_model_doesnt_exist, new String[] { modelName }));
 				return false;
 			}
 			if (modelName.equals("/")) {
-				setErrorMessage(LauncherMessages.SequentialMainTab_Model_not_specified); 
+				setErrorMessage(LauncherMessages.SequentialMainTab_Model_not_specified);
 				return false;
 			}
-			if (! (modelIResource instanceof IFile)) {
-				setErrorMessage(NLS.bind(LauncherMessages.SequentialMainTab_invalid_model_file, new String[] {modelName})); 
+			if (!(modelIResource instanceof IFile)) {
+				setErrorMessage(
+						NLS.bind(LauncherMessages.SequentialMainTab_invalid_model_file, new String[] { modelName }));
 				return false;
 			}
 		}
 		if (modelName.length() == 0) {
-			setErrorMessage(LauncherMessages.SequentialMainTab_Model_not_specified); 
+			setErrorMessage(LauncherMessages.SequentialMainTab_Model_not_specified);
 			return false;
 		}
-		
+
 		String languageName = _languageCombo.getText().trim();
 		if (languageName.length() == 0) {
-			setErrorMessage(LauncherMessages.SequentialMainTab_Language_not_specified); 
+			setErrorMessage(LauncherMessages.SequentialMainTab_Language_not_specified);
+			return false;
+		} else if (K3DslHelper.getEntryPoints(languageName).isEmpty()) {
+			setErrorMessage(LauncherMessages.SequentialMainTab_Language_main_methods_dont_exist);
 			return false;
 		}
-		else if(K3DslHelper.getEntryPoints(languageName).isEmpty()){
-			setErrorMessage(LauncherMessages.SequentialMainTab_Language_main_methods_dont_exist); 
-			return false;
-		}
-		
+
 		String mainMethod = _entryPointMethodText.getText().trim();
 		if (mainMethod.length() == 0) {
-			setErrorMessage(LauncherMessages.SequentialMainTab_Language_main_method_not_selected); 
+			setErrorMessage(LauncherMessages.SequentialMainTab_Language_main_method_not_selected);
 			return false;
 		}
-		
+
 		String rootElement = _entryPointModelElementText.getText().trim();
 		if (rootElement.length() == 0) {
-			setErrorMessage(LauncherMessages.SequentialMainTab_Language_root_element_not_selected); 
+			setErrorMessage(LauncherMessages.SequentialMainTab_Language_root_element_not_selected);
 			return false;
 		}
-		
+
 		String[] params = K3DslHelper.getParametersTypeFromMethodSignature(mainMethod);
 		String firstParam = DslHelper.lastSegment(params[0]);
 		String rootEClass = getModel().getEObject(rootElement).eClass().getName();
-		if( !(params.length == 1 && firstParam.equals(rootEClass)) ){
-			setErrorMessage(LauncherMessages.SequentialMainTab_Language_incompatible_root_and_main); 
+		if (!(params.length == 1 && firstParam.equals(rootEClass))) {
+			setErrorMessage(LauncherMessages.SequentialMainTab_Language_incompatible_root_and_main);
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Update _entryPointModelElement with pretty name
 	 */
-	private void updateMainElementName(){
+	private void updateMainElementName() {
 		try {
 			Resource model = getModel();
 			EObject mainElement = null;
-			if(model != null){
+			if (model != null) {
 				mainElement = model.getEObject(_entryPointModelElementText.getText());
 			}
-			if(mainElement != null){
+			if (mainElement != null) {
 				org.eclipse.xtext.naming.DefaultDeclarativeQualifiedNameProvider nameprovider = new DefaultDeclarativeQualifiedNameProvider();
 				QualifiedName qname = nameprovider.getFullyQualifiedName(mainElement);
-				String objectName = qname != null ? qname.toString(): mainElement.toString();
-				String prettyName =	objectName+ " : "+mainElement.eClass().getName();
+				String objectName = qname != null ? qname.toString() : mainElement.toString();
+				String prettyName = objectName + " : " + mainElement.eClass().getName();
 				_entryPointModelElementLabel.setText(prettyName);
 			}
-		} catch (Exception e) {	}
+		} catch (Exception e) {
+		}
 	}
 }

@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -33,6 +34,7 @@ import org.eclipse.gemoc.commons.value.model.value.ValuePackage;
 import org.eclipse.gemoc.dsl.Dsl;
 import org.eclipse.gemoc.executionframework.event.model.event.EventFactory;
 import org.eclipse.gemoc.executionframework.event.model.event.EventOccurrence;
+import org.eclipse.gemoc.executionframework.event.model.event.EventOccurrenceArgument;
 import org.eclipse.gemoc.executionframework.event.model.event.EventPackage;
 import org.eclipse.gemoc.trace.commons.model.trace.MSE;
 import org.eclipse.gemoc.trace.commons.model.trace.MSEOccurrence;
@@ -79,7 +81,7 @@ public class GenericEventManager implements IEventManager {
 	public boolean canSendEvent(EventOccurrence eventOccurrence) {
 		final Event event = eventOccurrence.getEvent();
 		final Method precondition = eventToPrecondition.get(event);
-		if (precondition != null && !((Boolean) performCall(precondition))) {
+		if (precondition != null && !((Boolean) performCall(precondition, eventOccurrence.getArgs()))) {
 			return false;
 		} else {
 			return true;
@@ -165,45 +167,45 @@ public class GenericEventManager implements IEventManager {
 			final Event event = eventOccurrence.getEvent();
 			final Method rule = eventNameToMethod.get(event.getName());
 			if (canSendEvent(eventOccurrence)) {
-				performCall(rule, eventOccurrence.getArgs().stream().map(a -> {
-					final Value value = a.getValue();
-					Object effectiveValue = null;
-					switch(value.eClass().getClassifierID()) {
-					case ValuePackage.SINGLE_REFERENCE_VALUE:
-						effectiveValue = ((SingleReferenceValue) value).getReferenceValue();
-						break;
-					case ValuePackage.BOOLEAN_ATTRIBUTE_VALUE:
-						effectiveValue = ((BooleanAttributeValue) value).isAttributeValue();
-						break;
-					case ValuePackage.BOOLEAN_OBJECT_ATTRIBUTE_VALUE:
-						effectiveValue = ((BooleanObjectAttributeValue) value).getAttributeValue();
-						break;
-					case ValuePackage.INTEGER_ATTRIBUTE_VALUE:
-						effectiveValue = ((IntegerAttributeValue) value).getAttributeValue();
-						break;
-					case ValuePackage.INTEGER_OBJECT_ATTRIBUTE_VALUE:
-						effectiveValue = ((IntegerObjectAttributeValue) value).getAttributeValue();
-						break;
-					case ValuePackage.FLOAT_ATTRIBUTE_VALUE:
-						effectiveValue = ((FloatAttributeValue) value).getAttributeValue();
-						break;
-					case ValuePackage.FLOAT_OBJECT_ATTRIBUTE_VALUE:
-						effectiveValue = ((FloatObjectAttributeValue) value).getAttributeValue();
-						break;
-					case ValuePackage.STRING_ATTRIBUTE_VALUE:
-						effectiveValue = ((StringAttributeValue) value).getAttributeValue();
-						break;
-					}
-					return effectiveValue;
-				}).toArray());
+				performCall(rule, eventOccurrence.getArgs());
 			}
 		}
 	}
 
-	private Object performCall(Method toCall, Object... parameters) {
+	private Object performCall(Method toCall, List<EventOccurrenceArgument> args) {
 		Object result = null;
 		try {
-			result = toCall.invoke(null, parameters);
+			result = toCall.invoke(null, args.stream().map(a -> {
+				final Value value = a.getValue();
+				Object effectiveValue = null;
+				switch(value.eClass().getClassifierID()) {
+				case ValuePackage.SINGLE_REFERENCE_VALUE:
+					effectiveValue = ((SingleReferenceValue) value).getReferenceValue();
+					break;
+				case ValuePackage.BOOLEAN_ATTRIBUTE_VALUE:
+					effectiveValue = ((BooleanAttributeValue) value).isAttributeValue();
+					break;
+				case ValuePackage.BOOLEAN_OBJECT_ATTRIBUTE_VALUE:
+					effectiveValue = ((BooleanObjectAttributeValue) value).getAttributeValue();
+					break;
+				case ValuePackage.INTEGER_ATTRIBUTE_VALUE:
+					effectiveValue = ((IntegerAttributeValue) value).getAttributeValue();
+					break;
+				case ValuePackage.INTEGER_OBJECT_ATTRIBUTE_VALUE:
+					effectiveValue = ((IntegerObjectAttributeValue) value).getAttributeValue();
+					break;
+				case ValuePackage.FLOAT_ATTRIBUTE_VALUE:
+					effectiveValue = ((FloatAttributeValue) value).getAttributeValue();
+					break;
+				case ValuePackage.FLOAT_OBJECT_ATTRIBUTE_VALUE:
+					effectiveValue = ((FloatObjectAttributeValue) value).getAttributeValue();
+					break;
+				case ValuePackage.STRING_ATTRIBUTE_VALUE:
+					effectiveValue = ((StringAttributeValue) value).getAttributeValue();
+					break;
+				}
+				return effectiveValue;
+			}).toArray());
 		} catch (Throwable e1) {
 			e1.printStackTrace();
 		}

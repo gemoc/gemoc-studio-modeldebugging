@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-SymbolicName: org.eclipse.gemoc.executionframework.event.manager;singleton:=true
 Export-Package: org.eclipse.gemoc.executionframework.event.manager
 Bundle-Name: org.eclipse.gemoc.executionframework.event.manager
-Bundle-Version: 3.0.0.qualifier
+Bundle-Version: 4.0.0.qualifier
 Bundle-ClassPath: .
 Require-Bundle: org.eclipse.gemoc.executionframework.event.model;bundle-version="0.0.0";visibility:=private,
  org.eclipse.emf.transaction;bundle-version="1.9.0",

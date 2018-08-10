@@ -13,6 +13,8 @@ package org.eclipse.gemoc.executionframework.engine.core;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.emf.ecore.EClass;
@@ -79,6 +81,7 @@ public abstract class AbstractSequentialExecutionEngine<C extends IExecutionCont
 
 	@Override
 	protected final void performStart() {
+		initializeModel();
 		notifyEngineInitialized();
 		executeEntryPoint();
 		Activator.getDefault().info("Execution finished");
@@ -93,6 +96,10 @@ public abstract class AbstractSequentialExecutionEngine<C extends IExecutionCont
 	 * To be called just before each execution step by an implementing engine.
 	 */
 	protected final void beforeExecutionStep(Object caller, String className, String operationName) {
+		beforeExecutionStep(caller, className, operationName, Collections.emptyList());
+	}
+
+	protected final void beforeExecutionStep(Object caller, String className, String operationName, List<Object> args) {
 		// We will trick the transaction with an empty command. This most
 		// probably make rollbacks impossible, but at least we can manage
 		// transactions the way we want.
@@ -102,43 +109,46 @@ public abstract class AbstractSequentialExecutionEngine<C extends IExecutionCont
 			}
 		};
 
-		beforeExecutionStep(caller, className, operationName, rc);
+		beforeExecutionStep(caller, className, operationName, rc, args);
 		rc.execute();
+	}
+
+	protected final void beforeExecutionStep(Object caller, String className, String operationName, RecordingCommand rc) {
+		beforeExecutionStep(caller, className, operationName, rc, Collections.emptyList());
 	}
 
 	/**
 	 * To be called just after each execution step by an implementing engine. If the
 	 * step was done through a RecordingCommand, it can be given.
 	 */
-	protected final void beforeExecutionStep(Object caller, String className, String operationName, RecordingCommand rc) {
-		beforeExecutionStep(caller, className, operationName, new Object[] {}, rc);
-	}
-	
-	protected final void beforeExecutionStep(Object caller, String className, String operationName, Object[] parameters, RecordingCommand rc) {
+
+	protected final void beforeExecutionStep(Object caller, String className, String operationName, RecordingCommand rc, List<Object> args) {
 		if (caller != null && caller instanceof EObject && editingDomain != null) {
 			// Call expected to be done from an EMF model, hence EObjects
 			EObject callerCast = (EObject) caller;
 			// We create a step
-			Step<?> step = createStep(callerCast, className, parameters, operationName);
+			Step<?> step = createStep(callerCast, className, operationName, args);
 
 			beforeExecutionStep(step, rc);
 		}
 	}
 
-	private Step<?> createStep(EObject caller, String className, Object[] parameters, String methodName) {
+	private Step<?> createStep(EObject caller, String className, String methodName, List<Object> args) {
 		MSE mse = findOrCreateMSE(caller, className, methodName);
 		Step<?> result;
 		if (traceAddon == null) {
 			GenericSequentialStep step = GenerictraceFactory.eINSTANCE.createGenericSequentialStep();
-			MSEOccurrence occurrence = null;
-			occurrence = TraceFactory.eINSTANCE.createMSEOccurrence();
+			MSEOccurrence occurrence = TraceFactory.eINSTANCE.createMSEOccurrence();
+			for (Object arg : args) {
+				occurrence.getParameters().add(arg);
+			}
 			step.setMseoccurrence(occurrence);
 			occurrence.setMse(mse);
 			result = step;
 		} else {
 			result = traceAddon.getFactory().createStep(mse, new ArrayList<Object>(), new ArrayList<Object>());
 		}
-		result.getMseoccurrence().getParameters().addAll(Arrays.asList(parameters));
+		result.getMseoccurrence().getParameters().addAll(Arrays.asList(args));
 		return result;
 	}
 

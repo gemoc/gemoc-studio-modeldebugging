@@ -235,14 +235,14 @@ public class PlainK3ExecutionEngine extends AbstractCommandBasedSequentialExecut
 				final boolean isStepMethod = initializeMethod
 						.isAnnotationPresent(fr.inria.diverse.k3.al.annotationprocessor.Step.class);
 				if (!isStepMethod) {
-					fr.inria.diverse.k3.al.annotationprocessor.stepmanager.StepCommand command = new fr.inria.diverse.k3.al.annotationprocessor.stepmanager.StepCommand() {
+					final StepCommand command = new StepCommand() {
 						@Override
 						public void execute() {
 							callInitializeModel();
 						}
 					};
-					fr.inria.diverse.k3.al.annotationprocessor.stepmanager.IStepManager stepManager = PlainK3ExecutionEngine.this;
-					stepManager.executeStep(entryPointMethodParameters.get(0), command, entryPointClass.getName(),
+					final IStepManager stepManager = PlainK3ExecutionEngine.this;
+					stepManager.executeStep(initializeMethodParameters.get(0), command, entryPointClass.getName(),
 							initializeMethod.getName());
 				} else {
 					callInitializeModel();

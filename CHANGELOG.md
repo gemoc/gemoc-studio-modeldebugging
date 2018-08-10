@@ -1,5 +1,15 @@
 # Changelog
 
+## v3.0.0 (17/07/2018)
+*No changelog for this release.*
+
+---
+
+## v3.0.0-rc4 (22/06/2018)
+*No changelog for this release.*
+
+---
+
 ## v3.0.0-rc3 (07/06/2018)
 
 #### Enhancements:

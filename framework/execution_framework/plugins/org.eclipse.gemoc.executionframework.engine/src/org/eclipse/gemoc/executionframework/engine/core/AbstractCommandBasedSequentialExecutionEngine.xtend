@@ -13,6 +13,7 @@
 import org.eclipse.emf.transaction.RecordingCommand
 import org.eclipse.gemoc.xdsmlframework.api.core.IRunConfiguration
 import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionContext
+import java.util.Arrays
 
 abstract class AbstractCommandBasedSequentialExecutionEngine<C extends IExecutionContext<R, ?, ?>, R extends IRunConfiguration> extends AbstractSequentialExecutionEngine<C, R> {
 
@@ -35,7 +36,7 @@ abstract class AbstractCommandBasedSequentialExecutionEngine<C extends IExecutio
 			}
 		}
 		try {
-			beforeExecutionStep(caller, className, operationName, parameters, rc)
+			beforeExecutionStep(caller, className, operationName, rc, Arrays.asList(parameters))
 			rc.execute
 			afterExecutionStep
 		} finally {

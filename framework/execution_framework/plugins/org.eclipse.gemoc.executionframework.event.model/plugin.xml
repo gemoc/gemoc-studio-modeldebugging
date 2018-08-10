@@ -14,14 +14,6 @@
    </extension>
 
    <extension point="org.eclipse.emf.ecore.generated_package">
-      <!-- @generated generic-event -->
-      <package
-            uri="http://www.eclipse.org/gemoc/event/generic"
-            class="org.eclipse.gemoc.executionframework.event.model.genericevent.GenericeventPackage"
-            genModel="model/generic-event.genmodel"/>
-   </extension>
-
-   <extension point="org.eclipse.emf.ecore.generated_package">
       <!-- @generated testsuite -->
       <package
             uri="http://http://www.eclipse.org/gemoc/event/testsuite"
