@@ -20,3 +20,4 @@ Export-Package: org.eclipse.gemoc.xdsmlframework.behavioralinterface.validation,
  org.eclipse.gemoc.xdsmlframework.behavioralinterface.parser.antlr.internal,
  org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface,
  org.eclipse.gemoc.xdsmlframework.behavioralinterface.jvmmodel
+Automatic-Module-Name: org.eclipse.gemoc.xdsmlframework.behavioralinterface

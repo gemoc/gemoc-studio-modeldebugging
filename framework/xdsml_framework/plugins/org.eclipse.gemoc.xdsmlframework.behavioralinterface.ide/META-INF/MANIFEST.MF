@@ -14,4 +14,5 @@ Require-Bundle: org.eclipse.gemoc.xdsmlframework.behavioralinterface,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.gemoc.xdsmlframework.behavioralinterface.ide.contentassist.antlr,
  org.eclipse.gemoc.xdsmlframework.behavioralinterface.ide.contentassist.antlr.internal
+Automatic-Module-Name: org.eclipse.gemoc.xdsmlframework.behavioralinterface.ide
 
