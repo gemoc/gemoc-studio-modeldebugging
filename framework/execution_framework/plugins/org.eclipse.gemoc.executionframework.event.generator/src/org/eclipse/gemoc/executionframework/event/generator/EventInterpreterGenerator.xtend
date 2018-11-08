@@ -184,7 +184,7 @@ class EventInterpreterGenerator {
 			import org.eclipse.emf.ecore.EOperation;
 			import org.eclipse.emf.ecore.EPackage;
 			import org.eclipse.gemoc.executionframework.event.manager.IBehavioralAPI;
-			import org.eclipse.gemoc.executionframework.event.model.event.Event;
+			import org.eclipse.gemoc.executionframework.event.model.event.EventOccurrence;
 			«IF !outputEventToEmitter.empty»
 			«ENDIF»
 			«FOR elementReference : elementReferences»
@@ -275,7 +275,7 @@ class EventInterpreterGenerator {
 	private def String generateCanSendEventMethod() {
 		'''
 			@Override
-			public boolean canSendEvent(Event _event) {
+			public boolean canSendEvent(EventOccurrence _event) {
 				«FOR entry : inputEventToHandler.entrySet SEPARATOR " else"»
 				«val eventClass = entry.key»
 				«val eventHandler = entry.value»
@@ -326,7 +326,7 @@ class EventInterpreterGenerator {
 	private def String generateDispatch() {
 		'''
 			@Override
-			public void dispatchEvent(Event _event) {
+			public void dispatchEvent(EventOccurrence _event) {
 				«FOR handler : inputEventToHandler.entrySet SEPARATOR " else"»
 					«val eventClassName = handler.key.name»
 					if (_event instanceof «eventClassName») {
@@ -374,7 +374,7 @@ class EventInterpreterGenerator {
 	private def generateGetOutputEvent() {
 		'''
 			@Override
-			public Event getOutputEvent(EOperation operation, EObject caller, List<Object> parameters) {
+			public EventOccurrence getOutputEvent(EOperation operation, EObject caller, List<Object> parameters) {
 				«FOR entry : outputEventToEmitter.entrySet SEPARATOR " else"»
 					«val eventClassName = entry.key.name»
 					«val eventEmitter = entry.value»
