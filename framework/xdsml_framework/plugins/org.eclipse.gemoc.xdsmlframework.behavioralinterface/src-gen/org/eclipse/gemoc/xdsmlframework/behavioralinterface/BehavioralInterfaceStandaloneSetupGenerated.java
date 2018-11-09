@@ -9,16 +9,16 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.BehavioralInterfacePackage;
 import org.eclipse.xtext.ISetup;
-import org.eclipse.xtext.common.TerminalsStandaloneSetup;
 import org.eclipse.xtext.resource.IResourceFactory;
 import org.eclipse.xtext.resource.IResourceServiceProvider;
+import org.eclipse.xtext.xbase.XtypeStandaloneSetup;
 
 @SuppressWarnings("all")
 public class BehavioralInterfaceStandaloneSetupGenerated implements ISetup {
 
 	@Override
 	public Injector createInjectorAndDoEMFRegistration() {
-		TerminalsStandaloneSetup.doSetup();
+		XtypeStandaloneSetup.doSetup();
 
 		Injector injector = createInjector();
 		register(injector);

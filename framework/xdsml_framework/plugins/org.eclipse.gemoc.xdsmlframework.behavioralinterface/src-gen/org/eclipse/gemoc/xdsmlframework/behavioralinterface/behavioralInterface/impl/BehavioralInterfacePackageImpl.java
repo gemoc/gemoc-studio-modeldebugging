@@ -90,7 +90,7 @@ public class BehavioralInterfacePackageImpl extends EPackageImpl implements Beha
 
   /**
    * Creates, registers, and initializes the <b>Package</b> for this model, and for any others upon which it depends.
-   * 
+   *
    * <p>This method is used to initialize {@link BehavioralInterfacePackage#eINSTANCE} when that field is accessed.
    * Clients should not invoke it directly. Instead, they should simply access that field to obtain the package.
    * <!-- begin-user-doc -->
@@ -105,7 +105,8 @@ public class BehavioralInterfacePackageImpl extends EPackageImpl implements Beha
     if (isInited) return (BehavioralInterfacePackage)EPackage.Registry.INSTANCE.getEPackage(BehavioralInterfacePackage.eNS_URI);
 
     // Obtain or create and register package
-    BehavioralInterfacePackageImpl theBehavioralInterfacePackage = (BehavioralInterfacePackageImpl)(EPackage.Registry.INSTANCE.get(eNS_URI) instanceof BehavioralInterfacePackageImpl ? EPackage.Registry.INSTANCE.get(eNS_URI) : new BehavioralInterfacePackageImpl());
+    Object registeredBehavioralInterfacePackage = EPackage.Registry.INSTANCE.get(eNS_URI);
+    BehavioralInterfacePackageImpl theBehavioralInterfacePackage = registeredBehavioralInterfacePackage instanceof BehavioralInterfacePackageImpl ? (BehavioralInterfacePackageImpl)registeredBehavioralInterfacePackage : new BehavioralInterfacePackageImpl();
 
     isInited = true;
 
@@ -118,7 +119,6 @@ public class BehavioralInterfacePackageImpl extends EPackageImpl implements Beha
     // Mark meta-data to indicate it can't be changed
     theBehavioralInterfacePackage.freeze();
 
-  
     // Update the registry and return the package
     EPackage.Registry.INSTANCE.put(BehavioralInterfacePackage.eNS_URI, theBehavioralInterfacePackage);
     return theBehavioralInterfacePackage;

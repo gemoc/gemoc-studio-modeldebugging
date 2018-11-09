@@ -3,7 +3,7 @@
  */
 package org.eclipse.gemoc.xdsmlframework.behavioralinterface.scoping;
 
-import org.eclipse.xtext.scoping.impl.DelegatingScopeProvider;
+import org.eclipse.xtext.xbase.scoping.XtypeScopeProvider;
 
-public abstract class AbstractBehavioralInterfaceScopeProvider extends DelegatingScopeProvider {
+public abstract class AbstractBehavioralInterfaceScopeProvider extends XtypeScopeProvider {
 }

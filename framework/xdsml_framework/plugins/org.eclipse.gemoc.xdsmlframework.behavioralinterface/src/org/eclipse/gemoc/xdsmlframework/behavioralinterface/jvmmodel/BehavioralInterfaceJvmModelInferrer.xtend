@@ -5,11 +5,10 @@ package org.eclipse.gemoc.xdsmlframework.behavioralinterface.jvmmodel
 
 import com.google.inject.Inject
 import org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.BehavioralInterface
+import org.eclipse.xtext.common.types.JvmDeclaredType
 import org.eclipse.xtext.xbase.jvmmodel.AbstractModelInferrer
 import org.eclipse.xtext.xbase.jvmmodel.IJvmDeclaredTypeAcceptor
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
-import org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.InputEvent
-import org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.Event
 
 /**
  * <p>Infers a JVM model from the source model.</p> 
@@ -30,11 +29,11 @@ class BehavioralInterfaceJvmModelInferrer extends AbstractModelInferrer {
 	 * 
 	 * @param element
 	 *            the model to create one or more
-	 *            {@link org.eclipse.xtext.common.types.JvmDeclaredType declared
+	 *            {@link JvmDeclaredType declared
 	 *            types} from.
 	 * @param acceptor
 	 *            each created
-	 *            {@link org.eclipse.xtext.common.types.JvmDeclaredType type}
+	 *            {@link JvmDeclaredType type}
 	 *            without a container should be passed to the acceptor in order
 	 *            get attached to the current resource. The acceptor's
 	 *            {@link IJvmDeclaredTypeAcceptor#accept(org.eclipse.xtext.common.types.JvmDeclaredType)
@@ -61,4 +60,31 @@ class BehavioralInterfaceJvmModelInferrer extends AbstractModelInferrer {
 //			}
 //		]
 	}
+	
+//	def dispatch void infer(RuleReference element, IJvmDeclaredTypeAcceptor acceptor, boolean isPreIndexingPhase) {
+//		acceptor.accept(element.type.toClass("demo.Demo")) [
+//			var i = 0;
+//			for (call : element.calls) {
+//				i = i + 1
+//				members += call.toField("field"+i, call.type.cloneWithProxies) [
+//					annotations += Inject.annotationRef()
+//				]
+//				
+//				val m1 = call.toMethod("executeIntern"+i, inferredType) [
+//					visibility = JvmVisibility.PRIVATE
+//					parameters+=call.toParameter("it", call.type.cloneWithProxies) => [
+//						
+//					]
+//					body = call.method
+//				]
+//				members += m1
+//				
+//				val ifinal = i
+//				members += call.toMethod("execute"+i, call.method.inferredType) [
+//					body = '''
+//					«IF m1.returnType.qualifiedName != Void.TYPE.typeRef.qualifiedName»return «ENDIF»executeIntern«ifinal»(field«ifinal»);'''
+//				]
+//			}
+//		]
+//	}
 }

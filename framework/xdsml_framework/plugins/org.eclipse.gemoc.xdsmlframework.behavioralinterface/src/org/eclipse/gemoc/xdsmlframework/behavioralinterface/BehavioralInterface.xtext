@@ -1,31 +1,27 @@
-grammar org.eclipse.gemoc.xdsmlframework.behavioralinterface.BehavioralInterface with org.eclipse.xtext.common.Terminals
+grammar org.eclipse.gemoc.xdsmlframework.behavioralinterface.BehavioralInterface with org.eclipse.xtext.xbase.Xtype
 
-import "http://www.eclipse.org/xtext/common/JavaVMTypes" as jvmTypes
 import "http://www.eclipse.org/xtext/xbase/Xbase" as xbase
 
 generate behavioralInterface "http://www.eclipse.org/gemoc/xdsmlframework/behavioralinterface/BehavioralInterface"
 
 BehavioralInterface:
-	'dsl' dslName=FQN
+	'dsl' dslName=QualifiedName
 	events+=Event*;
 
 Event returns Event:
 	InputEvent | OutputEvent;
 
 InputEvent returns InputEvent:
-	'input' name=FQN
-	'rule' '=' ruleDeclaringType=FQN '::' rule=ID
+	'input' name=QualifiedName
+	'rule' '=' ruleDeclaringType=QualifiedName '::' rule=ID
 	('params' '=' params+=EventParameter (',' params+=EventParameter)*)?
 	('interruptible' '=' interruptible?=('true'|'false'))?
-	('precondition' '=' preconditionDeclaringType=FQN '::' precondition=ID)?;
+	('precondition' '=' preconditionDeclaringType=QualifiedName '::' precondition=ID)?;
 
 OutputEvent returns OutputEvent:
-	'output' name=FQN
-	'rule' '=' ruleDeclaringType=FQN '::' rule=ID
+	'output' name=QualifiedName
+	'rule' '=' ruleDeclaringType=QualifiedName '::' rule=ID
 	('params' params+=EventParameter (',' params+=EventParameter)*)?;
 
 EventParameter returns EventParameter:
-	name=FQN ':' type=FQN (many?='*')?;
-
-FQN:
-	ID('.' ID)*;
+	name=QualifiedName ':' type=QualifiedName (many?='*')?;

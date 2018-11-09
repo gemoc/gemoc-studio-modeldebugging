@@ -275,7 +275,7 @@ public class InputEventImpl extends EventImpl implements InputEvent
   {
     if (eIsProxy()) return super.toString();
 
-    StringBuffer result = new StringBuffer(super.toString());
+    StringBuilder result = new StringBuilder(super.toString());
     result.append(" (interruptible: ");
     result.append(interruptible);
     result.append(", preconditionDeclaringType: ");

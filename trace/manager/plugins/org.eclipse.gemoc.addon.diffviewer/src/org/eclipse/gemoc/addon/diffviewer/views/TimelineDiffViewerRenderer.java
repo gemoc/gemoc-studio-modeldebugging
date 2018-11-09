@@ -18,13 +18,13 @@ import java.util.Map;
 import org.eclipse.gemoc.addon.diffviewer.logic.Diff;
 import org.eclipse.gemoc.addon.diffviewer.logic.Diff.DiffKind;
 import org.eclipse.gemoc.addon.diffviewer.logic.DiffComputer;
-
 import org.eclipse.gemoc.trace.commons.model.trace.Dimension;
 import org.eclipse.gemoc.trace.commons.model.trace.State;
 import org.eclipse.gemoc.trace.commons.model.trace.Step;
 import org.eclipse.gemoc.trace.commons.model.trace.TracedObject;
 import org.eclipse.gemoc.trace.commons.model.trace.Value;
 import org.eclipse.gemoc.trace.gemoc.api.ITraceExtractor;
+
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Insets;
