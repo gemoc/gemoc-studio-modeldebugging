@@ -86,6 +86,7 @@ class EclipseProjectHelper
 				#["src"],
 				#[],
 				#["org.eclipse.gemoc.executionframework.event.manager",
+					"org.eclipse.gemoc.executionframework.event.model",
 					"org.eclipse.gemoc.trace.commons.model",
 					"org.eclipse.gemoc.xdsmlframework.api",
 					basePluginName,

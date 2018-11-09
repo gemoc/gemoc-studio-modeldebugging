@@ -13,6 +13,8 @@
 	</parent>
     <modules>
         <!-- plugins -->
+        <module>plugins/org.eclipse.gemoc.commons.value.model</module> 
+        
         <module>plugins/org.eclipse.gemoc.executionframework.engine</module>        
         <module>plugins/org.eclipse.gemoc.executionframework.engine.ui</module>
         <module>plugins/org.eclipse.gemoc.executionframework.ui</module>
@@ -20,7 +22,6 @@
         <module>plugins/org.eclipse.gemoc.executionframework.debugger</module>
         <module>plugins/org.eclipse.gemoc.executionframework.debugger.ui</module>
         
-        <module>plugins/org.eclipse.gemoc.executionframework.event.bus</module>
         <module>plugins/org.eclipse.gemoc.executionframework.event.generator</module>
         <module>plugins/org.eclipse.gemoc.executionframework.event.generator.ui</module>
         <module>plugins/org.eclipse.gemoc.executionframework.event.manager</module>

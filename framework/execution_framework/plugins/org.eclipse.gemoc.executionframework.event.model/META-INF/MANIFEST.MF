@@ -19,3 +19,4 @@ Require-Bundle: org.eclipse.gemoc.executionframework.event.model;visibility:=ree
  org.eclipse.gemoc.xdsmlframework.behavioralinterface;visibility:=reexport,
  org.eclipse.gemoc.commons.value.model;visibility:=reexport
 Bundle-ActivationPolicy: lazy
+Automatic-Module-Name: org.eclipse.gemoc.executionframework.event.model
