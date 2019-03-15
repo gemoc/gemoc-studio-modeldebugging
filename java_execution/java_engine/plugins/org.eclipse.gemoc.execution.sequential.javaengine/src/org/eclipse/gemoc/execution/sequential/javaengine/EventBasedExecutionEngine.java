@@ -11,16 +11,11 @@
 package org.eclipse.gemoc.execution.sequential.javaengine;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.impl.InternalTransactionalEditingDomain;
-import org.eclipse.gemoc.commons.value.model.value.ManyReferenceValue;
-import org.eclipse.gemoc.commons.value.model.value.SingleReferenceValue;
-import org.eclipse.gemoc.commons.value.model.value.Value;
 import org.eclipse.gemoc.executionframework.engine.core.AbstractCommandBasedSequentialExecutionEngine;
 import org.eclipse.gemoc.executionframework.engine.core.EngineStoppedException;
 import org.eclipse.gemoc.executionframework.event.manager.GenericEventManager;
@@ -52,25 +47,25 @@ public class EventBasedExecutionEngine extends
 		try {
 			eventManager = getAddonsTypedBy(GenericEventManager.class).stream().findFirst().orElse(null);
 			if (eventManager != null) {
-				final EventOccurrence startEvent = getExecutionContext().getRunConfiguration()
-						.getStartEventOccurrence();
+				final List<EventOccurrence> initialScenario = getExecutionContext().getRunConfiguration()
+						.getInitialScenario();
 				final boolean waitForEvent = getExecutionContext().getRunConfiguration().getWaitForEvent();
-				if (startEvent != null) {
-					convertEventToExecutedResource(startEvent, getExecutionContext().getResourceModel());
-					eventManager.queueEvent(startEvent);
-				}
+				initialScenario.forEach(e -> {
+//					convertEventToExecutedResource(e, getExecutionContext().getResourceModel());
+					eventManager.processEventOccurrence(e);
+				});
 				if (waitForEvent) {
 					// We wait for new events to process until we receive a stop event (TODO?).
 					// If a start event has been queued, it will be processed first.
 					// We then wait for further events.
 					while (running) {
-						eventManager.waitForEvents();
-						eventManager.processEvents();
+						eventManager.waitForCallRequests();
+						eventManager.processCallRequests();
 					}
 				} else {
 					// The start event has been queued, so we process it
 					// and let the execution unfold from there.
-					eventManager.processEvents();
+					eventManager.processCallRequests();
 				}
 			}
 		} catch (EngineStoppedException stopException) {
@@ -92,12 +87,6 @@ public class EventBasedExecutionEngine extends
 	protected void performStop() {
 		running = false;
 		super.performStop();
-	}
-
-	private void processEvents() {
-		if (eventManager != null) {
-			eventManager.processEvents();
-		}
 	}
 
 	@Override
@@ -137,14 +126,22 @@ public class EventBasedExecutionEngine extends
 
 	@Override
 	public void executeStep(Object caller, final StepCommand command, String className, String methodName) {
-		processEvents();
 		executeOperation(caller, new Object[0], className, methodName, new Runnable() {
 			@Override
 			public void run() {
 				command.execute();
 			}
 		});
-		processEvents();
+	}
+	
+	@Override
+	public void executeStep(Object caller, Object[] parameters, StepCommand command, String className, String methodName) {
+		executeOperation(caller, parameters, className, methodName, new Runnable() {
+			@Override
+			public void run() {
+				command.execute();
+			}
+		});
 	}
 
 	@Override
@@ -155,30 +152,6 @@ public class EventBasedExecutionEngine extends
 			return editingDomain == this.editingDomain;
 		}
 		return false;
-	}
-
-	private void convertEventToExecutedResource(EventOccurrence eventOccurrence, Resource executedResource) {
-		eventOccurrence.getArgs().forEach(a -> {
-			final Value value = a.getValue();
-			if (value instanceof SingleReferenceValue) {
-				final SingleReferenceValue v = ((SingleReferenceValue) value);
-				final EObject parameter = v.getReferenceValue();
-				final Resource parameterResource = parameter.eResource();
-				final String uriFragment = parameterResource.getURIFragment(parameter);
-				final EObject effectiveParameter = executedResource.getEObject(uriFragment);
-				v.setReferenceValue(effectiveParameter);
-			} else if (value instanceof ManyReferenceValue) {
-				final ManyReferenceValue v = ((ManyReferenceValue) value);
-				final List<EObject> parameters = v.getReferenceValues();
-				final List<EObject> effectiveParameters = parameters.stream().map(p -> {
-					final Resource parameterResource = p.eResource();
-					final String uriFragment = parameterResource.getURIFragment(p);
-					return executedResource.getEObject(uriFragment);
-				}).collect(Collectors.toList());
-				parameters.clear();
-				parameters.addAll(effectiveParameters);
-			}
-		});
 	}
 
 	private static TransactionalEditingDomain getEditingDomain(EObject o) {

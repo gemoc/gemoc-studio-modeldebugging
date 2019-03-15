@@ -11,7 +11,7 @@ import org.eclipse.gemoc.executionframework.event.manager.IEventManager;
 /**
  * Events derived from annotated methods can be sent to the
  * {@link IEventManager}, using the
- * {@link org.eclipse.gemoc.executionframework.event.manager.IEventManager#queueEvent(org.eclipse.gemoc.executionframework.event.model.event.Event)
+ * {@link org.eclipse.gemoc.executionframework.event.manager.IEventManager#processEventOccurrence(org.eclipse.gemoc.executionframework.event.model.event.Event)
  * queueEvent} method.
  * 
  * @author dorian

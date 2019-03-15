@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.eclipse.gemoc.execution.sequential.javaengine.ui.launcher;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.LinkedTransferQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TransferQueue;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -35,6 +37,7 @@ import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.gemoc.commons.eclipse.messagingsystem.api.MessagingSystem;
 import org.eclipse.gemoc.commons.eclipse.ui.ViewHelper;
 import org.eclipse.gemoc.dsl.debug.ide.IDSLDebugger;
@@ -48,25 +51,24 @@ import org.eclipse.gemoc.execution.sequential.javaengine.ui.Activator;
 import org.eclipse.gemoc.executionframework.engine.commons.EngineContextException;
 import org.eclipse.gemoc.executionframework.engine.ui.launcher.AbstractGemocLauncher;
 import org.eclipse.gemoc.executionframework.event.manager.GenericEventManager;
-import org.eclipse.gemoc.executionframework.event.manager.IEventManager;
+import org.eclipse.gemoc.executionframework.event.manager.IEventManagerListener;
 import org.eclipse.gemoc.executionframework.event.model.event.EventOccurrence;
 import org.eclipse.gemoc.executionframework.event.testsuite.TestCase;
-import org.eclipse.gemoc.executionframework.event.testsuite.TestCaseError;
-import org.eclipse.gemoc.executionframework.event.testsuite.TestCaseFailure;
 import org.eclipse.gemoc.executionframework.event.testsuite.TestCaseReport;
-import org.eclipse.gemoc.executionframework.event.testsuite.TestCaseSuccess;
 import org.eclipse.gemoc.executionframework.event.testsuite.TestSuite;
 import org.eclipse.gemoc.executionframework.event.testsuite.TestSuiteReport;
 import org.eclipse.gemoc.executionframework.event.testsuite.TestsuiteFactory;
 import org.eclipse.gemoc.executionframework.extensions.sirius.services.AbstractGemocDebuggerServices;
 import org.eclipse.gemoc.executionframework.ui.views.engine.EnginesStatusView;
 import org.eclipse.gemoc.xdsmlframework.api.core.ExecutionMode;
+import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine;
+import org.eclipse.gemoc.xdsmlframework.api.engine_addon.IEngineAddon;
+import org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.BehavioralInterface;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.xtext.util.Strings;
 
 public class TestSuiteLauncher extends AbstractGemocLauncher<EventBasedModelExecutionContext> {
 
@@ -103,7 +105,7 @@ public class TestSuiteLauncher extends AbstractGemocLauncher<EventBasedModelExec
 		return Activator.getDefault().getMessaggingSystem();
 	}
 
-	private ILaunchConfiguration getLaunchConfiguration(TestCase testCase, String languageName) throws CoreException {
+	private ILaunchConfiguration getLaunchConfiguration(TestCase testCase, String languageName, Set<String> implRelIds, Set<String> subtypeRelIds) throws CoreException {
 		final ILaunchConfigurationWorkingCopy configuration = launchType.newInstance(null, testCase.getName());
 		final String modelLocation;
 		if (testCase.getModel().eIsProxy()) {
@@ -113,6 +115,9 @@ public class TestSuiteLauncher extends AbstractGemocLauncher<EventBasedModelExec
 		}
 		configuration.setAttribute(AbstractDSLLaunchConfigurationDelegate.RESOURCE_URI, modelLocation);
 		configuration.setAttribute(EventBasedRunConfiguration.LAUNCH_SELECTED_LANGUAGE, languageName);
+		configuration.setAttribute(EventBasedRunConfiguration.WAIT_FOR_EVENT, true);
+		configuration.setAttribute(EventBasedRunConfiguration.IMPL_REL_IDS, implRelIds);
+		configuration.setAttribute(EventBasedRunConfiguration.SUBTYPE_REL_IDS, subtypeRelIds);
 		configuration.setAttribute(EventBasedRunConfiguration.DEBUG_MODEL_ID, Activator.DEBUG_MODEL_ID);
 		return configuration;
 	}
@@ -126,8 +131,11 @@ public class TestSuiteLauncher extends AbstractGemocLauncher<EventBasedModelExec
 			final ResourceSet resSet = new ResourceSetImpl();
 			final TestSuite testSuite = resSet.getResource(testSuiteURI, true).getContents().stream()
 					.filter(o -> o instanceof TestSuite).findFirst().map(o -> (TestSuite) o).orElse(null);
+			EcoreUtil.resolveAll(testSuite);
 			final Resource reportResource = resSet.createResource(testSuiteURI.trimSegments(1).appendSegment(testReportFileName).appendFileExtension("xmi"));
 			final String languageName = configuration.getAttribute("LANGUAGE_NAME", "");
+			final Set<String> implRelIds = configuration.getAttribute("IMPL_REL_IDS", Collections.emptySet());
+			final Set<String> subtypeRelIds = configuration.getAttribute("SUBTYPE_REL_IDS", Collections.emptySet());
 
 			// make sure to have the engine view when starting the engine
 			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
@@ -142,15 +150,11 @@ public class TestSuiteLauncher extends AbstractGemocLauncher<EventBasedModelExec
 			
 			for (TestCase testCase : testSuite.getTestCases()) {
 				try {
-					final ILaunchConfiguration launchConf = getLaunchConfiguration(testCase, languageName);
+					final ILaunchConfiguration launchConf = getLaunchConfiguration(testCase, languageName, implRelIds, subtypeRelIds);
 					final EventBasedRunConfiguration runConf = new EventBasedRunConfiguration(launchConf);
 					final EventBasedExecutionEngine engine = createExecutionEngine(runConf, ExecutionMode.Run);
-					final IEventManager eventManager = engine.getAddon(GenericEventManager.class);
-					final List<EventOccurrence> events = new ArrayList<>(testCase.getScenario());
-					events.forEach(event -> {
-						convertEventToExecutedResource(event, engine.getExecutionContext().getResourceModel());
-						eventManager.queueEvent(event);
-					});
+					final LinkedTransferQueue<EventOccurrence> eventOccurrences = new LinkedTransferQueue<>();
+					
 					Job job = new Job(getDebugJobName(configuration, getFirstInstruction(configuration))) {
 						@Override
 						protected IStatus run(IProgressMonitor monitor) {
@@ -158,41 +162,59 @@ public class TestSuiteLauncher extends AbstractGemocLauncher<EventBasedModelExec
 							return new Status(IStatus.OK, getPluginID(), executionStartedMessage);
 						}
 					};
-
-					ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-					PrintStream ps = new PrintStream(outputStream);
-					PrintStream old = System.out;
-					System.setOut(ps);
-					
-					job.schedule();
-					job.join();
-					
-					System.out.flush();
-					System.setOut(old);
-
-					String outputString = outputStream.toString();
-					final List<String> lines = Strings.split(outputString, '\n');
-					final TestCaseReport caseReport;
-					if (lines.isEmpty()) {
-						final TestCaseError caseError = TestsuiteFactory.eINSTANCE.createTestCaseError();
-						caseReport = caseError;
-						System.out.println(testCase.getName() + ": Empty trace!");
-					} else {
-						final String trace = Strings.concat("::", lines);
-						if (trace.equals(testCase.getExpectedTrace())) {
-							final TestCaseSuccess caseSuccess = TestsuiteFactory.eINSTANCE.createTestCaseSuccess();
-							caseReport = caseSuccess;
-							System.out.println(testCase.getName() + ": OK!");
-						} else {
-							final TestCaseFailure caseFailure = TestsuiteFactory.eINSTANCE.createTestCaseFailure();
-							caseReport = caseFailure;
-							caseFailure.setTrace(trace);
-							System.out.println(testCase.getName() + ": Expected: " + testCase.getExpectedTrace() + " but got: " + trace);
+					final TransferQueue<Object> queue = new LinkedTransferQueue<>();
+					engine.getExecutionContext().getExecutionPlatform().addEngineAddon(new IEngineAddon() {
+						@Override
+						public void engineInitialized(IExecutionEngine<?> executionEngine) {
+							queue.add(new Object());
 						}
+					});
+					job.schedule();
+					boolean result = true;
+					if (queue.poll(5000, TimeUnit.MILLISECONDS) != null) {
+						final GenericEventManager eventManager = engine.getAddon(GenericEventManager.class);
+						eventManager.addListener(new IEventManagerListener() {
+							@Override
+							public void eventReceived(EventOccurrence e) {
+								eventOccurrences.add(e);
+							}
+							@Override
+							public Set<BehavioralInterface> getBehavioralInterfaces() {
+								return eventManager.getBehavioralInterfaces();
+							}
+						});
+						result = testCase.getScenario().stream().map(eventOccurrence -> {
+							switch (eventOccurrence.getType()) {
+							case ACCEPTED:
+								eventManager.processEventOccurrence(eventOccurrence);
+								return true;
+							case EXPOSED:
+								try {
+									EventOccurrence occ = eventOccurrences.poll(10000, TimeUnit.MILLISECONDS);
+									while (occ != null && !occ.getEvent().getName().equals(eventOccurrence.getEvent().getName())) {
+										occ = eventOccurrences.poll(5000, TimeUnit.MILLISECONDS);
+									}
+									return occ != null && occ.getEvent().getName().equals(eventOccurrence.getEvent().getName());
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+								break;
+							default:
+								break;
+							}
+							return false;
+						}).reduce((b1, b2) -> b1 && b2).orElse(false);
+					}
+					job.join();
+
+					final TestCaseReport caseReport;
+					if (result) {
+						caseReport = TestsuiteFactory.eINSTANCE.createTestCaseSuccess();
+					} else {
+						caseReport = TestsuiteFactory.eINSTANCE.createTestCaseFailure();
 					}
 					caseReport.setTestCase(testCase);
 					report.getTestCaseReports().add(caseReport);
-					
 				} catch (CoreException e) {
 					e.printStackTrace();
 				} catch (EngineContextException e) {
@@ -207,29 +229,7 @@ public class TestSuiteLauncher extends AbstractGemocLauncher<EventBasedModelExec
 			throw new CoreException(new Status(Status.ERROR, getPluginID(), message, e));
 		}
 	}
-
-	private void convertEventToExecutedResource(EventOccurrence event, Resource executedResource) {
-		event.eClass().getEAllReferences().forEach(r -> {
-			if (r.isContainment()) {
-				final EObject parameter = (EObject) event.eGet(r);
-				parameter.eClass().getEAllReferences().forEach(innerRef -> {
-					if (!innerRef.isContainment()) {
-						final EObject o = (EObject) parameter.eGet(innerRef);
-						final String uriFragment = o.eResource().getURIFragment(o);
-						final EObject effectiveReference = executedResource.getEObject(uriFragment);
-						parameter.eSet(innerRef, effectiveReference);
-					}
-				});
-			} else {
-				final EObject parameter = (EObject) event.eGet(r);
-				final Resource parameterResource = parameter.eResource();
-				final String uriFragment = parameterResource.getURIFragment(parameter);
-				final EObject effectiveParameter = executedResource.getEObject(uriFragment);
-				event.eSet(r, effectiveParameter);
-			}
-		});
-	}
-
+	
 	protected final void debug(String message) {
 		getMessagingSystem().debug(message, getPluginID());
 	}
@@ -297,21 +297,12 @@ public class TestSuiteLauncher extends AbstractGemocLauncher<EventBasedModelExec
 
 				String selectedLanguage = configuration.getAttribute(EventBasedRunConfiguration.LAUNCH_SELECTED_LANGUAGE, "");
 				if (selectedLanguage.equals("")) {
-
-					// TODO try to infer possible language and other attribute
-					// from project content and environment
-					// setDefaultsLaunchConfiguration(configuration);
-
 					final ILaunchGroup group = DebugUITools.getLaunchGroup(configuration, mode);
 					if (group != null) {
 						ILaunchConfiguration savedLaunchConfig = configuration.doSave();
-						// open configuration for user validation and inputs
 						DebugUITools.openLaunchConfigurationDialogOnGroup(
 								PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
 								new StructuredSelection(savedLaunchConfig), group.getIdentifier(), null);
-						// DebugUITools.openLaunchConfigurationDialog(PlatformUI.getWorkbench()
-						// .getActiveWorkbenchWindow().getShell(),
-						// savedLaunchConfig, group.getIdentifier(), null);
 					}
 				}
 			}

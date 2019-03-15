@@ -1,27 +1,31 @@
 package org.eclipse.gemoc.executionframework.event.manager;
 
-import java.util.List;
 import java.util.Set;
 
 import org.eclipse.gemoc.executionframework.event.model.event.EventOccurrence;
 import org.eclipse.gemoc.xdsmlframework.api.engine_addon.IEngineAddon;
+import org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.BehavioralInterface;
 import org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.Event;
 
 public interface IEventManager extends IEngineAddon {
+	
+	IRelationshipManager getRelationshipManager();
 
-	void queueEvent(EventOccurrence event);
+	void processEventOccurrence(EventOccurrence event);
 
-	void processEvents();
+	void processCallRequests();
 
-	void waitForEvents();
+	void waitForCallRequests();
 
 	void addListener(IEventManagerListener listener);
 
 	void removeListener(IEventManagerListener listener);
 
-	boolean canSendEvent(EventOccurrence event);
-
+	Set<BehavioralInterface> getBehavioralInterfaces();
+	
 	Set<Event> getEvents();
-
-	List<EventOccurrence> getInputEventQueue();
+	
+	void emitEventOccurrence(EventOccurrence eventOccurrence);
+	
+	void processCallRequest(ICallRequest callRequest);
 }

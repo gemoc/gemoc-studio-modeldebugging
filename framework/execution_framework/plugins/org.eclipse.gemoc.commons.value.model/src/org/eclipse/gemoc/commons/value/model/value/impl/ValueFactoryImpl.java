@@ -72,6 +72,8 @@ public class ValueFactoryImpl extends EFactoryImpl implements ValueFactory {
 			case ValuePackage.MANY_STRING_ATTRIBUTE_VALUE: return createManyStringAttributeValue();
 			case ValuePackage.SINGLE_REFERENCE_VALUE: return createSingleReferenceValue();
 			case ValuePackage.MANY_REFERENCE_VALUE: return createManyReferenceValue();
+			case ValuePackage.SINGLE_OBJECT_VALUE: return createSingleObjectValue();
+			case ValuePackage.MANY_OBJECT_VALUE: return createManyObjectValue();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -235,6 +237,26 @@ public class ValueFactoryImpl extends EFactoryImpl implements ValueFactory {
 	public ManyReferenceValue createManyReferenceValue() {
 		ManyReferenceValueImpl manyReferenceValue = new ManyReferenceValueImpl();
 		return manyReferenceValue;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public SingleObjectValue createSingleObjectValue() {
+		SingleObjectValueImpl singleObjectValue = new SingleObjectValueImpl();
+		return singleObjectValue;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public ManyObjectValue createManyObjectValue() {
+		ManyObjectValueImpl manyObjectValue = new ManyObjectValueImpl();
+		return manyObjectValue;
 	}
 
 	/**

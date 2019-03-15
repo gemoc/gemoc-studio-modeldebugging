@@ -106,9 +106,9 @@ class EventMetamodelGenerator {
 		
 		operationalSemanticsView.rules
 				.forEach[r|
-					if (r instanceof EventHandler || r instanceof EventEmitter) {
+//					if (r instanceof EventHandler || r instanceof EventEmitter) {
 						r.generateEvent
-					}
+//					}
 				]
 		
 		val resSet = new ResourceSetImpl

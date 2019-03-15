@@ -8,6 +8,9 @@
       <genFeatures property="None" children="true" createChild="true">
         <ecoreFeature xsi:type="ecore:EReference" href="testsuite.ecore#//TestSuite/testCases"/>
       </genFeatures>
+      <genFeatures property="None" children="true" createChild="true">
+        <ecoreFeature xsi:type="ecore:EReference" href="testsuite.ecore#//TestSuite/storage"/>
+      </genFeatures>
     </genClasses>
     <genClasses>
       <ecoreClass href="testsuite.ecore#//TestCase"/>
@@ -51,4 +54,5 @@
   </genPackages>
   <usedGenPackages href="event.genmodel#//event"/>
   <usedGenPackages href="../../org.eclipse.gemoc.xdsmlframework.behavioralinterface/model/generated/BehavioralInterface.genmodel#//behavioralInterface"/>
+  <usedGenPackages href="../../org.eclipse.gemoc.commons.value.model/model/value.genmodel#//value"/>
 </genmodel:GenModel>

@@ -732,6 +732,80 @@ public interface ValuePackage extends EPackage {
 	 */
 	int MANY_REFERENCE_VALUE_OPERATION_COUNT = REFERENCE_VALUE_OPERATION_COUNT + 0;
 
+	/**
+	 * The meta object id for the '{@link org.eclipse.gemoc.commons.value.model.value.impl.SingleObjectValueImpl <em>Single Object Value</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.eclipse.gemoc.commons.value.model.value.impl.SingleObjectValueImpl
+	 * @see org.eclipse.gemoc.commons.value.model.value.impl.ValuePackageImpl#getSingleObjectValue()
+	 * @generated
+	 */
+	int SINGLE_OBJECT_VALUE = 19;
+
+	/**
+	 * The feature id for the '<em><b>Object Value</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SINGLE_OBJECT_VALUE__OBJECT_VALUE = REFERENCE_VALUE_FEATURE_COUNT + 0;
+
+	/**
+	 * The number of structural features of the '<em>Single Object Value</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SINGLE_OBJECT_VALUE_FEATURE_COUNT = REFERENCE_VALUE_FEATURE_COUNT + 1;
+
+	/**
+	 * The number of operations of the '<em>Single Object Value</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SINGLE_OBJECT_VALUE_OPERATION_COUNT = REFERENCE_VALUE_OPERATION_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.gemoc.commons.value.model.value.impl.ManyObjectValueImpl <em>Many Object Value</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.eclipse.gemoc.commons.value.model.value.impl.ManyObjectValueImpl
+	 * @see org.eclipse.gemoc.commons.value.model.value.impl.ValuePackageImpl#getManyObjectValue()
+	 * @generated
+	 */
+	int MANY_OBJECT_VALUE = 20;
+
+	/**
+	 * The feature id for the '<em><b>Object Values</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MANY_OBJECT_VALUE__OBJECT_VALUES = REFERENCE_VALUE_FEATURE_COUNT + 0;
+
+	/**
+	 * The number of structural features of the '<em>Many Object Value</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MANY_OBJECT_VALUE_FEATURE_COUNT = REFERENCE_VALUE_FEATURE_COUNT + 1;
+
+	/**
+	 * The number of operations of the '<em>Many Object Value</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MANY_OBJECT_VALUE_OPERATION_COUNT = REFERENCE_VALUE_OPERATION_COUNT + 0;
+
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.gemoc.commons.value.model.value.Value <em>Value</em>}'.
@@ -1100,6 +1174,48 @@ public interface ValuePackage extends EPackage {
 	EReference getManyReferenceValue_ReferenceValues();
 
 	/**
+	 * Returns the meta object for class '{@link org.eclipse.gemoc.commons.value.model.value.SingleObjectValue <em>Single Object Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Single Object Value</em>'.
+	 * @see org.eclipse.gemoc.commons.value.model.value.SingleObjectValue
+	 * @generated
+	 */
+	EClass getSingleObjectValue();
+
+	/**
+	 * Returns the meta object for the containment reference '{@link org.eclipse.gemoc.commons.value.model.value.SingleObjectValue#getObjectValue <em>Object Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Object Value</em>'.
+	 * @see org.eclipse.gemoc.commons.value.model.value.SingleObjectValue#getObjectValue()
+	 * @see #getSingleObjectValue()
+	 * @generated
+	 */
+	EReference getSingleObjectValue_ObjectValue();
+
+	/**
+	 * Returns the meta object for class '{@link org.eclipse.gemoc.commons.value.model.value.ManyObjectValue <em>Many Object Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Many Object Value</em>'.
+	 * @see org.eclipse.gemoc.commons.value.model.value.ManyObjectValue
+	 * @generated
+	 */
+	EClass getManyObjectValue();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link org.eclipse.gemoc.commons.value.model.value.ManyObjectValue#getObjectValues <em>Object Values</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Object Values</em>'.
+	 * @see org.eclipse.gemoc.commons.value.model.value.ManyObjectValue#getObjectValues()
+	 * @see #getManyObjectValue()
+	 * @generated
+	 */
+	EReference getManyObjectValue_ObjectValues();
+
+	/**
 	 * Returns the factory that creates the instances of the model.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1439,6 +1555,42 @@ public interface ValuePackage extends EPackage {
 		 * @generated
 		 */
 		EReference MANY_REFERENCE_VALUE__REFERENCE_VALUES = eINSTANCE.getManyReferenceValue_ReferenceValues();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.gemoc.commons.value.model.value.impl.SingleObjectValueImpl <em>Single Object Value</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.eclipse.gemoc.commons.value.model.value.impl.SingleObjectValueImpl
+		 * @see org.eclipse.gemoc.commons.value.model.value.impl.ValuePackageImpl#getSingleObjectValue()
+		 * @generated
+		 */
+		EClass SINGLE_OBJECT_VALUE = eINSTANCE.getSingleObjectValue();
+
+		/**
+		 * The meta object literal for the '<em><b>Object Value</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference SINGLE_OBJECT_VALUE__OBJECT_VALUE = eINSTANCE.getSingleObjectValue_ObjectValue();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.gemoc.commons.value.model.value.impl.ManyObjectValueImpl <em>Many Object Value</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.eclipse.gemoc.commons.value.model.value.impl.ManyObjectValueImpl
+		 * @see org.eclipse.gemoc.commons.value.model.value.impl.ValuePackageImpl#getManyObjectValue()
+		 * @generated
+		 */
+		EClass MANY_OBJECT_VALUE = eINSTANCE.getManyObjectValue();
+
+		/**
+		 * The meta object literal for the '<em><b>Object Values</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference MANY_OBJECT_VALUE__OBJECT_VALUES = eINSTANCE.getManyObjectValue_ObjectValues();
 
 	}
 

@@ -448,6 +448,23 @@ public class GenericTraceConstructor implements ITraceConstructor {
 	public void save(URI uri) {
 		try {
 			traceResource.setURI(uri);
+
+			TreeIterator<EObject> iterator = traceResource.getAllContents();
+			for (EObject elem = iterator.next(); iterator.hasNext(); elem = iterator.next()) {
+				if (elem instanceof GenericTracedObject) {
+					GenericTracedObject traced = (GenericTracedObject) elem;
+					EObject original = traced.getOriginalObject();
+					if (original.eResource() == null) {
+					    traceResource.getContents().add(original);
+				    }
+					for (GenericDimension d : traced.getAllDimensions()) {
+						if (d.getDynamicProperty().eResource() == null) {
+						    traceResource.getContents().add(d.getDynamicProperty());
+						}
+					}
+				}
+			}
+			
 			traceResource.save(null);
 		} catch (java.io.IOException e) {
 			e.printStackTrace();

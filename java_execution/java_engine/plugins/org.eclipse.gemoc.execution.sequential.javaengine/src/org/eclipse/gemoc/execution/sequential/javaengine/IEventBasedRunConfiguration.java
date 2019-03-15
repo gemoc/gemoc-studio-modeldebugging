@@ -10,17 +10,27 @@
  *******************************************************************************/
 package org.eclipse.gemoc.execution.sequential.javaengine;
 
+import java.util.List;
+
+import org.eclipse.gemoc.executionframework.event.manager.IImplementationRelationship;
+import org.eclipse.gemoc.executionframework.event.manager.ISubtypingRelationship;
 import org.eclipse.gemoc.executionframework.event.model.event.EventOccurrence;
 import org.eclipse.gemoc.xdsmlframework.api.core.IRunConfiguration;
 
 public interface IEventBasedRunConfiguration extends IRunConfiguration {
 
 	// parameters that are specific to EventBasedExecutionEngine
+	public static final String IMPL_REL_IDS = "IMPL_REL_IDS";
+	public static final String SUBTYPE_REL_IDS = "SUBTYPE_REL_IDS";
 	public static final String START_EVENT = "LAUNCH_START_EVENT";
 	public static final String START_EVENT_OCCURRENCE_ARGS = "LAUNCH_START_EVENT_ARGS";
 	public static final String WAIT_FOR_EVENT = "LAUNCH_WAIT_FOR_EVENT";
 	
-	EventOccurrence getStartEventOccurrence();
+	List<EventOccurrence> getInitialScenario();
 	
 	boolean getWaitForEvent();
+	
+	List<IImplementationRelationship> getImplementationRelationships();
+	
+	List<ISubtypingRelationship> getSubtypingRelationships();
 }

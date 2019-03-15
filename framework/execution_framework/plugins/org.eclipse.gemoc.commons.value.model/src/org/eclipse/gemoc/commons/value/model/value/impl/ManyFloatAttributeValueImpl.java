@@ -137,7 +137,7 @@ public class ManyFloatAttributeValueImpl extends AttributeValueImpl implements M
 	public String toString() {
 		if (eIsProxy()) return super.toString();
 
-		StringBuffer result = new StringBuffer(super.toString());
+		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (attributeValue: ");
 		result.append(attributeValue);
 		result.append(')');

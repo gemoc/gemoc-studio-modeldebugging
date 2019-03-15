@@ -9,6 +9,7 @@ import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
@@ -29,6 +30,7 @@ import org.eclipse.gemoc.executionframework.event.testsuite.TestsuitePackage;
  * </p>
  * <ul>
  *   <li>{@link org.eclipse.gemoc.executionframework.event.testsuite.impl.TestSuiteImpl#getTestCases <em>Test Cases</em>}</li>
+ *   <li>{@link org.eclipse.gemoc.executionframework.event.testsuite.impl.TestSuiteImpl#getStorage <em>Storage</em>}</li>
  * </ul>
  *
  * @generated
@@ -43,6 +45,16 @@ public class TestSuiteImpl extends MinimalEObjectImpl.Container implements TestS
 	 * @ordered
 	 */
 	protected EList<TestCase> testCases;
+
+	/**
+	 * The cached value of the '{@link #getStorage() <em>Storage</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getStorage()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<EObject> storage;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -80,11 +92,25 @@ public class TestSuiteImpl extends MinimalEObjectImpl.Container implements TestS
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EList<EObject> getStorage() {
+		if (storage == null) {
+			storage = new EObjectContainmentEList<EObject>(EObject.class, this, TestsuitePackage.TEST_SUITE__STORAGE);
+		}
+		return storage;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case TestsuitePackage.TEST_SUITE__TEST_CASES:
 				return ((InternalEList<?>)getTestCases()).basicRemove(otherEnd, msgs);
+			case TestsuitePackage.TEST_SUITE__STORAGE:
+				return ((InternalEList<?>)getStorage()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -99,6 +125,8 @@ public class TestSuiteImpl extends MinimalEObjectImpl.Container implements TestS
 		switch (featureID) {
 			case TestsuitePackage.TEST_SUITE__TEST_CASES:
 				return getTestCases();
+			case TestsuitePackage.TEST_SUITE__STORAGE:
+				return getStorage();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -116,6 +144,10 @@ public class TestSuiteImpl extends MinimalEObjectImpl.Container implements TestS
 				getTestCases().clear();
 				getTestCases().addAll((Collection<? extends TestCase>)newValue);
 				return;
+			case TestsuitePackage.TEST_SUITE__STORAGE:
+				getStorage().clear();
+				getStorage().addAll((Collection<? extends EObject>)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -131,6 +163,9 @@ public class TestSuiteImpl extends MinimalEObjectImpl.Container implements TestS
 			case TestsuitePackage.TEST_SUITE__TEST_CASES:
 				getTestCases().clear();
 				return;
+			case TestsuitePackage.TEST_SUITE__STORAGE:
+				getStorage().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -145,6 +180,8 @@ public class TestSuiteImpl extends MinimalEObjectImpl.Container implements TestS
 		switch (featureID) {
 			case TestsuitePackage.TEST_SUITE__TEST_CASES:
 				return testCases != null && !testCases.isEmpty();
+			case TestsuitePackage.TEST_SUITE__STORAGE:
+				return storage != null && !storage.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}

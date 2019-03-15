@@ -18,7 +18,8 @@ import org.eclipse.gemoc.executionframework.engine.commons.EngineContextExceptio
 import org.eclipse.gemoc.trace.commons.model.trace.MSEModel;
 import org.eclipse.gemoc.xdsmlframework.api.core.ExecutionMode;
 
-public class EventBasedModelExecutionContext extends AbstractModelExecutionContext<EventBasedRunConfiguration, EventBasedExecutionPlatform, SequentialLanguageDefinitionExtension> {
+public class EventBasedModelExecutionContext extends
+		AbstractModelExecutionContext<EventBasedRunConfiguration, EventBasedExecutionPlatform, SequentialLanguageDefinitionExtension> {
 
 	public EventBasedModelExecutionContext(EventBasedRunConfiguration runConfiguration, ExecutionMode executionMode)
 			throws EngineContextException {
@@ -26,7 +27,8 @@ public class EventBasedModelExecutionContext extends AbstractModelExecutionConte
 	}
 
 	@Override
-	protected SequentialLanguageDefinitionExtension getLanguageDefinition(String languageName) throws EngineContextException {
+	protected SequentialLanguageDefinitionExtension getLanguageDefinition(String languageName)
+			throws EngineContextException {
 		SequentialLanguageDefinitionExtension languageDefinition = SequentialLanguageDefinitionExtensionPoint
 				.findDefinition(_runConfiguration.getLanguageName());
 		if (languageDefinition == null) {
@@ -45,7 +47,7 @@ public class EventBasedModelExecutionContext extends AbstractModelExecutionConte
 
 	@Override
 	protected EventBasedExecutionPlatform createExecutionPlatform() throws CoreException {
-		return new EventBasedExecutionPlatform(_languageDefinition, _runConfiguration);
+		return new EventBasedExecutionPlatform(_languageDefinition, _runConfiguration, _resourceModel);
 	}
 
 }

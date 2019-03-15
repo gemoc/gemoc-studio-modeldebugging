@@ -10,6 +10,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.gemoc.commons.value.model.value,
  org.eclipse.gemoc.commons.value.model.value.impl,
  org.eclipse.gemoc.commons.value.model.value.util
-Require-Bundle: org.eclipse.emf.ecore;visibility:=reexport
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.emf.ecore;visibility:=reexport
 Bundle-ActivationPolicy: lazy
 Automatic-Module-Name: org.eclipse.gemoc.commons.value.model

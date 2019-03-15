@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
 
 import org.eclipse.gemoc.executionframework.event.model.event.EventOccurrence;
 import org.eclipse.gemoc.executionframework.event.model.event.EventOccurrenceArgument;
+import org.eclipse.gemoc.executionframework.event.model.event.EventOccurrenceType;
 import org.eclipse.gemoc.executionframework.event.model.event.EventPackage;
 
 import org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.Event;
@@ -34,6 +35,7 @@ import org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.
  * <ul>
  *   <li>{@link org.eclipse.gemoc.executionframework.event.model.event.impl.EventOccurrenceImpl#getEvent <em>Event</em>}</li>
  *   <li>{@link org.eclipse.gemoc.executionframework.event.model.event.impl.EventOccurrenceImpl#getArgs <em>Args</em>}</li>
+ *   <li>{@link org.eclipse.gemoc.executionframework.event.model.event.impl.EventOccurrenceImpl#getType <em>Type</em>}</li>
  * </ul>
  *
  * @generated
@@ -58,6 +60,26 @@ public class EventOccurrenceImpl extends MinimalEObjectImpl.Container implements
 	 * @ordered
 	 */
 	protected EList<EventOccurrenceArgument> args;
+
+	/**
+	 * The default value of the '{@link #getType() <em>Type</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getType()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final EventOccurrenceType TYPE_EDEFAULT = EventOccurrenceType.ACCEPTED;
+
+	/**
+	 * The cached value of the '{@link #getType() <em>Type</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getType()
+	 * @generated
+	 * @ordered
+	 */
+	protected EventOccurrenceType type = TYPE_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -133,6 +155,27 @@ public class EventOccurrenceImpl extends MinimalEObjectImpl.Container implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EventOccurrenceType getType() {
+		return type;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setType(EventOccurrenceType newType) {
+		EventOccurrenceType oldType = type;
+		type = newType == null ? TYPE_EDEFAULT : newType;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, EventPackage.EVENT_OCCURRENCE__TYPE, oldType, type));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
@@ -155,6 +198,8 @@ public class EventOccurrenceImpl extends MinimalEObjectImpl.Container implements
 				return basicGetEvent();
 			case EventPackage.EVENT_OCCURRENCE__ARGS:
 				return getArgs();
+			case EventPackage.EVENT_OCCURRENCE__TYPE:
+				return getType();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -175,6 +220,9 @@ public class EventOccurrenceImpl extends MinimalEObjectImpl.Container implements
 				getArgs().clear();
 				getArgs().addAll((Collection<? extends EventOccurrenceArgument>)newValue);
 				return;
+			case EventPackage.EVENT_OCCURRENCE__TYPE:
+				setType((EventOccurrenceType)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -193,6 +241,9 @@ public class EventOccurrenceImpl extends MinimalEObjectImpl.Container implements
 			case EventPackage.EVENT_OCCURRENCE__ARGS:
 				getArgs().clear();
 				return;
+			case EventPackage.EVENT_OCCURRENCE__TYPE:
+				setType(TYPE_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -209,8 +260,26 @@ public class EventOccurrenceImpl extends MinimalEObjectImpl.Container implements
 				return event != null;
 			case EventPackage.EVENT_OCCURRENCE__ARGS:
 				return args != null && !args.isEmpty();
+			case EventPackage.EVENT_OCCURRENCE__TYPE:
+				return type != TYPE_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public String toString() {
+		if (eIsProxy()) return super.toString();
+
+		StringBuilder result = new StringBuilder(super.toString());
+		result.append(" (type: ");
+		result.append(type);
+		result.append(')');
+		return result.toString();
 	}
 
 } //EventOccurrenceImpl

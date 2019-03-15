@@ -16,25 +16,22 @@ import java.util.stream.Collectors;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EParameter;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.gemoc.commons.value.model.value.BooleanAttributeValue;
-import org.eclipse.gemoc.commons.value.model.value.BooleanObjectAttributeValue;
-import org.eclipse.gemoc.commons.value.model.value.FloatAttributeValue;
-import org.eclipse.gemoc.commons.value.model.value.FloatObjectAttributeValue;
-import org.eclipse.gemoc.commons.value.model.value.IntegerAttributeValue;
-import org.eclipse.gemoc.commons.value.model.value.IntegerObjectAttributeValue;
+import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.gemoc.commons.value.model.value.ManyReferenceValue;
+import org.eclipse.gemoc.commons.value.model.value.SingleObjectValue;
 import org.eclipse.gemoc.commons.value.model.value.SingleReferenceValue;
-import org.eclipse.gemoc.commons.value.model.value.StringAttributeValue;
 import org.eclipse.gemoc.commons.value.model.value.Value;
-import org.eclipse.gemoc.commons.value.model.value.ValuePackage;
 import org.eclipse.gemoc.dsl.Dsl;
-import org.eclipse.gemoc.executionframework.event.model.event.EventFactory;
 import org.eclipse.gemoc.executionframework.event.model.event.EventOccurrence;
-import org.eclipse.gemoc.executionframework.event.model.event.EventOccurrenceArgument;
-import org.eclipse.gemoc.executionframework.event.model.event.EventPackage;
+import org.eclipse.gemoc.executionframework.event.model.event.EventOccurrenceType;
+import org.eclipse.gemoc.executionframework.event.model.event.StopEventOccurrence;
 import org.eclipse.gemoc.trace.commons.model.trace.MSE;
 import org.eclipse.gemoc.trace.commons.model.trace.MSEOccurrence;
 import org.eclipse.gemoc.trace.commons.model.trace.Step;
@@ -42,174 +39,183 @@ import org.eclipse.gemoc.xdsmlframework.api.core.EngineStatus.RunStatus;
 import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine;
 import org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.BehavioralInterface;
 import org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.Event;
-import org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.InputEvent;
-import org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.OutputEvent;
 import org.osgi.framework.Bundle;
 
 public class GenericEventManager implements IEventManager {
 
-	private final LinkedTransferQueue<EventOccurrence> inputEventOccurrenceQueue = new LinkedTransferQueue<>();
+	private final LinkedTransferQueue<ICallRequest> callRequestQueue = new LinkedTransferQueue<>();
 
 	private boolean canManageEvents = true;
 
-	private boolean waitForEvents = false;
+	private boolean waitForCallRequests = false;
 
 	private IExecutionEngine<?> engine;
 
-	private BehavioralInterface behavioralInterface;
+	private final RelationshipManager relationshipManager;
 
-	private Map<String, Method> eventNameToMethod = new HashMap<>();
-
-	private Map<Event, Method> eventToPrecondition = new HashMap<>();
-
-	public GenericEventManager(String languageName) {
+	public GenericEventManager(String languageName, Resource executedResource,
+			List<IImplementationRelationship> implementationRelationships,
+			List<ISubtypingRelationship> subtypingRelationships) {
 		loadLanguage(languageName);
+		relationshipManager = new RelationshipManager(this);
+		implementationRelationships.forEach(r -> relationshipManager.registerImplementationRelationship(r));
+		subtypingRelationships.forEach(r -> relationshipManager.registerSubtypingRelationship(r));
+	}
+
+	public RelationshipManager getRelationshipManager() {
+		return relationshipManager;
 	}
 
 	@Override
 	public void engineInitialized(IExecutionEngine<?> executionEngine) {
 		engine = executionEngine;
+		relationshipManager.setExecutedResource(engine.getExecutionContext().getResourceModel());
 	}
 
 	@Override
-	public void queueEvent(EventOccurrence input) {
-		inputEventOccurrenceQueue.add(input);
-	}
-
-	@Override
-	public boolean canSendEvent(EventOccurrence eventOccurrence) {
-		final Event event = eventOccurrence.getEvent();
-		final Method precondition = eventToPrecondition.get(event);
-		if (precondition != null && !((Boolean) performCall(precondition, eventOccurrence.getArgs()))) {
-			return false;
+	public void processEventOccurrence(EventOccurrence eventOccurrence) {
+		if (eventOccurrence instanceof StopEventOccurrence) {
+			processCallRequest(new StopRequest());
 		} else {
-			return true;
+			convertEventToExecutedResource(eventOccurrence, engine.getExecutionContext().getResourceModel());
+			relationshipManager.notifyEventOccurrence(eventOccurrence);
 		}
 	}
 
-	private List<IEventManagerListener> listeners = new ArrayList<>();
+	private Map<BehavioralInterface, List<IEventManagerListener>> listeners = new HashMap<>();
 
 	@Override
 	public void addListener(IEventManagerListener listener) {
-		listeners.add(listener);
+		listener.getBehavioralInterfaces().forEach(bi -> {
+			final List<IEventManagerListener> interfaceListeners = listeners.computeIfAbsent(bi,
+					itf -> new ArrayList<>());
+			interfaceListeners.add(listener);
+		});
 	}
 
 	@Override
 	public void removeListener(IEventManagerListener listener) {
-		listeners.remove(listener);
+		listener.getBehavioralInterfaces().forEach(bi -> {
+			final List<IEventManagerListener> interfaceListeners = listeners.get(bi);
+			if (interfaceListeners != null) {
+				interfaceListeners.add(listener);
+			}
+		});
 	}
 
 	@Override
-	public void processEvents() {
-		if (behavioralInterface != null) {
-			if (canManageEvents) {
-				EventOccurrence eventOccurrence = null;
-				if (waitForEvents) {
-					try {
-						engine.setEngineStatus(RunStatus.WaitingForEvent);
-						eventOccurrence = inputEventOccurrenceQueue.take();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					engine.setEngineStatus(RunStatus.Running);
-					waitForEvents = false;
+	public void processCallRequests() {
+		if (canManageEvents) {
+			ICallRequest callRequest = null;
+			if (waitForCallRequests) {
+				try {
+					engine.setEngineStatus(RunStatus.WaitingForEvent);
+					callRequest = callRequestQueue.take();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				engine.setEngineStatus(RunStatus.Running);
+				waitForCallRequests = false;
+			} else {
+				callRequest = callRequestQueue.poll();
+			}
+			while (callRequest != null) {
+				final boolean runToCompletion = callRequest.isRunToCompletion();
+				if (runToCompletion) {
+					canManageEvents = false;
+					dispatchEvent(callRequest);
+					canManageEvents = true;
 				} else {
-					eventOccurrence = inputEventOccurrenceQueue.poll();
+					dispatchEvent(callRequest);
 				}
-				while (eventOccurrence != null) {
-					final boolean interruptible = ((InputEvent) eventOccurrence.getEvent()).isInterruptible();
-					if (!interruptible) {
-						canManageEvents = false;
-						dispatchEvent(eventOccurrence);
-						canManageEvents = true;
-					} else {
-						dispatchEvent(eventOccurrence);
-					}
-					eventOccurrence = inputEventOccurrenceQueue.poll();
-				}
+				callRequest = callRequestQueue.poll();
 			}
 		}
 	}
 
 	@Override
-	public void waitForEvents() {
-		waitForEvents = true;
+	public void waitForCallRequests() {
+		waitForCallRequests = true;
+	}
+
+	@Override
+	public void aboutToExecuteStep(IExecutionEngine<?> engine, Step<?> stepToExecute) {
+		final MSEOccurrence mseOccurrence = stepToExecute.getMseoccurrence();
+		final String behavioralUnit = mseOccurrence.getMse().getAction().getEContainingClass().getInstanceClassName()
+				+ "." + mseOccurrence.getMse().getAction().getName();
+		final Map<String, Object> argsMap = getArguments(mseOccurrence);
+		final CallNotification callNotification = new CallNotification(behavioralUnit, argsMap);
+		relationshipManager.notifyCall(callNotification);
+		processCallRequests();
 	}
 
 	@Override
 	public void stepExecuted(IExecutionEngine<?> engine, Step<?> stepExecuted) {
-		final MSEOccurrence mseOcc = stepExecuted.getMseoccurrence();
-		final MSE mse = mseOcc.getMse();
-		behavioralInterface.getEvents().stream().filter(e -> e instanceof OutputEvent)
-				.filter(e -> e.getRule().equals(mse.getAction().getName()))
-				.findFirst().map(e -> {
-					final EventOccurrence occ = EventFactory.eINSTANCE.createEventOccurrence();
-					occ.setEvent(e);
-					return occ;
-				}).ifPresent(occ -> listeners.forEach(l -> l.eventReceived(occ)));
+		final MSEOccurrence mseOccurrence = stepExecuted.getMseoccurrence();
+		final String behavioralUnit = mseOccurrence.getMse().getAction().getEContainingClass().getInstanceClassName()
+				+ "." + mseOccurrence.getMse().getAction().getName();
+		final Map<String, Object> argsMap = getArguments(mseOccurrence);
+		final ReturnNotification returnNotification = new ReturnNotification(behavioralUnit, argsMap,
+				mseOccurrence.getResult());
+		relationshipManager.notifyCall(returnNotification);
+		processCallRequests();
+	}
+
+	private Map<String, Object> getArguments(MSEOccurrence mseOccurrence) {
+		final Map<String, Object> argsMap = new HashMap<>();
+		final MSE mse = mseOccurrence.getMse();
+		argsMap.put("_self", mse.getCaller());
+		final List<EParameter> parameters = mse.getAction().getEParameters();
+		final List<Object> arguments = mseOccurrence.getParameters();
+		for (int i = 0; i < parameters.size(); i++) {
+			final String key = parameters.get(i).getName();
+			final Object value = arguments.get(i);
+			argsMap.put(key, value);
+		}
+		return argsMap;
+	}
+
+	private final Set<BehavioralInterface> allBehavioralInterfaces = new HashSet<>();
+
+	@Override
+	public Set<BehavioralInterface> getBehavioralInterfaces() {
+		if (allBehavioralInterfaces.isEmpty()) {
+			relationshipManager.getEvents()
+					.forEach(e -> allBehavioralInterfaces.add((BehavioralInterface) e.eContainer()));
+		}
+		return allBehavioralInterfaces;
 	}
 
 	@Override
 	public Set<Event> getEvents() {
-		return behavioralInterface == null ? Collections.emptySet() : new HashSet<>(behavioralInterface.getEvents());
+		return relationshipManager.getEvents();
 	}
 
-	@Override
-	public List<EventOccurrence> getInputEventQueue() {
-		return new ArrayList<>(inputEventOccurrenceQueue);
-	}
-
-	private void dispatchEvent(EventOccurrence eventOccurrence) {
-		if (eventOccurrence.eClass().equals(EventPackage.Literals.STOP_EVENT_OCCURRENCE)) {
-
-		} else {
-			final Event event = eventOccurrence.getEvent();
-			final Method rule = eventNameToMethod.get(event.getName());
-			if (canSendEvent(eventOccurrence)) {
-				performCall(rule, eventOccurrence.getArgs());
-			}
+	private void dispatchEvent(ICallRequest callRequest) {
+		if (callRequest instanceof StopRequest) {
+			engine.stop();
+		} else if (callRequest instanceof CompositeCallRequest) {
+			((CompositeCallRequest) callRequest).getCallRequests().forEach(cr -> dispatchEvent(cr));
+		} else if (callRequest instanceof SimpleCallRequest) {
+			final SimpleCallRequest simpleCallRequest = (SimpleCallRequest) callRequest;
+			final Method rule = findMethod(simpleCallRequest);
+			performCall(rule, simpleCallRequest.getArguments());
 		}
 	}
 
-	private Object performCall(Method toCall, List<EventOccurrenceArgument> args) {
+	private Object performCall(Method toCall, List<Object> args) {
 		Object result = null;
 		try {
-			result = toCall.invoke(null, args.stream().map(a -> {
-				final Value value = a.getValue();
-				Object effectiveValue = null;
-				switch(value.eClass().getClassifierID()) {
-				case ValuePackage.SINGLE_REFERENCE_VALUE:
-					effectiveValue = ((SingleReferenceValue) value).getReferenceValue();
-					break;
-				case ValuePackage.BOOLEAN_ATTRIBUTE_VALUE:
-					effectiveValue = ((BooleanAttributeValue) value).isAttributeValue();
-					break;
-				case ValuePackage.BOOLEAN_OBJECT_ATTRIBUTE_VALUE:
-					effectiveValue = ((BooleanObjectAttributeValue) value).getAttributeValue();
-					break;
-				case ValuePackage.INTEGER_ATTRIBUTE_VALUE:
-					effectiveValue = ((IntegerAttributeValue) value).getAttributeValue();
-					break;
-				case ValuePackage.INTEGER_OBJECT_ATTRIBUTE_VALUE:
-					effectiveValue = ((IntegerObjectAttributeValue) value).getAttributeValue();
-					break;
-				case ValuePackage.FLOAT_ATTRIBUTE_VALUE:
-					effectiveValue = ((FloatAttributeValue) value).getAttributeValue();
-					break;
-				case ValuePackage.FLOAT_OBJECT_ATTRIBUTE_VALUE:
-					effectiveValue = ((FloatObjectAttributeValue) value).getAttributeValue();
-					break;
-				case ValuePackage.STRING_ATTRIBUTE_VALUE:
-					effectiveValue = ((StringAttributeValue) value).getAttributeValue();
-					break;
-				}
-				return effectiveValue;
-			}).toArray());
+			result = toCall.invoke(null, args.toArray());
 		} catch (Throwable e1) {
 			e1.printStackTrace();
 		}
 		return result;
 	}
+
+	private final List<EPackage> packages = new ArrayList<>();
+
+	private final List<Class<?>> operationalSemantics = new ArrayList<>();
 
 	private void loadLanguage(String languageName) {
 		final ResourceSet resSet = new ResourceSetImpl();
@@ -244,17 +250,8 @@ public class GenericEventManager implements IEventManager {
 								.filter(c -> c != null).collect(Collectors.toList()))
 						.orElse(Collections.emptyList()).stream().map(c -> (Class<?>) c).collect(Collectors.toList());
 
-				final BehavioralInterface behavioralInterface = dsl.getEntries().stream()
-						.filter(e -> e.getKey().equals("behavioral-interface")).findFirst()
-						.map(bi -> 
-						URI.createURI(bi.getValue().replace("platform:/resource", "platform:/plugin"), true)
-						)
-						.map(uri -> 
-						(BehavioralInterface) (resSet.getResource(uri, true).getContents().get(0))
-						)
-						.orElse(null);
-
-				validateLanguage(behavioralInterface, classes, packages, bundle);
+				this.packages.addAll(packages);
+				this.operationalSemantics.addAll(classes);
 			}
 		}
 	}
@@ -292,53 +289,128 @@ public class GenericEventManager implements IEventManager {
 		return result;
 	}
 
-	private boolean validateLanguage(BehavioralInterface bi, List<Class<?>> os, List<EPackage> as, Bundle bundle) {
-		final Class<?>[] emptyClassArray = new Class<?>[0];
-		final boolean diagnostic = bi.getEvents().stream().allMatch(evt -> {
-			final Class<?>[] parameters = evt.getParams().stream().map(p -> loadClass(p.getType(), bundle))
-					.collect(Collectors.toList()).toArray(emptyClassArray);
-			final String rule = evt.getRuleDeclaringType() + "." + evt.getRule();
-			final Method ruleMethod = findMethod(rule, parameters, os);
-			eventNameToMethod.put(evt.getName(), ruleMethod);
-			if (evt instanceof InputEvent) {
-				// Try to load precondition method if a precondition is specified
-				final InputEvent inputEvent= ((InputEvent) evt);
-				final String pType = inputEvent.getPreconditionDeclaringType();
-				final String precondition = pType == null ? inputEvent.getPrecondition() : pType + "." + inputEvent.getPrecondition();
-				if (precondition != null && !precondition.isEmpty()) {
-					final Method preconditionMethod = findMethod(precondition, parameters, os);
-					if (preconditionMethod == null) {
-						return false;
-					} else {
-						eventToPrecondition.put(evt, preconditionMethod);
+	private Method findMethodInClass(Class<?> clazz, String name, Class<?>[] parameters) {
+		return Arrays.stream(clazz.getDeclaredMethods()).map(m -> {
+			Method result = null;
+			if (m.getName().equals(name) && m.getParameterCount() == parameters.length) {
+				final Class<?>[] t = m.getParameterTypes();
+				result = m;
+				for (int i = 0; i < t.length; i++) {
+					Class<?> type = t[i];
+					if (!type.isAssignableFrom(parameters[i])) {
+						result = null;
+						break;
 					}
 				}
 			}
-			return true;
-		});
-		if (!diagnostic) {
-			eventNameToMethod.clear();
-			eventToPrecondition.clear();
-		} else {
-			behavioralInterface = bi;
-		}
-		return diagnostic;
+			return result;
+		}).filter(m -> m != null).findFirst().orElse(null);
 	}
 
-	private Method findMethod(String methodFqn, Class<?>[] parameters, List<Class<?>> os) {
-		final int lastDot = methodFqn.lastIndexOf(".");
-		final String classFqn = methodFqn.substring(0, lastDot);
-		final String methodName = methodFqn.substring(lastDot + 1);
-		return os.stream().filter(c -> c.getName().equals(classFqn)).findFirst().map(c -> {
-			Method result = null;
-			try {
-				result = c.getDeclaredMethod(methodName, parameters);
-			} catch (NoSuchMethodException e) {
-				e.printStackTrace();
-			} catch (SecurityException e) {
-				e.printStackTrace();
+	private Method findMethod(SimpleCallRequest callRequest) {
+		final Class<?>[] parameters = (Class[]) callRequest.getArguments().stream().map(o -> o.getClass())
+				.collect(Collectors.toList()).toArray(new Class[0]);
+		final String methodName = callRequest.getBehavioralUnit();
+		final Method method = operationalSemantics.stream().filter(c -> methodName.startsWith(c.getName()))
+				.map(c -> findMethodInClass(c, methodName.substring(c.getName().length() + 1), parameters))
+				.filter(m -> m != null).findFirst().orElse(null);
+		return method;
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private void convertReferences(EObject object, Resource executedResource, String executedResourceURI) {
+		final List<EReference> references = object.eClass().getEAllReferences();
+		references.forEach(r -> {
+			if (r.isMany()) {
+				final Map<EObject, EObject> toChange = new HashMap<>();
+				((List) object.eGet(r)).stream().forEach(o -> {
+					final EObject refered = (EObject) o;
+					if (refered != null) {
+						EcoreUtil.resolveAll(refered);
+						final Resource referedResource = refered.eResource();
+						if (referedResource != null) {
+							final String referedResourceURI = referedResource.getURI().toString();
+							if (referedResourceURI.equals(executedResourceURI) && referedResource != executedResource) {
+								final String uriFragment = referedResource.getURIFragment(refered);
+								final EObject effectiveRefered = executedResource.getEObject(uriFragment);
+								toChange.put(refered, effectiveRefered);
+							}
+						}
+					}
+				});
+				toChange.forEach((o, n) -> {
+					final List l = (List) object.eGet(r);
+					l.add(l.indexOf(o), n);
+					l.remove(o);
+				});
+			} else {
+				final EObject refered = (EObject) object.eGet(r);
+				if (refered != null) {
+					EcoreUtil.resolveAll(refered);
+					final Resource referedResource = refered.eResource();
+					if (referedResource != null) {
+						final String referedResourceURI = referedResource.getURI().toString();
+						if (referedResourceURI.equals(executedResourceURI) && referedResource != executedResource) {
+							final String uriFragment = referedResource.getURIFragment(refered);
+							final EObject effectiveRefered = executedResource.getEObject(uriFragment);
+							object.eSet(r, effectiveRefered);
+						}
+					}
+				}
 			}
-			return result;
-		}).orElse(null);
+		});
+	}
+
+	private void convertReferencesToExecutedResource(EObject root, Resource executedResource,
+			String executedResourceURI) {
+		convertReferences(root, executedResource, executedResourceURI);
+		root.eAllContents().forEachRemaining(c -> {
+			convertReferences(c, executedResource, executedResourceURI);
+		});
+	}
+
+	private void convertEventToExecutedResource(EventOccurrence eventOccurrence, Resource executedResource) {
+		final String executedResourceURI = executedResource.getURI().toString();
+		EcoreUtil.resolveAll(eventOccurrence);
+		eventOccurrence.getArgs().forEach(a -> {
+			final Value value = a.getValue();
+			if (value instanceof SingleReferenceValue) {
+				final SingleReferenceValue v = ((SingleReferenceValue) value);
+				final EObject parameter = v.getReferenceValue();
+				final Resource parameterResource = parameter.eResource();
+				final String uriFragment = parameterResource.getURIFragment(parameter);
+				final EObject effectiveParameter = executedResource.getEObject(uriFragment);
+				v.setReferenceValue(effectiveParameter);
+			} else if (value instanceof SingleObjectValue) {
+				final SingleObjectValue v = ((SingleObjectValue) value);
+				final EObject parameter = v.getObjectValue();
+				convertReferencesToExecutedResource(parameter, executedResource, executedResourceURI);
+			} else if (value instanceof ManyReferenceValue) {
+				final ManyReferenceValue v = ((ManyReferenceValue) value);
+				final List<EObject> parameters = v.getReferenceValues();
+				final List<EObject> effectiveParameters = parameters.stream().map(p -> {
+					final Resource parameterResource = p.eResource();
+					final String uriFragment = parameterResource.getURIFragment(p);
+					return executedResource.getEObject(uriFragment);
+				}).collect(Collectors.toList());
+				parameters.clear();
+				parameters.addAll(effectiveParameters);
+			}
+		});
+	}
+
+	@Override
+	public void emitEventOccurrence(EventOccurrence eventOccurrence) {
+		final Event event = eventOccurrence.getEvent();
+		if (eventOccurrence.getType() == EventOccurrenceType.EXPOSED) {
+			final BehavioralInterface behavioralInterface = (BehavioralInterface) event.eContainer();
+			listeners.getOrDefault(behavioralInterface, Collections.emptyList())
+					.forEach(l -> l.eventReceived(eventOccurrence));
+		}
+	}
+
+	@Override
+	public void processCallRequest(ICallRequest callRequest) {
+		callRequestQueue.put(callRequest);
 	}
 }

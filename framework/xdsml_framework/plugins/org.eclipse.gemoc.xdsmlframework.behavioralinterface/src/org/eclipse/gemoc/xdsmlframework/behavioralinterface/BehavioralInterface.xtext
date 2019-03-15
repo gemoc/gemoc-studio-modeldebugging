@@ -5,23 +5,15 @@ import "http://www.eclipse.org/xtext/xbase/Xbase" as xbase
 generate behavioralInterface "http://www.eclipse.org/gemoc/xdsmlframework/behavioralinterface/BehavioralInterface"
 
 BehavioralInterface:
-	'dsl' dslName=QualifiedName
+	'BehavioralInterface' name=QualifiedName
 	events+=Event*;
 
 Event returns Event:
-	InputEvent | OutputEvent;
-
-InputEvent returns InputEvent:
-	'input' name=QualifiedName
-	'rule' '=' ruleDeclaringType=QualifiedName '::' rule=ID
-	('params' '=' params+=EventParameter (',' params+=EventParameter)*)?
-	('interruptible' '=' interruptible?=('true'|'false'))?
-	('precondition' '=' preconditionDeclaringType=QualifiedName '::' precondition=ID)?;
-
-OutputEvent returns OutputEvent:
-	'output' name=QualifiedName
-	'rule' '=' ruleDeclaringType=QualifiedName '::' rule=ID
-	('params' params+=EventParameter (',' params+=EventParameter)*)?;
+	(type=EventType)? 'event' name=QualifiedName ':'
+		('parameters' '=' '[' params+=EventParameter (',' params+=EventParameter)* ']')?;
 
 EventParameter returns EventParameter:
 	name=QualifiedName ':' type=QualifiedName (many?='*')?;
+	
+enum EventType:
+	BOTH='both' | ACCEPTED='accepted' | EXPOSED='exposed';

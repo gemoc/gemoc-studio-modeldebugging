@@ -9,6 +9,8 @@ import org.eclipse.emf.ecore.EReference;
 
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 
+import org.eclipse.gemoc.commons.value.model.value.ValuePackage;
+
 import org.eclipse.gemoc.executionframework.event.model.event.EventPackage;
 
 import org.eclipse.gemoc.executionframework.event.testsuite.TestCase;
@@ -107,7 +109,7 @@ public class TestsuitePackageImpl extends EPackageImpl implements TestsuitePacka
 
 	/**
 	 * Creates, registers, and initializes the <b>Package</b> for this model, and for any others upon which it depends.
-	 * 
+	 *
 	 * <p>This method is used to initialize {@link TestsuitePackage#eINSTANCE} when that field is accessed.
 	 * Clients should not invoke it directly. Instead, they should simply access that field to obtain the package.
 	 * <!-- begin-user-doc -->
@@ -121,13 +123,15 @@ public class TestsuitePackageImpl extends EPackageImpl implements TestsuitePacka
 		if (isInited) return (TestsuitePackage)EPackage.Registry.INSTANCE.getEPackage(TestsuitePackage.eNS_URI);
 
 		// Obtain or create and register package
-		TestsuitePackageImpl theTestsuitePackage = (TestsuitePackageImpl)(EPackage.Registry.INSTANCE.get(eNS_URI) instanceof TestsuitePackageImpl ? EPackage.Registry.INSTANCE.get(eNS_URI) : new TestsuitePackageImpl());
+		Object registeredTestsuitePackage = EPackage.Registry.INSTANCE.get(eNS_URI);
+		TestsuitePackageImpl theTestsuitePackage = registeredTestsuitePackage instanceof TestsuitePackageImpl ? (TestsuitePackageImpl)registeredTestsuitePackage : new TestsuitePackageImpl();
 
 		isInited = true;
 
 		// Initialize simple dependencies
 		EventPackage.eINSTANCE.eClass();
 		BehavioralInterfacePackage.eINSTANCE.eClass();
+		ValuePackage.eINSTANCE.eClass();
 
 		// Create package meta-data objects
 		theTestsuitePackage.createPackageContents();
@@ -138,7 +142,6 @@ public class TestsuitePackageImpl extends EPackageImpl implements TestsuitePacka
 		// Mark meta-data to indicate it can't be changed
 		theTestsuitePackage.freeze();
 
-  
 		// Update the registry and return the package
 		EPackage.Registry.INSTANCE.put(TestsuitePackage.eNS_URI, theTestsuitePackage);
 		return theTestsuitePackage;
@@ -160,6 +163,15 @@ public class TestsuitePackageImpl extends EPackageImpl implements TestsuitePacka
 	 */
 	public EReference getTestSuite_TestCases() {
 		return (EReference)testSuiteEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getTestSuite_Storage() {
+		return (EReference)testSuiteEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -309,6 +321,7 @@ public class TestsuitePackageImpl extends EPackageImpl implements TestsuitePacka
 		// Create classes and their features
 		testSuiteEClass = createEClass(TEST_SUITE);
 		createEReference(testSuiteEClass, TEST_SUITE__TEST_CASES);
+		createEReference(testSuiteEClass, TEST_SUITE__STORAGE);
 
 		testCaseEClass = createEClass(TEST_CASE);
 		createEAttribute(testCaseEClass, TEST_CASE__NAME);
@@ -368,6 +381,7 @@ public class TestsuitePackageImpl extends EPackageImpl implements TestsuitePacka
 		// Initialize classes, features, and operations; add parameters
 		initEClass(testSuiteEClass, TestSuite.class, "TestSuite", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getTestSuite_TestCases(), this.getTestCase(), null, "testCases", null, 0, -1, TestSuite.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getTestSuite_Storage(), ecorePackage.getEObject(), null, "storage", null, 0, -1, TestSuite.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(testCaseEClass, TestCase.class, "TestCase", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getTestCase_Name(), ecorePackage.getEString(), "name", null, 0, 1, TestCase.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

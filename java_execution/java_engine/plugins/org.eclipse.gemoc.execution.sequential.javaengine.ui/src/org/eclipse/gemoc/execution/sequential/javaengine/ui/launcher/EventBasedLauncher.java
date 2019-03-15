@@ -26,24 +26,24 @@ import org.eclipse.gemoc.executionframework.ui.views.engine.EnginesStatusView;
 import org.eclipse.gemoc.xdsmlframework.api.core.ExecutionMode;
 import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine;
 
-public class EventBasedLauncher extends AbstractSequentialGemocLauncher<EventBasedModelExecutionContext, EventBasedRunConfiguration> {
+public class EventBasedLauncher
+		extends AbstractSequentialGemocLauncher<EventBasedModelExecutionContext, EventBasedRunConfiguration> {
 
 	public final static String TYPE_ID = Activator.PLUGIN_ID + ".launcher";
-
-
 
 	@Override
 	protected IExecutionEngine<EventBasedModelExecutionContext> createExecutionEngine(
 			EventBasedRunConfiguration runConfiguration, ExecutionMode executionMode)
 			throws CoreException, EngineContextException {
 		EventBasedExecutionEngine executionEngine = new EventBasedExecutionEngine();
-		EventBasedModelExecutionContext executioncontext = new EventBasedModelExecutionContext(runConfiguration, executionMode);
+		EventBasedModelExecutionContext executioncontext = new EventBasedModelExecutionContext(runConfiguration,
+				executionMode);
 		executioncontext.getExecutionPlatform().getModelLoader().setProgressMonitor(this.launchProgressMonitor);
 		executioncontext.initializeResourceModel();
 		executionEngine.initialize(executioncontext);
 		return executionEngine;
 	}
-	
+
 	@Override
 	protected String getLaunchConfigurationTypeID() {
 		return TYPE_ID;
@@ -70,7 +70,8 @@ public class EventBasedLauncher extends AbstractSequentialGemocLauncher<EventBas
 	}
 
 	@Override
-	protected EventBasedRunConfiguration parseLaunchConfiguration(ILaunchConfiguration configuration) throws CoreException {
+	protected EventBasedRunConfiguration parseLaunchConfiguration(ILaunchConfiguration configuration)
+			throws CoreException {
 		return new EventBasedRunConfiguration(configuration);
 	}
 
@@ -88,6 +89,5 @@ public class EventBasedLauncher extends AbstractSequentialGemocLauncher<EventBas
 	protected void setDefaultsLaunchConfiguration(ILaunchConfigurationWorkingCopy configuration) {
 
 	}
-
 
 }

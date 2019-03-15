@@ -3,9 +3,6 @@
  */
 package org.eclipse.gemoc.xdsmlframework.behavioralinterface.validation
 
-import org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.InputEvent
-import org.eclipse.xtext.validation.Check
-
 /**
  * This class contains custom validation rules. 
  *
@@ -13,12 +10,4 @@ import org.eclipse.xtext.validation.Check
  */
 class BehavioralInterfaceValidator extends AbstractBehavioralInterfaceValidator {
 	
-	@Check
-	def checkPreconditionParameters(InputEvent inputEvent) {
-//		val ruleParameters = inputEvent.rule.parameters
-//		val preconditionParameters = inputEvent.precondition.parameters
-//		if (!ruleParameters.elementsEqual(preconditionParameters)) {
-//			warning('Precondition must have the same parameters as execution rule', BehavioralInterfacePackage.Literals.INPUT_EVENT__PRECONDITION)
-//		}
-	}
 }

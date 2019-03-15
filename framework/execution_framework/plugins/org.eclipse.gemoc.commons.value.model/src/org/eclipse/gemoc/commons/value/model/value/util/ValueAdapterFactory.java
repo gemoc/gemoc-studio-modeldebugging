@@ -144,6 +144,14 @@ public class ValueAdapterFactory extends AdapterFactoryImpl {
 				return createManyReferenceValueAdapter();
 			}
 			@Override
+			public Adapter caseSingleObjectValue(SingleObjectValue object) {
+				return createSingleObjectValueAdapter();
+			}
+			@Override
+			public Adapter caseManyObjectValue(ManyObjectValue object) {
+				return createManyObjectValueAdapter();
+			}
+			@Override
 			public Adapter defaultCase(EObject object) {
 				return createEObjectAdapter();
 			}
@@ -426,6 +434,34 @@ public class ValueAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createManyReferenceValueAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.gemoc.commons.value.model.value.SingleObjectValue <em>Single Object Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.gemoc.commons.value.model.value.SingleObjectValue
+	 * @generated
+	 */
+	public Adapter createSingleObjectValueAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.gemoc.commons.value.model.value.ManyObjectValue <em>Many Object Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.gemoc.commons.value.model.value.ManyObjectValue
+	 * @generated
+	 */
+	public Adapter createManyObjectValueAdapter() {
 		return null;
 	}
 

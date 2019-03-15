@@ -76,13 +76,22 @@ public interface TestsuitePackage extends EPackage {
 	int TEST_SUITE__TEST_CASES = 0;
 
 	/**
+	 * The feature id for the '<em><b>Storage</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TEST_SUITE__STORAGE = 1;
+
+	/**
 	 * The number of structural features of the '<em>Test Suite</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int TEST_SUITE_FEATURE_COUNT = 1;
+	int TEST_SUITE_FEATURE_COUNT = 2;
 
 	/**
 	 * The number of operations of the '<em>Test Suite</em>' class.
@@ -374,6 +383,17 @@ public interface TestsuitePackage extends EPackage {
 	EReference getTestSuite_TestCases();
 
 	/**
+	 * Returns the meta object for the containment reference list '{@link org.eclipse.gemoc.executionframework.event.testsuite.TestSuite#getStorage <em>Storage</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Storage</em>'.
+	 * @see org.eclipse.gemoc.executionframework.event.testsuite.TestSuite#getStorage()
+	 * @see #getTestSuite()
+	 * @generated
+	 */
+	EReference getTestSuite_Storage();
+
+	/**
 	 * Returns the meta object for class '{@link org.eclipse.gemoc.executionframework.event.testsuite.TestCase <em>Test Case</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -550,6 +570,14 @@ public interface TestsuitePackage extends EPackage {
 		 * @generated
 		 */
 		EReference TEST_SUITE__TEST_CASES = eINSTANCE.getTestSuite_TestCases();
+
+		/**
+		 * The meta object literal for the '<em><b>Storage</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference TEST_SUITE__STORAGE = eINSTANCE.getTestSuite_Storage();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.gemoc.executionframework.event.testsuite.impl.TestCaseImpl <em>Test Case</em>}' class.

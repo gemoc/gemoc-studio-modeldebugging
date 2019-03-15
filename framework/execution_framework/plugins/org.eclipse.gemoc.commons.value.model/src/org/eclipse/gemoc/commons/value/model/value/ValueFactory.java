@@ -166,6 +166,24 @@ public interface ValueFactory extends EFactory {
 	ManyReferenceValue createManyReferenceValue();
 
 	/**
+	 * Returns a new object of class '<em>Single Object Value</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Single Object Value</em>'.
+	 * @generated
+	 */
+	SingleObjectValue createSingleObjectValue();
+
+	/**
+	 * Returns a new object of class '<em>Many Object Value</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Many Object Value</em>'.
+	 * @generated
+	 */
+	ManyObjectValue createManyObjectValue();
+
+	/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

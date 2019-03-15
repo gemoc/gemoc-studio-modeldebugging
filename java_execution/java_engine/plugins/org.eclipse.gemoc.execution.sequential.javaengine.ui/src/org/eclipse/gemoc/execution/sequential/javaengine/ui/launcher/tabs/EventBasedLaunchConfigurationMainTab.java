@@ -14,11 +14,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -30,39 +29,19 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.gemoc.commons.eclipse.emf.URIHelper;
 import org.eclipse.gemoc.commons.eclipse.ui.dialogs.SelectAnyIFileDialog;
-import org.eclipse.gemoc.commons.value.model.value.BooleanAttributeValue;
-import org.eclipse.gemoc.commons.value.model.value.BooleanObjectAttributeValue;
-import org.eclipse.gemoc.commons.value.model.value.FloatAttributeValue;
-import org.eclipse.gemoc.commons.value.model.value.FloatObjectAttributeValue;
-import org.eclipse.gemoc.commons.value.model.value.IntegerAttributeValue;
-import org.eclipse.gemoc.commons.value.model.value.IntegerObjectAttributeValue;
-import org.eclipse.gemoc.commons.value.model.value.SingleReferenceValue;
-import org.eclipse.gemoc.commons.value.model.value.StringAttributeValue;
-import org.eclipse.gemoc.commons.value.model.value.Value;
-import org.eclipse.gemoc.commons.value.model.value.ValuePackage;
 import org.eclipse.gemoc.dsl.debug.ide.launch.AbstractDSLLaunchConfigurationDelegate;
 import org.eclipse.gemoc.dsl.debug.ide.sirius.ui.launch.AbstractDSLLaunchConfigurationDelegateSiriusUI;
 import org.eclipse.gemoc.execution.sequential.javaengine.EventBasedRunConfiguration;
 import org.eclipse.gemoc.execution.sequential.javaengine.ui.Activator;
 import org.eclipse.gemoc.execution.sequential.javaengine.ui.launcher.LauncherMessages;
 import org.eclipse.gemoc.executionframework.engine.commons.DslHelper;
-import org.eclipse.gemoc.executionframework.engine.commons.EventBasedDslHelper;
 import org.eclipse.gemoc.executionframework.engine.commons.MelangeHelper;
-import org.eclipse.gemoc.executionframework.event.model.event.EventOccurrence;
-import org.eclipse.gemoc.executionframework.event.model.event.EventOccurrenceArgument;
-import org.eclipse.gemoc.executionframework.ui.utils.ENamedElementQualifiedNameLabelProvider;
-import org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.BehavioralInterface;
-import org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.Event;
-import org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.EventParameter;
-import org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.InputEvent;
 import org.eclipse.gemoc.xdsmlframework.ui.utils.dialogs.SelectAIRDIFileDialog;
-import org.eclipse.gemoc.xdsmlframework.ui.utils.dialogs.SelectAnyEObjectDialog;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -81,11 +60,9 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
-import org.osgi.framework.Bundle;
 
 /**
  * Sequential engine launch configuration main tab
@@ -99,17 +76,10 @@ public class EventBasedLaunchConfigurationMainTab extends LaunchConfigurationTab
 	private Text _melangeQueryText;
 	private Button _animationFirstBreak;
 	private Button _waitForEvents;
-	private Text _startEventText;
+	private org.eclipse.swt.widgets.List _implementationRelationshipList;
+	private org.eclipse.swt.widgets.List _subtypingRelationshipList;
 	private Combo _languageCombo;
 
-	private BehavioralInterface _behavioralInterface;
-	private Bundle _bundle;
-
-	private EventOccurrence _startEventOccurrence = null;
-	private Group _startEventParametersGroup;
-	private final List<Text> _startEventParameters = new ArrayList<>();
-
-	private final Map<String, String> paramToArg = new HashMap<>();
 	private final Set<String> selectedEventEmitters = new HashSet<>();
 
 	@Override
@@ -149,9 +119,9 @@ public class EventBasedLaunchConfigurationMainTab extends LaunchConfigurationTab
 	@Override
 	public void initializeFrom(ILaunchConfiguration configuration) {
 		try {
-			
-			clearStartEventGroup();
-			
+
+//			clearStartEventGroup();
+
 			final EventBasedRunConfiguration runConfiguration = new EventBasedRunConfiguration(configuration);
 			final URI modelUri = runConfiguration.getExecutedModelURI();
 			final URI animatorUri = runConfiguration.getAnimatorURI();
@@ -171,19 +141,34 @@ public class EventBasedLaunchConfigurationMainTab extends LaunchConfigurationTab
 
 			if (languageName != null) {
 				_languageCombo.setText(languageName);
-				loadLanguage(languageName);
-				if (_behavioralInterface != null) {
-					_startEventOccurrence = runConfiguration.getStartEventOccurrence();
-					if (_startEventOccurrence != null) {
-						_startEventText.setText(_startEventOccurrence.getEvent().getName());
-						loadEventOccurrenceParameters(_startEventParametersGroup, _startEventOccurrence);
-					}
-				}
 			} else {
 				_languageCombo.setText("");
 			}
 
 			_animationFirstBreak.setSelection(runConfiguration.getBreakStart());
+
+			configuration.getAttribute(EventBasedRunConfiguration.IMPL_REL_IDS, Collections.emptySet()).stream()
+					.forEach(id -> {
+						final IConfigurationElement[] relationships = Platform.getExtensionRegistry()
+								.getConfigurationElementsFor(implemRelId);
+						Arrays.asList(relationships).stream().filter(r -> r.getAttribute("id").equals(id))
+								.forEach(r -> {
+									_implementationRelationshipList.add(r.getAttribute("name"));
+									selectedImplementationRelationships.add(r);
+								});
+					});
+
+			configuration.getAttribute(EventBasedRunConfiguration.SUBTYPE_REL_IDS, Collections.emptySet()).stream()
+					.forEach(id -> {
+						final IConfigurationElement[] relationships = Platform.getExtensionRegistry()
+								.getConfigurationElementsFor(subtypeRelId);
+						Arrays.asList(relationships).stream().filter(r -> r.getAttribute("id").equals(id))
+								.forEach(r -> {
+									_subtypingRelationshipList.add(r.getAttribute("name"));
+									selectedSubtypingRelationships.add(r);
+								});
+					});
+
 			_waitForEvents.setSelection(runConfiguration.getWaitForEvent());
 
 		} catch (CoreException e) {
@@ -202,11 +187,10 @@ public class EventBasedLaunchConfigurationMainTab extends LaunchConfigurationTab
 				this._modelLocationText.getText());
 		configuration.setAttribute(AbstractDSLLaunchConfigurationDelegateSiriusUI.SIRIUS_RESOURCE_URI,
 				this._animatorLocationText.getText());
-		if (_startEventOccurrence != null) {
-			final Event event = _startEventOccurrence.getEvent();
-			configuration.setAttribute(EventBasedRunConfiguration.START_EVENT, event.getName());
-			configuration.setAttribute(EventBasedRunConfiguration.START_EVENT_OCCURRENCE_ARGS, paramToArg);
-		}
+		configuration.setAttribute(EventBasedRunConfiguration.IMPL_REL_IDS, selectedImplementationRelationships.stream()
+				.map(r -> r.getAttribute("id")).collect(Collectors.toSet()));
+		configuration.setAttribute(EventBasedRunConfiguration.SUBTYPE_REL_IDS, selectedSubtypingRelationships.stream()
+				.map(r -> r.getAttribute("id")).collect(Collectors.toSet()));
 	}
 
 	@Override
@@ -231,10 +215,8 @@ public class EventBasedLaunchConfigurationMainTab extends LaunchConfigurationTab
 	/***
 	 * Create the Fields where user enters model to execute
 	 * 
-	 * @param parent
-	 *            container composite
-	 * @param font
-	 *            used font
+	 * @param parent container composite
+	 * @param font   used font
 	 * @return the created composite containing the fields
 	 */
 	public Composite createModelLayout(Composite parent, Font font) {
@@ -301,10 +283,8 @@ public class EventBasedLaunchConfigurationMainTab extends LaunchConfigurationTab
 	/***
 	 * Create the Field where user enters the language used to execute
 	 * 
-	 * @param parent
-	 *            container composite
-	 * @param font
-	 *            used font
+	 * @param parent container composite
+	 * @param font   used font
 	 * @return the created composite containing the fields
 	 */
 	public Composite createLanguageLayout(Composite parent, Font font) {
@@ -319,9 +299,6 @@ public class EventBasedLaunchConfigurationMainTab extends LaunchConfigurationTab
 		_languageCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				// String selection = _languageCombo.getText();
-				// List<String> modelTypeNames = MelangeHelper.getModelTypes(selection);
-				loadLanguage(_languageCombo.getText());
 				updateLaunchConfigurationDialog();
 			}
 		});
@@ -337,23 +314,19 @@ public class EventBasedLaunchConfigurationMainTab extends LaunchConfigurationTab
 		return parent;
 	}
 
-	private void loadLanguage(String languageName) {
-		_behavioralInterface = EventBasedDslHelper.getBehavioralInterface(languageName);
-		_bundle = DslHelper.getDslBundle(languageName);
-	}
+	private final String implemRelId = "org.eclipse.gemoc.executionframework.event.implementationrelationship";
 
-	private ElementListSelectionDialog getStartEventSelectionDialog() {
-		final Set<Event> events = new HashSet<>();
-		if (_behavioralInterface != null) {
-			events.addAll(_behavioralInterface.getEvents());
-		}
+	private final String subtypeRelId = "org.eclipse.gemoc.executionframework.event.subtypingrelationship";
 
+	private ElementListSelectionDialog getRelationshipSelectionDialog(String extensionPointId,
+			List<IConfigurationElement> preselected) {
+		final IConfigurationElement[] relationships = Platform.getExtensionRegistry()
+				.getConfigurationElementsFor(extensionPointId);
 		final ILabelProvider labelProvider = new LabelProvider() {
 			@Override
 			public String getText(Object element) {
-				if (element instanceof Event) {
-					final Event event = (Event) element;
-					return event.getName();
+				if (element instanceof IConfigurationElement) {
+					return ((IConfigurationElement) element).getAttribute("name");
 				}
 				return "";
 			};
@@ -361,127 +334,16 @@ public class EventBasedLaunchConfigurationMainTab extends LaunchConfigurationTab
 
 		final ElementListSelectionDialog dialog = new ElementListSelectionDialog(
 				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), labelProvider);
-		dialog.setElements(events.toArray());
+		dialog.setElements(relationships);
+		dialog.setMultipleSelection(true);
+		dialog.setInitialSelections(preselected);
 
 		return dialog;
 	}
 
-	private void addStartEventParameterRow(Composite parent, EventParameter param, Class<?> type, String arg) {
-		if (type == null) {
-			// TODO error
-		} else {
-			final String name = param.getName() + ": " + type.getSimpleName();
-			createTextLabelLayout(parent, name);
-			final Text text = new Text(parent, SWT.SINGLE | SWT.BORDER);
-			_startEventParameters.add(text);
-			text.setLayoutData(createStandardLayout());
-			if (type.isPrimitive() || type.equals(String.class)) {
-				text.setEditable(true);
-				createTextLabelLayout(parent, "");
-			} else {
-				text.setEditable(false);
-				final Button parameterBrowseButton = createPushButton(parent, "Browse Model", null);
-				parameterBrowseButton.addSelectionListener(new SelectionAdapter() {
-					public void widgetSelected(SelectionEvent e) {
-						Resource model = getModel();
-						if (model == null) {
-							setErrorMessage("Please select a model to execute.");
-						} else {
-							final Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-							final ResourceSet resourceSet = model.getResourceSet();
-							final ILabelProvider labelProvider = new ENamedElementQualifiedNameLabelProvider();
-							SelectAnyEObjectDialog dialog = new SelectAnyEObjectDialog(shell, resourceSet,
-									labelProvider) {
-								@Override
-								protected boolean select(EObject obj) {
-									return obj.eClass().getInstanceClass().isAssignableFrom(type);
-								}
-							};
-							int res = dialog.open();
-							if (res == WizardDialog.OK) {
-								EObject selection = (EObject) dialog.getFirstResult();
-								String uriFragment = selection.eResource().getURIFragment(selection);
-								text.setText(uriFragment);
-								updateLaunchConfigurationDialog();
-							}
-						}
-					}
-				});
-			}
-			text.setText(arg);
-			paramToArg.put(param.getName(), arg);
-			
-			ModifyListener argModifyListener = new ModifyListener() {
-				@Override
-				public void modifyText(ModifyEvent e) {
-					paramToArg.put(param.getName(), text.getText());
-					updateLaunchConfigurationDialog();
-				}
-			};
-			
-			text.addModifyListener(argModifyListener);
-		}
-	}
+	private final List<IConfigurationElement> selectedImplementationRelationships = new ArrayList<>();
 
-	private void loadEventOccurrenceParameters(Composite parent, EventOccurrence eventOccurrence) {
-		final Event event = eventOccurrence.getEvent();
-		final List<EventOccurrenceArgument> args = eventOccurrence.getArgs();
-		event.getParams().forEach(p -> {
-			args.stream().filter(a -> p == a.getParameter()).findFirst().ifPresent(a -> {
-				Value value = a.getValue();
-				String arg = "";
-				Class<?> type = null;
-				switch (value.eClass().getClassifierID()) {
-				case ValuePackage.SINGLE_REFERENCE_VALUE:
-					final EObject o = ((SingleReferenceValue) value).getReferenceValue();
-					if (o == null) {
-						arg = "";
-						try {
-							type = _bundle.loadClass(p.getType());
-						} catch (ClassNotFoundException e) {
-							e.printStackTrace();
-						}
-					} else {
-						arg = "" + o.eResource().getURIFragment(o);
-						type = o.eClass().getInstanceClass();
-					}
-					break;
-				case ValuePackage.BOOLEAN_ATTRIBUTE_VALUE:
-					arg = "" + ((BooleanAttributeValue) value).isAttributeValue();
-					type = Boolean.class;
-					break;
-				case ValuePackage.BOOLEAN_OBJECT_ATTRIBUTE_VALUE:
-					arg = "" + ((BooleanObjectAttributeValue) value).getAttributeValue();
-					type = Boolean.class;
-					break;
-				case ValuePackage.INTEGER_ATTRIBUTE_VALUE:
-					arg = "" + ((IntegerAttributeValue) value).getAttributeValue();
-					type = Integer.class;
-					break;
-				case ValuePackage.INTEGER_OBJECT_ATTRIBUTE_VALUE:
-					arg = "" + ((IntegerObjectAttributeValue) value).getAttributeValue();
-					type = Integer.class;
-					break;
-				case ValuePackage.FLOAT_ATTRIBUTE_VALUE:
-					arg = "" + ((FloatAttributeValue) value).getAttributeValue();
-					type = Float.class;
-					break;
-				case ValuePackage.FLOAT_OBJECT_ATTRIBUTE_VALUE:
-					arg = "" + ((FloatObjectAttributeValue) value).getAttributeValue();
-					type = Float.class;
-					break;
-				case ValuePackage.STRING_ATTRIBUTE_VALUE:
-					arg = "" + ((StringAttributeValue) value).getAttributeValue();
-					type = String.class;
-					break;
-				}
-				addStartEventParameterRow(parent, p, type, arg);
-			});
-		});
-		final GridData gridData = createStandardLayout();
-		gridData.horizontalSpan = 3;
-		parent.setLayoutData(gridData);
-	}
+	private final List<IConfigurationElement> selectedSubtypingRelationships = new ArrayList<>();
 
 	private Composite createK3Layout(Composite parent, Font font) {
 		new Label(parent, SWT.NONE).setText("");
@@ -494,48 +356,109 @@ public class EventBasedLaunchConfigurationMainTab extends LaunchConfigurationTab
 			}
 		});
 		new Label(parent, SWT.NONE).setText("");
-		createTextLabelLayout(parent, "Start event");
-		_startEventText = new Text(parent, SWT.SINGLE | SWT.BORDER);
-		_startEventText.setLayoutData(createStandardLayout());
-		_startEventText.setFont(font);
-		_startEventText.setEditable(false);
-		_startEventText.addModifyListener(fBasicModifyListener);
-		final Button startEventBrowseButton = createPushButton(parent, "Browse", null);
 
-		_startEventParametersGroup = createGroup(parent, "Start Event Parameters");
-		final GridData gridData = createStandardLayout();
-		gridData.horizontalSpan = 3;
-		_startEventParametersGroup.setLayoutData(gridData);
-		startEventBrowseButton.addSelectionListener(new SelectionAdapter() {
+		_implementationRelationshipList = new org.eclipse.swt.widgets.List(parent, SWT.V_SCROLL);
+		_implementationRelationshipList.setLayoutData(new GridData(GridData.FILL_BOTH));
+		_implementationRelationshipList.setFont(parent.getFont());
+
+		final Button implementationRelationshipsBrowseButton = createPushButton(parent, "Browse", null);
+		implementationRelationshipsBrowseButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				if (_languageCombo.getText() == null) {
 					setErrorMessage("Please select a language.");
 				} else {
-					final ElementListSelectionDialog dialog = getStartEventSelectionDialog();
+					final ElementListSelectionDialog dialog = getRelationshipSelectionDialog(implemRelId,
+							selectedImplementationRelationships);
 					int res = dialog.open();
 					if (res == WizardDialog.OK) {
-						final InputEvent event = (InputEvent) (dialog.getFirstResult());
-						if (_startEventOccurrence == null || !_startEventOccurrence.getEvent().equals(event)) {
-							clearStartEventGroup();
-							_startEventText.setText(event.getName());
-							_startEventOccurrence = EventBasedDslHelper.createEventOccurrence(event);
-							loadEventOccurrenceParameters(_startEventParametersGroup, _startEventOccurrence);
-							parent.requestLayout();
-							updateLaunchConfigurationDialog();
-						}
+						selectedImplementationRelationships.clear();
+						_implementationRelationshipList.removeAll();
+						Arrays.asList(dialog.getResult()).stream().filter(o -> o instanceof IConfigurationElement)
+								.forEach(o -> {
+									final IConfigurationElement r = (IConfigurationElement) o;
+									selectedImplementationRelationships.add(r);
+									_implementationRelationshipList.add((r).getAttribute("name"));
+								});
+						updateLaunchConfigurationDialog();
 					}
 				}
 			}
 		});
+		
+		new Label(parent, SWT.NONE).setText("");
+		
+		_subtypingRelationshipList = new org.eclipse.swt.widgets.List(parent, SWT.V_SCROLL);
+		_subtypingRelationshipList.setLayoutData(new GridData(GridData.FILL_BOTH));
+		_subtypingRelationshipList.setFont(parent.getFont());
+
+		final Button subtypingRelationshipsBrowseButton = createPushButton(parent, "Browse", null);
+		subtypingRelationshipsBrowseButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				if (_languageCombo.getText() == null) {
+					setErrorMessage("Please select a language.");
+				} else {
+					final ElementListSelectionDialog dialog = getRelationshipSelectionDialog(subtypeRelId,
+							selectedSubtypingRelationships);
+					int res = dialog.open();
+					if (res == WizardDialog.OK) {
+						selectedSubtypingRelationships.clear();
+						_subtypingRelationshipList.removeAll();
+						Arrays.asList(dialog.getResult()).stream().filter(o -> o instanceof IConfigurationElement)
+								.forEach(o -> {
+									final IConfigurationElement r = (IConfigurationElement) o;
+									selectedSubtypingRelationships.add(r);
+									_subtypingRelationshipList.add((r).getAttribute("name"));
+								});
+						updateLaunchConfigurationDialog();
+					}
+				}
+			}
+		});
+		
+		new Label(parent, SWT.NONE).setText("");
 
 		return parent;
 	}
 
-	private void clearStartEventGroup() {
-		Arrays.asList(_startEventParametersGroup.getChildren()).forEach(c -> c.dispose());
-		_startEventParameters.clear();
-		_startEventText.setText("");
-	}
+//		createTextLabelLayout(parent, "Start event");
+//		_startEventText = new Text(parent, SWT.SINGLE | SWT.BORDER);
+//		_startEventText.setLayoutData(createStandardLayout());
+//		_startEventText.setFont(font);
+//		_startEventText.setEditable(false);
+//		_startEventText.addModifyListener(fBasicModifyListener);
+//		final Button startEventBrowseButton = createPushButton(parent, "Browse", null);
+//
+//		_startEventParametersGroup = createGroup(parent, "Start Event Parameters");
+//		final GridData gridData = createStandardLayout();
+//		gridData.horizontalSpan = 3;
+//		_startEventParametersGroup.setLayoutData(gridData);
+//		startEventBrowseButton.addSelectionListener(new SelectionAdapter() {
+//			public void widgetSelected(SelectionEvent e) {
+//				if (_languageCombo.getText() == null) {
+//					setErrorMessage("Please select a language.");
+//				} else {
+//					final ElementListSelectionDialog dialog = getStartEventSelectionDialog();
+//					int res = dialog.open();
+//					if (res == WizardDialog.OK) {
+//						final Event event = (Event) (dialog.getFirstResult());
+//						if (_startEventOccurrence == null || !_startEventOccurrence.getEvent().equals(event)) {
+//							clearStartEventGroup();
+//							_startEventText.setText(event.getName());
+//							_startEventOccurrence = EventBasedDslHelper.createEventOccurrence(event);
+//							loadEventOccurrenceParameters(_startEventParametersGroup, _startEventOccurrence);
+//							parent.requestLayout();
+//							updateLaunchConfigurationDialog();
+//						}
+//					}
+//				}
+//			}
+//		});
+
+//	private void clearStartEventGroup() {
+//		Arrays.asList(_startEventParametersGroup.getChildren()).forEach(c -> c.dispose());
+//		_startEventParameters.clear();
+//		_startEventText.setText("");
+//	}
 
 	private Composite createEventEmittersLayout(Composite parent, Font font,
 			IConfigurationElement[] eventEmittersConfElts) {
@@ -571,7 +494,7 @@ public class EventBasedLaunchConfigurationMainTab extends LaunchConfigurationTab
 		super.updateLaunchConfigurationDialog();
 		_melangeQueryText.setText(computeMelangeQuery());
 	}
-	
+
 	protected String computeMelangeQuery() {
 		String result = "";
 		String languageName = this._languageCombo.getText();

@@ -19,6 +19,7 @@ import org.eclipse.gemoc.xdsmlframework.behavioralinterface.behavioralInterface.
  * <ul>
  *   <li>{@link org.eclipse.gemoc.executionframework.event.model.event.EventOccurrence#getEvent <em>Event</em>}</li>
  *   <li>{@link org.eclipse.gemoc.executionframework.event.model.event.EventOccurrence#getArgs <em>Args</em>}</li>
+ *   <li>{@link org.eclipse.gemoc.executionframework.event.model.event.EventOccurrence#getType <em>Type</em>}</li>
  * </ul>
  *
  * @see org.eclipse.gemoc.executionframework.event.model.event.EventPackage#getEventOccurrence()
@@ -67,5 +68,34 @@ public interface EventOccurrence extends EObject {
 	 * @generated
 	 */
 	EList<EventOccurrenceArgument> getArgs();
+
+	/**
+	 * Returns the value of the '<em><b>Type</b></em>' attribute.
+	 * The literals are from the enumeration {@link org.eclipse.gemoc.executionframework.event.model.event.EventOccurrenceType}.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Type</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Type</em>' attribute.
+	 * @see org.eclipse.gemoc.executionframework.event.model.event.EventOccurrenceType
+	 * @see #setType(EventOccurrenceType)
+	 * @see org.eclipse.gemoc.executionframework.event.model.event.EventPackage#getEventOccurrence_Type()
+	 * @model required="true"
+	 * @generated
+	 */
+	EventOccurrenceType getType();
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.gemoc.executionframework.event.model.event.EventOccurrence#getType <em>Type</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Type</em>' attribute.
+	 * @see org.eclipse.gemoc.executionframework.event.model.event.EventOccurrenceType
+	 * @see #getType()
+	 * @generated
+	 */
+	void setType(EventOccurrenceType value);
 
 } // EventOccurrence

@@ -22,9 +22,11 @@ import org.eclipse.gemoc.commons.value.model.value.ManyFloatAttributeValue;
 import org.eclipse.gemoc.commons.value.model.value.ManyFloatObjectAttributeValue;
 import org.eclipse.gemoc.commons.value.model.value.ManyIntegerAttributeValue;
 import org.eclipse.gemoc.commons.value.model.value.ManyIntegerObjectAttributeValue;
+import org.eclipse.gemoc.commons.value.model.value.ManyObjectValue;
 import org.eclipse.gemoc.commons.value.model.value.ManyReferenceValue;
 import org.eclipse.gemoc.commons.value.model.value.ManyStringAttributeValue;
 import org.eclipse.gemoc.commons.value.model.value.ReferenceValue;
+import org.eclipse.gemoc.commons.value.model.value.SingleObjectValue;
 import org.eclipse.gemoc.commons.value.model.value.SingleReferenceValue;
 import org.eclipse.gemoc.commons.value.model.value.StringAttributeValue;
 import org.eclipse.gemoc.commons.value.model.value.Value;
@@ -172,6 +174,20 @@ public class ValuePackageImpl extends EPackageImpl implements ValuePackage {
 	private EClass manyReferenceValueEClass = null;
 
 	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass singleObjectValueEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass manyObjectValueEClass = null;
+
+	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
 	 * {@link org.eclipse.emf.ecore.EPackage.Registry EPackage.Registry} by the package
 	 * package URI value.
@@ -199,7 +215,7 @@ public class ValuePackageImpl extends EPackageImpl implements ValuePackage {
 
 	/**
 	 * Creates, registers, and initializes the <b>Package</b> for this model, and for any others upon which it depends.
-	 * 
+	 *
 	 * <p>This method is used to initialize {@link ValuePackage#eINSTANCE} when that field is accessed.
 	 * Clients should not invoke it directly. Instead, they should simply access that field to obtain the package.
 	 * <!-- begin-user-doc -->
@@ -213,7 +229,8 @@ public class ValuePackageImpl extends EPackageImpl implements ValuePackage {
 		if (isInited) return (ValuePackage)EPackage.Registry.INSTANCE.getEPackage(ValuePackage.eNS_URI);
 
 		// Obtain or create and register package
-		ValuePackageImpl theValuePackage = (ValuePackageImpl)(EPackage.Registry.INSTANCE.get(eNS_URI) instanceof ValuePackageImpl ? EPackage.Registry.INSTANCE.get(eNS_URI) : new ValuePackageImpl());
+		Object registeredValuePackage = EPackage.Registry.INSTANCE.get(eNS_URI);
+		ValuePackageImpl theValuePackage = registeredValuePackage instanceof ValuePackageImpl ? (ValuePackageImpl)registeredValuePackage : new ValuePackageImpl();
 
 		isInited = true;
 
@@ -226,7 +243,6 @@ public class ValuePackageImpl extends EPackageImpl implements ValuePackage {
 		// Mark meta-data to indicate it can't be changed
 		theValuePackage.freeze();
 
-  
 		// Update the registry and return the package
 		EPackage.Registry.INSTANCE.put(ValuePackage.eNS_URI, theValuePackage);
 		return theValuePackage;
@@ -552,6 +568,42 @@ public class ValuePackageImpl extends EPackageImpl implements ValuePackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EClass getSingleObjectValue() {
+		return singleObjectValueEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getSingleObjectValue_ObjectValue() {
+		return (EReference)singleObjectValueEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getManyObjectValue() {
+		return manyObjectValueEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getManyObjectValue_ObjectValues() {
+		return (EReference)manyObjectValueEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public ValueFactory getValueFactory() {
 		return (ValueFactory)getEFactoryInstance();
 	}
@@ -628,6 +680,12 @@ public class ValuePackageImpl extends EPackageImpl implements ValuePackage {
 
 		manyReferenceValueEClass = createEClass(MANY_REFERENCE_VALUE);
 		createEReference(manyReferenceValueEClass, MANY_REFERENCE_VALUE__REFERENCE_VALUES);
+
+		singleObjectValueEClass = createEClass(SINGLE_OBJECT_VALUE);
+		createEReference(singleObjectValueEClass, SINGLE_OBJECT_VALUE__OBJECT_VALUE);
+
+		manyObjectValueEClass = createEClass(MANY_OBJECT_VALUE);
+		createEReference(manyObjectValueEClass, MANY_OBJECT_VALUE__OBJECT_VALUES);
 	}
 
 	/**
@@ -676,6 +734,8 @@ public class ValuePackageImpl extends EPackageImpl implements ValuePackage {
 		manyStringAttributeValueEClass.getESuperTypes().add(this.getAttributeValue());
 		singleReferenceValueEClass.getESuperTypes().add(this.getReferenceValue());
 		manyReferenceValueEClass.getESuperTypes().add(this.getReferenceValue());
+		singleObjectValueEClass.getESuperTypes().add(this.getReferenceValue());
+		manyObjectValueEClass.getESuperTypes().add(this.getReferenceValue());
 
 		// Initialize classes, features, and operations; add parameters
 		initEClass(valueEClass, Value.class, "Value", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -731,6 +791,12 @@ public class ValuePackageImpl extends EPackageImpl implements ValuePackage {
 
 		initEClass(manyReferenceValueEClass, ManyReferenceValue.class, "ManyReferenceValue", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getManyReferenceValue_ReferenceValues(), ecorePackage.getEObject(), null, "referenceValues", null, 0, -1, ManyReferenceValue.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(singleObjectValueEClass, SingleObjectValue.class, "SingleObjectValue", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getSingleObjectValue_ObjectValue(), ecorePackage.getEObject(), null, "objectValue", null, 0, 1, SingleObjectValue.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(manyObjectValueEClass, ManyObjectValue.class, "ManyObjectValue", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getManyObjectValue_ObjectValues(), ecorePackage.getEObject(), null, "objectValues", null, 0, -1, ManyObjectValue.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Create resource
 		createResource(eNS_URI);

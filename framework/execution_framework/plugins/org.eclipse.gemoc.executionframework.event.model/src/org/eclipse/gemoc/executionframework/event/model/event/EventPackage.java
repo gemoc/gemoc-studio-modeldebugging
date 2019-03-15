@@ -2,7 +2,9 @@
  */
 package org.eclipse.gemoc.executionframework.event.model.event;
 
+import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 
@@ -84,13 +86,22 @@ public interface EventPackage extends EPackage {
 	int EVENT_OCCURRENCE__ARGS = 1;
 
 	/**
+	 * The feature id for the '<em><b>Type</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_OCCURRENCE__TYPE = 2;
+
+	/**
 	 * The number of structural features of the '<em>Occurrence</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int EVENT_OCCURRENCE_FEATURE_COUNT = 2;
+	int EVENT_OCCURRENCE_FEATURE_COUNT = 3;
 
 	/**
 	 * The number of operations of the '<em>Occurrence</em>' class.
@@ -128,6 +139,15 @@ public interface EventPackage extends EPackage {
 	 * @ordered
 	 */
 	int STOP_EVENT_OCCURRENCE__ARGS = EVENT_OCCURRENCE__ARGS;
+
+	/**
+	 * The feature id for the '<em><b>Type</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STOP_EVENT_OCCURRENCE__TYPE = EVENT_OCCURRENCE__TYPE;
 
 	/**
 	 * The number of structural features of the '<em>Stop Event Occurrence</em>' class.
@@ -193,6 +213,16 @@ public interface EventPackage extends EPackage {
 	 */
 	int EVENT_OCCURRENCE_ARGUMENT_OPERATION_COUNT = 0;
 
+	/**
+	 * The meta object id for the '{@link org.eclipse.gemoc.executionframework.event.model.event.EventOccurrenceType <em>Occurrence Type</em>}' enum.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.eclipse.gemoc.executionframework.event.model.event.EventOccurrenceType
+	 * @see org.eclipse.gemoc.executionframework.event.model.event.impl.EventPackageImpl#getEventOccurrenceType()
+	 * @generated
+	 */
+	int EVENT_OCCURRENCE_TYPE = 3;
+
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.gemoc.executionframework.event.model.event.EventOccurrence <em>Occurrence</em>}'.
@@ -225,6 +255,17 @@ public interface EventPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getEventOccurrence_Args();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.gemoc.executionframework.event.model.event.EventOccurrence#getType <em>Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Type</em>'.
+	 * @see org.eclipse.gemoc.executionframework.event.model.event.EventOccurrence#getType()
+	 * @see #getEventOccurrence()
+	 * @generated
+	 */
+	EAttribute getEventOccurrence_Type();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.gemoc.executionframework.event.model.event.StopEventOccurrence <em>Stop Event Occurrence</em>}'.
@@ -267,6 +308,16 @@ public interface EventPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getEventOccurrenceArgument_Value();
+
+	/**
+	 * Returns the meta object for enum '{@link org.eclipse.gemoc.executionframework.event.model.event.EventOccurrenceType <em>Occurrence Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for enum '<em>Occurrence Type</em>'.
+	 * @see org.eclipse.gemoc.executionframework.event.model.event.EventOccurrenceType
+	 * @generated
+	 */
+	EEnum getEventOccurrenceType();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -318,6 +369,14 @@ public interface EventPackage extends EPackage {
 		EReference EVENT_OCCURRENCE__ARGS = eINSTANCE.getEventOccurrence_Args();
 
 		/**
+		 * The meta object literal for the '<em><b>Type</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute EVENT_OCCURRENCE__TYPE = eINSTANCE.getEventOccurrence_Type();
+
+		/**
 		 * The meta object literal for the '{@link org.eclipse.gemoc.executionframework.event.model.event.impl.StopEventOccurrenceImpl <em>Stop Event Occurrence</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -352,6 +411,16 @@ public interface EventPackage extends EPackage {
 		 * @generated
 		 */
 		EReference EVENT_OCCURRENCE_ARGUMENT__VALUE = eINSTANCE.getEventOccurrenceArgument_Value();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.gemoc.executionframework.event.model.event.EventOccurrenceType <em>Occurrence Type</em>}' enum.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.eclipse.gemoc.executionframework.event.model.event.EventOccurrenceType
+		 * @see org.eclipse.gemoc.executionframework.event.model.event.impl.EventPackageImpl#getEventOccurrenceType()
+		 * @generated
+		 */
+		EEnum EVENT_OCCURRENCE_TYPE = eINSTANCE.getEventOccurrenceType();
 
 	}
 

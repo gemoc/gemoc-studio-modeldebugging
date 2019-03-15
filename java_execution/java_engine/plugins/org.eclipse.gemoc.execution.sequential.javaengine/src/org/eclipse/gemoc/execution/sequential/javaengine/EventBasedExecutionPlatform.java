@@ -11,15 +11,17 @@
 package org.eclipse.gemoc.execution.sequential.javaengine;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.gemoc.executionframework.engine.commons.DefaultExecutionPlatform;
 import org.eclipse.gemoc.executionframework.event.manager.GenericEventManager;
-import org.eclipse.gemoc.xdsmlframework.api.core.IRunConfiguration;
 import org.eclipse.gemoc.xdsmlframework.api.extensions.languages.LanguageDefinitionExtension;
 
 public class EventBasedExecutionPlatform extends DefaultExecutionPlatform {
 
-	public EventBasedExecutionPlatform(LanguageDefinitionExtension _languageDefinition, IRunConfiguration runConfiguration) throws CoreException {
-		super(_languageDefinition, runConfiguration);
-		addEngineAddon(new GenericEventManager(_languageDefinition.getName()));
+	public EventBasedExecutionPlatform(LanguageDefinitionExtension _languageDefinition,
+			EventBasedRunConfiguration _runConfiguration, Resource _executedResource) throws CoreException {
+		super(_languageDefinition, _runConfiguration);
+		addEngineAddon(new GenericEventManager(_languageDefinition.getName(), _executedResource,
+				_runConfiguration.getImplementationRelationships(), _runConfiguration.getSubtypingRelationships()));
 	}
 }

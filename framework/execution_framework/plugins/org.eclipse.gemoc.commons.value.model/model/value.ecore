@@ -83,4 +83,14 @@
       <eType xsi:type="ecore:EClass" href="http://www.eclipse.org/emf/2002/Ecore#//EObject"/>
     </eStructuralFeatures>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SingleObjectValue" eSuperTypes="//ReferenceValue">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="objectValue" containment="true">
+      <eType xsi:type="ecore:EClass" href="http://www.eclipse.org/emf/2002/Ecore#//EObject"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ManyObjectValue" eSuperTypes="//ReferenceValue">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="objectValues" upperBound="-1" containment="true">
+      <eType xsi:type="ecore:EClass" href="http://www.eclipse.org/emf/2002/Ecore#//EObject"/>
+    </eStructuralFeatures>
+  </eClassifiers>
 </ecore:EPackage>

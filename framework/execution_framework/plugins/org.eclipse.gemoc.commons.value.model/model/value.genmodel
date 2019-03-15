@@ -22,6 +22,12 @@
     <genClasses ecoreClass="value.ecore#//IntegerObjectAttributeValue">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute value.ecore#//IntegerObjectAttributeValue/attributeValue"/>
     </genClasses>
+    <genClasses ecoreClass="value.ecore#//FloatAttributeValue">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute value.ecore#//FloatAttributeValue/attributeValue"/>
+    </genClasses>
+    <genClasses ecoreClass="value.ecore#//FloatObjectAttributeValue">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute value.ecore#//FloatObjectAttributeValue/attributeValue"/>
+    </genClasses>
     <genClasses ecoreClass="value.ecore#//StringAttributeValue">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute value.ecore#//StringAttributeValue/attributeValue"/>
     </genClasses>
@@ -37,6 +43,12 @@
     <genClasses ecoreClass="value.ecore#//ManyIntegerObjectAttributeValue">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute value.ecore#//ManyIntegerObjectAttributeValue/attributeValue"/>
     </genClasses>
+    <genClasses ecoreClass="value.ecore#//ManyFloatAttributeValue">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute value.ecore#//ManyFloatAttributeValue/attributeValue"/>
+    </genClasses>
+    <genClasses ecoreClass="value.ecore#//ManyFloatObjectAttributeValue">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute value.ecore#//ManyFloatObjectAttributeValue/attributeValue"/>
+    </genClasses>
     <genClasses ecoreClass="value.ecore#//ManyStringAttributeValue">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute value.ecore#//ManyStringAttributeValue/attributeValue"/>
     </genClasses>
@@ -45,6 +57,12 @@
     </genClasses>
     <genClasses ecoreClass="value.ecore#//ManyReferenceValue">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference value.ecore#//ManyReferenceValue/referenceValues"/>
+    </genClasses>
+    <genClasses ecoreClass="value.ecore#//SingleObjectValue">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference value.ecore#//SingleObjectValue/objectValue"/>
+    </genClasses>
+    <genClasses ecoreClass="value.ecore#//ManyObjectValue">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference value.ecore#//ManyObjectValue/objectValues"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

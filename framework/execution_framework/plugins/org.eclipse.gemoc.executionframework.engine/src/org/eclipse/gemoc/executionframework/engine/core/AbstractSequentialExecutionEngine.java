@@ -155,12 +155,22 @@ public abstract class AbstractSequentialExecutionEngine<C extends IExecutionCont
 	private EOperation findOperation(EObject object, String className, String methodName) {
 		// We try to find the corresponding EOperation in the execution
 		// metamodel
-		for (EOperation operation : object.eClass().getEAllOperations()) {
-			// TODO !!! this is not super correct yet as overloading allows the
-			// definition of 2 methods with the same name !!!
-			if (operation.getName().equalsIgnoreCase(methodName)) {
-				return operation;
+		EOperation result = null;
+		final List<EClass> openSet = new ArrayList<>();
+		openSet.add(object.eClass());
+		
+		while(result == null && !openSet.isEmpty()) {
+			final EClass eClass = openSet.remove(0);
+			for (EOperation operation : eClass.getEOperations()) {
+				if (operation.getName().equalsIgnoreCase(methodName)) {
+					result = operation;
+				}
 			}
+			openSet.addAll(eClass.getESuperTypes());
+		}
+		
+		if (result != null) {
+			return result;
 		}
 
 		// If we didn't find it, we try to find the class that should contain

@@ -214,6 +214,22 @@ public class ValueSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case ValuePackage.SINGLE_OBJECT_VALUE: {
+				SingleObjectValue singleObjectValue = (SingleObjectValue)theEObject;
+				T result = caseSingleObjectValue(singleObjectValue);
+				if (result == null) result = caseReferenceValue(singleObjectValue);
+				if (result == null) result = caseValue(singleObjectValue);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case ValuePackage.MANY_OBJECT_VALUE: {
+				ManyObjectValue manyObjectValue = (ManyObjectValue)theEObject;
+				T result = caseManyObjectValue(manyObjectValue);
+				if (result == null) result = caseReferenceValue(manyObjectValue);
+				if (result == null) result = caseValue(manyObjectValue);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			default: return defaultCase(theEObject);
 		}
 	}
@@ -500,6 +516,36 @@ public class ValueSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseManyReferenceValue(ManyReferenceValue object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Single Object Value</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Single Object Value</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseSingleObjectValue(SingleObjectValue object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Many Object Value</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Many Object Value</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseManyObjectValue(ManyObjectValue object) {
 		return null;
 	}
 
