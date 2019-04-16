@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="property" nsURI="http://www.eclipse.gemoc.org/property" nsPrefix="property">
+  <eClassifiers xsi:type="ecore:EClass" name="Property">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="pattern" lowerBound="1">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="QuantifiedProperty" eSuperTypes="//Property">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="quantifier" lowerBound="1" eType="//Quantifier"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="property" lowerBound="1" eType="//Property" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TemporalProperty" abstract="true" eSuperTypes="//Property">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="scope" lowerBound="1" eType="//Scope" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EPLProperty">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="statement" lowerBound="1">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="patterns" upperBound="-1">
+      <eType xsi:type="ecore:EClass" href="../../../plugin/org.eclipse.viatra.query.patternlanguage.emf/model/PatternLanguage.ecore#//Pattern"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="initialTruthValue">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Absence" eSuperTypes="//TemporalProperty"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Universality" eSuperTypes="//TemporalProperty"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Existence" eSuperTypes="//TemporalProperty"/>
+  <eClassifiers xsi:type="ecore:EClass" name="BoundedExistence" eSuperTypes="//TemporalProperty">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="n" lowerBound="1" defaultValueLiteral="1">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="OrderedTemporalProperty" abstract="true" eSuperTypes="//TemporalProperty">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="otherPattern" lowerBound="1">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Response" eSuperTypes="//OrderedTemporalProperty"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Precedence" eSuperTypes="//OrderedTemporalProperty"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Scope" abstract="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Globally" eSuperTypes="//Scope"/>
+  <eClassifiers xsi:type="ecore:EClass" name="LowerBounded" abstract="true" eSuperTypes="//Scope">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lowerBoundPattern" lowerBound="1">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="UpperBounded" abstract="true" eSuperTypes="//Scope">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="upperBoundPattern" lowerBound="1">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Before" eSuperTypes="//LowerBounded"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Between" eSuperTypes="//LowerBounded //UpperBounded"/>
+  <eClassifiers xsi:type="ecore:EClass" name="AfterUntil" eSuperTypes="//LowerBounded //UpperBounded"/>
+  <eClassifiers xsi:type="ecore:EClass" name="After" eSuperTypes="//UpperBounded"/>
+  <eClassifiers xsi:type="ecore:EEnum" name="Quantifier">
+    <eLiterals name="FORALL"/>
+    <eLiterals name="EXISTS" value="1"/>
+  </eClassifiers>
+</ecore:EPackage>

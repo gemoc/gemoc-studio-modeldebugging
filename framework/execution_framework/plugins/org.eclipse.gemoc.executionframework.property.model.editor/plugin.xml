@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <!-- @generated property -->
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="org.eclipse.gemoc.executionframework.property.model.property.presentation.PropertyModelWizardID"
+            name="%_UI_PropertyModelWizard_label"
+            class="org.eclipse.gemoc.executionframework.property.model.property.presentation.PropertyModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/PropertyModelFile.gif">
+         <description>%_UI_PropertyModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <!-- @generated property -->
+      <editor
+            id="org.eclipse.gemoc.executionframework.property.model.property.presentation.PropertyEditorID"
+            name="%_UI_PropertyEditor_label"
+            icon="icons/full/obj16/PropertyModelFile.gif"
+            extensions="property"
+            class="org.eclipse.gemoc.executionframework.property.model.property.presentation.PropertyEditor"
+            contributorClass="org.eclipse.gemoc.executionframework.property.model.property.presentation.PropertyActionBarContributor">
+      </editor>
+   </extension>
+
+</plugin>

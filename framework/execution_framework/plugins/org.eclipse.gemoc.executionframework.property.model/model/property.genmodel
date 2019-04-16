@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="ASCII"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.gemoc.executionframework.property.model/src-gen" creationIcons="false" editDirectory="/org.eclipse.gemoc.executionframework.property.model.edit/src-gen" editorDirectory="/org.eclipse.gemoc.executionframework.property.model.editor/src-gen" modelPluginID="org.eclipse.gemoc.executionframework.property.model" modelName="Property" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container" codeFormatting="true" importerID="org.eclipse.emf.importer.ecore" complianceLevel="8.0" copyrightFields="false" operationReflection="true" importOrganizing="true">
+  <foreignModel>property.ecore</foreignModel>
+  <testsDirectory xsi:nil="true"/>
+  <genPackages prefix="Property" basePackage="org.eclipse.gemoc.executionframework.property.model" disposableProviderFactory="true">
+    <ecorePackage href="property.ecore#/"/>
+    <genEnums typeSafeEnumCompatible="false">
+      <ecoreEnum href="property.ecore#//Quantifier"/>
+      <genEnumLiterals>
+        <ecoreEnumLiteral href="property.ecore#//Quantifier/FORALL"/>
+      </genEnumLiterals>
+      <genEnumLiterals>
+        <ecoreEnumLiteral href="property.ecore#//Quantifier/EXISTS"/>
+      </genEnumLiterals>
+    </genEnums>
+    <genClasses>
+      <ecoreClass href="property.ecore#//Property"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true">
+        <ecoreFeature xsi:type="ecore:EAttribute" href="property.ecore#//Property/pattern"/>
+      </genFeatures>
+    </genClasses>
+    <genClasses>
+      <ecoreClass href="property.ecore#//QuantifiedProperty"/>
+      <genFeatures createChild="false">
+        <ecoreFeature xsi:type="ecore:EAttribute" href="property.ecore#//QuantifiedProperty/quantifier"/>
+      </genFeatures>
+      <genFeatures children="true" createChild="true" propertySortChoices="true">
+        <ecoreFeature xsi:type="ecore:EReference" href="property.ecore#//QuantifiedProperty/property"/>
+      </genFeatures>
+    </genClasses>
+    <genClasses>
+      <ecoreClass href="property.ecore#//TemporalProperty"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true">
+        <ecoreFeature xsi:type="ecore:EReference" href="property.ecore#//TemporalProperty/scope"/>
+      </genFeatures>
+    </genClasses>
+    <genClasses>
+      <ecoreClass href="property.ecore#//EPLProperty"/>
+      <genFeatures createChild="false">
+        <ecoreFeature xsi:type="ecore:EAttribute" href="property.ecore#//EPLProperty/statement"/>
+      </genFeatures>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true">
+        <ecoreFeature xsi:type="ecore:EReference" href="property.ecore#//EPLProperty/patterns"/>
+      </genFeatures>
+      <genFeatures createChild="false">
+        <ecoreFeature xsi:type="ecore:EAttribute" href="property.ecore#//EPLProperty/initialTruthValue"/>
+      </genFeatures>
+      <genFeatures createChild="false">
+        <ecoreFeature xsi:type="ecore:EAttribute" href="property.ecore#//EPLProperty/name"/>
+      </genFeatures>
+    </genClasses>
+    <genClasses>
+      <ecoreClass href="property.ecore#//Absence"/>
+    </genClasses>
+    <genClasses>
+      <ecoreClass href="property.ecore#//Universality"/>
+    </genClasses>
+    <genClasses>
+      <ecoreClass href="property.ecore#//Existence"/>
+    </genClasses>
+    <genClasses>
+      <ecoreClass href="property.ecore#//BoundedExistence"/>
+      <genFeatures createChild="false">
+        <ecoreFeature xsi:type="ecore:EAttribute" href="property.ecore#//BoundedExistence/n"/>
+      </genFeatures>
+    </genClasses>
+    <genClasses>
+      <ecoreClass href="property.ecore#//OrderedTemporalProperty"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true">
+        <ecoreFeature xsi:type="ecore:EAttribute" href="property.ecore#//OrderedTemporalProperty/otherPattern"/>
+      </genFeatures>
+    </genClasses>
+    <genClasses>
+      <ecoreClass href="property.ecore#//Response"/>
+    </genClasses>
+    <genClasses>
+      <ecoreClass href="property.ecore#//Precedence"/>
+    </genClasses>
+    <genClasses>
+      <ecoreClass href="property.ecore#//Scope"/>
+    </genClasses>
+    <genClasses>
+      <ecoreClass href="property.ecore#//Globally"/>
+    </genClasses>
+    <genClasses>
+      <ecoreClass href="property.ecore#//LowerBounded"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true">
+        <ecoreFeature xsi:type="ecore:EAttribute" href="property.ecore#//LowerBounded/lowerBoundPattern"/>
+      </genFeatures>
+    </genClasses>
+    <genClasses>
+      <ecoreClass href="property.ecore#//UpperBounded"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true">
+        <ecoreFeature xsi:type="ecore:EAttribute" href="property.ecore#//UpperBounded/upperBoundPattern"/>
+      </genFeatures>
+    </genClasses>
+    <genClasses>
+      <ecoreClass href="property.ecore#//Before"/>
+    </genClasses>
+    <genClasses>
+      <ecoreClass href="property.ecore#//Between"/>
+    </genClasses>
+    <genClasses>
+      <ecoreClass href="property.ecore#//AfterUntil"/>
+    </genClasses>
+    <genClasses>
+      <ecoreClass href="property.ecore#//After"/>
+    </genClasses>
+  </genPackages>
+  <usedGenPackages href="../../org.eclipse.viatra.query.patternlanguage.emf/model/PatternLanguage.genmodel#//vql"/>
+  <usedGenPackages href="../../org.eclipse.xtext.common.types/model/JavaVMTypes.genmodel#//types"/>
+  <usedGenPackages href="../../org.eclipse.xtext.xbase/model/Xbase.genmodel#//xtype"/>
+  <usedGenPackages href="../../org.eclipse.xtext.xbase/model/Xbase.genmodel#//xbase"/>
+</genmodel:GenModel>
