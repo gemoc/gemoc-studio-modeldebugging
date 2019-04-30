@@ -29,17 +29,17 @@ import org.eclipse.gemoc.trace.gemoc.api.ITraceViewListener
 import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine
 import org.eclipse.jface.dialogs.ErrorDialog
 
-public class OmniscientGenericSequentialModelDebugger extends GenericSequentialModelDebugger implements ITraceViewListener {
+class OmniscientGenericSequentialModelDebugger extends GenericSequentialModelDebugger implements ITraceViewListener {
 
-	private var ITraceExplorer<Step<?>, State<?, ?>, TracedObject<?>, Dimension<?>, Value<?>> traceExplorer
+	var ITraceExplorer<Step<?>, State<?, ?>, TracedObject<?>, Dimension<?>, Value<?>> traceExplorer
 
-	private var steppingOverStackFrameIndex = -1
+	var steppingOverStackFrameIndex = -1
 
-	private var steppingReturnStackFrameIndex = -1
+	var steppingReturnStackFrameIndex = -1
 
-	private val List<EObject> callerStack = new ArrayList
+	val List<EObject> callerStack = new ArrayList
 
-	private val List<Step<?>> previousCallStack = new ArrayList
+	val List<Step<?>> previousCallStack = new ArrayList
 
 	new(IDSLDebugEventProcessor target, IExecutionEngine<?> engine) {
 		super(target, engine)
@@ -66,7 +66,7 @@ public class OmniscientGenericSequentialModelDebugger extends GenericSequentialM
 		}
 	}
 
-	override public void resume() {
+	override void resume() {
 		if (!executionTerminated) {
 			if (traceExplorer.inReplayMode) {
 				traceExplorer.loadLastState
@@ -75,7 +75,7 @@ public class OmniscientGenericSequentialModelDebugger extends GenericSequentialM
 		}
 	}
 
-	override public void resume(String threadName) {
+	override void resume(String threadName) {
 		if (!executionTerminated) {
 			if (traceExplorer.inReplayMode) {
 				traceExplorer.loadLastState
@@ -84,7 +84,7 @@ public class OmniscientGenericSequentialModelDebugger extends GenericSequentialM
 		}
 	}
 
-	override public void terminate() {
+	override void terminate() {
 		super.terminate()
 		Activator.^default.debuggerSupplier = [|null]
 	}
@@ -97,7 +97,7 @@ public class OmniscientGenericSequentialModelDebugger extends GenericSequentialM
 			// We add a future break as soon as the step is over
 			addPredicateBreak(new BiPredicate<IExecutionEngine<?>, Step<?>>() {
 				// The operation we want to step over
-				private Step<?> steppedOver = stack.get(idx)
+				val Step<?> steppedOver = stack.get(idx)
 
 				override test(IExecutionEngine<?> t, Step<?> u) {
 					return !seqEngine.getCurrentStack().contains(steppedOver)
@@ -109,7 +109,7 @@ public class OmniscientGenericSequentialModelDebugger extends GenericSequentialM
 		}
 	}
 
-	override public void stepInto(String threadName) {
+	override void stepInto(String threadName) {
 		if (traceExplorer.inReplayMode || executionTerminated) {
 			if (!traceExplorer.stepInto && !executionTerminated) {
 				traceExplorer.loadLastState
@@ -120,7 +120,7 @@ public class OmniscientGenericSequentialModelDebugger extends GenericSequentialM
 		}
 	}
 
-	override public void stepOver(String threadName) {
+	override void stepOver(String threadName) {
 		if (traceExplorer.inReplayMode || executionTerminated) {
 			if (!traceExplorer.stepOver && !executionTerminated) {
 				steppingOverStackFrameIndex = nbStackFrames - 1
@@ -138,7 +138,7 @@ public class OmniscientGenericSequentialModelDebugger extends GenericSequentialM
 			val stack = traceExplorer.callStack
 			val idx = stack.size - steppingReturnStackFrameIndex - 1
 			addPredicateBreak(new BiPredicate<IExecutionEngine<?>, Step<?>>() {
-				private Step<?> steppedReturn = stack.get(idx)
+				Step<?> steppedReturn = stack.get(idx)
 
 				override test(IExecutionEngine<?> t, Step<?> u) {
 					return !seqEngine.getCurrentStack().contains(steppedReturn)
@@ -150,7 +150,7 @@ public class OmniscientGenericSequentialModelDebugger extends GenericSequentialM
 		}
 	}
 
-	override public void stepReturn(String threadName) {
+	override void stepReturn(String threadName) {
 		if (traceExplorer.inReplayMode || executionTerminated) {
 			if (!traceExplorer.stepReturn && !executionTerminated) {
 				steppingReturnStackFrameIndex = nbStackFrames - 2
@@ -162,27 +162,27 @@ public class OmniscientGenericSequentialModelDebugger extends GenericSequentialM
 		}
 	}
 
-	def public void stepBackInto() {
+	def void stepBackInto() {
 		traceExplorer.stepBackInto
 	}
 
-	def public void stepBackOver() {
+	def void stepBackOver() {
 		traceExplorer.stepBackOver
 	}
 
-	def public void stepBackOut() {
+	def void stepBackOut() {
 		traceExplorer.stepBackOut
 	}
 
-	def public boolean canStepBackInto() {
+	def boolean canStepBackInto() {
 		return traceExplorer.canStepBackInto
 	}
 
-	def public boolean canStepBackOver() {
+	def boolean canStepBackOver() {
 		return traceExplorer.canStepBackOver
 	}
 
-	def public boolean canStepBackOut() {
+	def boolean canStepBackOut() {
 		return traceExplorer.canStepBackOut
 	}
 
@@ -195,7 +195,7 @@ public class OmniscientGenericSequentialModelDebugger extends GenericSequentialM
 //			}
 //		});
 //	}
-	override public validateVariableValue(String threadName, String variableName, String value) {
+	override validateVariableValue(String threadName, String variableName, String value) {
 		if (traceExplorer.inReplayMode) {
 			ErrorDialog.openError(null, "Illegal variable value set",
 				"Cannot set the value of a variable when in replay mode",
