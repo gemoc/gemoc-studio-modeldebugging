@@ -1,13 +1,12 @@
 package org.eclipse.gemoc.executionframework.property.monitor.esper.properties
 
+import java.util.List
+import java.util.Map
 import org.eclipse.gemoc.executionframework.property.model.property.AfterUntil
 import org.eclipse.gemoc.executionframework.property.model.property.Universality
-import org.eclipse.gemoc.executionframework.property.monitor.esper.AbstractTemporalProperty
+import org.eclipse.gemoc.executionframework.property.monitor.esper.TruthValue
 import org.eclipse.viatra.query.patternlanguage.emf.specification.SpecificationBuilder
 import org.eclipse.viatra.query.runtime.api.IQuerySpecification
-import java.util.Map
-import java.util.List
-import org.eclipse.gemoc.executionframework.property.monitor.esper.TruthValue
 
 class AlwaysPAfterQUntilR extends AbstractTemporalProperty {
 	

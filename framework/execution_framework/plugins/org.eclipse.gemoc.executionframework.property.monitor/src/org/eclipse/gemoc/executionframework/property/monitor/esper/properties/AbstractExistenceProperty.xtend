@@ -1,7 +1,6 @@
 package org.eclipse.gemoc.executionframework.property.monitor.esper.properties
 
 import org.eclipse.gemoc.executionframework.property.model.property.Existence
-import org.eclipse.gemoc.executionframework.property.monitor.esper.AbstractTemporalProperty
 import org.eclipse.viatra.query.patternlanguage.emf.specification.SpecificationBuilder
 
 abstract class AbstractExistenceProperty extends AbstractTemporalProperty {

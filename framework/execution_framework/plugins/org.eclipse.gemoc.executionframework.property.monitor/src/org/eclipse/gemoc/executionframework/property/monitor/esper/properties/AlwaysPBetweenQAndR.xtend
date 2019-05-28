@@ -4,7 +4,6 @@ import java.util.List
 import java.util.Map
 import org.eclipse.gemoc.executionframework.property.model.property.Between
 import org.eclipse.gemoc.executionframework.property.model.property.Universality
-import org.eclipse.gemoc.executionframework.property.monitor.esper.AbstractTemporalProperty
 import org.eclipse.gemoc.executionframework.property.monitor.esper.TruthValue
 import org.eclipse.viatra.query.patternlanguage.emf.specification.SpecificationBuilder
 import org.eclipse.viatra.query.runtime.api.IQuerySpecification

@@ -1,5 +1,6 @@
 package org.eclipse.gemoc.executionframework.property.monitor.manager;
 
+import org.eclipse.gemoc.executionframework.property.model.property.Absence;
 import org.eclipse.gemoc.executionframework.property.model.property.After;
 import org.eclipse.gemoc.executionframework.property.model.property.AfterUntil;
 import org.eclipse.gemoc.executionframework.property.model.property.Before;
@@ -10,7 +11,7 @@ import org.eclipse.gemoc.executionframework.property.model.property.PropertyPack
 import org.eclipse.gemoc.executionframework.property.model.property.Response;
 import org.eclipse.gemoc.executionframework.property.model.property.TemporalProperty;
 import org.eclipse.gemoc.executionframework.property.model.property.Universality;
-import org.eclipse.gemoc.executionframework.property.monitor.esper.AbstractTemporalProperty;
+import org.eclipse.gemoc.executionframework.property.monitor.esper.properties.AbstractTemporalProperty;
 import org.eclipse.gemoc.executionframework.property.monitor.esper.properties.AlwaysPAfterQ;
 import org.eclipse.gemoc.executionframework.property.monitor.esper.properties.AlwaysPAfterQUntilR;
 import org.eclipse.gemoc.executionframework.property.monitor.esper.properties.AlwaysPBeforeQ;
@@ -21,8 +22,15 @@ import org.eclipse.gemoc.executionframework.property.monitor.esper.properties.Ex
 import org.eclipse.gemoc.executionframework.property.monitor.esper.properties.ExistsPBeforeQ;
 import org.eclipse.gemoc.executionframework.property.monitor.esper.properties.ExistsPBetweenQAndR;
 import org.eclipse.gemoc.executionframework.property.monitor.esper.properties.ExistsPGlobally;
+import org.eclipse.gemoc.executionframework.property.monitor.esper.properties.NeverPAfterQ;
+import org.eclipse.gemoc.executionframework.property.monitor.esper.properties.NeverPAfterQUntilR;
+import org.eclipse.gemoc.executionframework.property.monitor.esper.properties.NeverPBeforeQ;
+import org.eclipse.gemoc.executionframework.property.monitor.esper.properties.NeverPBetweenQAndR;
+import org.eclipse.gemoc.executionframework.property.monitor.esper.properties.NeverPGlobally;
 import org.eclipse.gemoc.executionframework.property.monitor.esper.properties.SPrecedesPAfterQ;
+import org.eclipse.gemoc.executionframework.property.monitor.esper.properties.SPrecedesPAfterQUntilR;
 import org.eclipse.gemoc.executionframework.property.monitor.esper.properties.SPrecedesPBeforeQ;
+import org.eclipse.gemoc.executionframework.property.monitor.esper.properties.SPrecedesPBetweenQAndR;
 import org.eclipse.gemoc.executionframework.property.monitor.esper.properties.SPrecedesPGlobally;
 import org.eclipse.gemoc.executionframework.property.monitor.esper.properties.SRespondsToPAfterQ;
 import org.eclipse.gemoc.executionframework.property.monitor.esper.properties.SRespondsToPAfterQUntilR;
@@ -103,16 +111,31 @@ public class PropertyCompiler {
 			}
 			break;
 		case PropertyPackage.ABSENCE:
+			final Absence never = (Absence) property;
 			switch (scopeType) {
 			case PropertyPackage.GLOBALLY:
+				result = new NeverPGlobally(builder, "Never_P_Globally", never);
+				result.compileEPL();
 				break;
 			case PropertyPackage.BEFORE:
+				final Before before = (Before) property.getScope();
+				result = new NeverPBeforeQ(builder, "Never_P_Before_Q", never, before);
+				result.compileEPL();
 				break;
 			case PropertyPackage.BETWEEN:
+				final Between between = (Between) property.getScope();
+				result = new NeverPBetweenQAndR(builder, "Never_P_Between_Q_And_R", never, between);
+				result.compileEPL();
 				break;
 			case PropertyPackage.AFTER_UNTIL:
+				final AfterUntil afterUntil = (AfterUntil) property.getScope();
+				result = new NeverPAfterQUntilR(builder, "Never_P_After_Q_Until_R", never, afterUntil);
+				result.compileEPL();
 				break;
 			case PropertyPackage.AFTER:
+				final After after = (After) property.getScope();
+				result = new NeverPAfterQ(builder, "Never_P_After_Q", never, after);
+				result.compileEPL();
 				break;
 			}
 			break;
@@ -158,8 +181,14 @@ public class PropertyCompiler {
 				result.compileEPL();
 				break;
 			case PropertyPackage.BETWEEN:
+				final Between between = (Between) property.getScope();
+				result = new SPrecedesPBetweenQAndR(builder, "S_Precedes_P_Between_Q_And_R", precedence, between);
+				result.compileEPL();
 				break;
 			case PropertyPackage.AFTER_UNTIL:
+				final AfterUntil afterUntil = (AfterUntil) property.getScope();
+				result = new SPrecedesPAfterQUntilR(builder, "S_Precedes_P_After_Q_Until_R", precedence, afterUntil);
+				result.compileEPL();
 				break;
 			case PropertyPackage.AFTER:
 				final After after = (After) property.getScope();

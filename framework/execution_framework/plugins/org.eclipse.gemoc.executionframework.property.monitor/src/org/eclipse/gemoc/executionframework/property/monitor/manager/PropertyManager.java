@@ -18,9 +18,8 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.gemoc.executionframework.property.model.property.TemporalProperty;
-import org.eclipse.gemoc.executionframework.property.monitor.esper.AbstractTemporalProperty;
-import org.eclipse.gemoc.executionframework.property.monitor.esper.AbstractTemporalProperty.PropertyState;
-import org.eclipse.gemoc.executionframework.property.monitor.esper.EsperTemporalProperty;
+import org.eclipse.gemoc.executionframework.property.monitor.esper.properties.AbstractTemporalProperty;
+import org.eclipse.gemoc.executionframework.property.monitor.esper.properties.AbstractTemporalProperty.PropertyState;
 import org.eclipse.gemoc.trace.commons.model.trace.Step;
 import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine;
 import org.eclipse.gemoc.xdsmlframework.api.engine_addon.IEngineAddon;
@@ -39,7 +38,6 @@ public class PropertyManager implements IEngineAddon {
 	private final ResourceSet patternResourceSet = new ResourceSetImpl();
 	private AdvancedViatraQueryEngine queryEngine;
 	private final Set<IQuerySpecification<?>> queries = new HashSet<>();
-	private final Map<String, EsperTemporalProperty> esperTemporalProperties = new HashMap<>();
 	private IExecutionEngine<?> executionEngine;
 
 	private final SpecificationBuilder builder = new SpecificationBuilder();
@@ -98,14 +96,8 @@ public class PropertyManager implements IEngineAddon {
 	}
 
 	public void clearProperties() {
-		esperTemporalProperties.values().forEach(p -> removeProperty(p));
-		esperTemporalProperties.clear();
 		temporalProperties.forEach(p -> p.destroy(builder));
 		temporalProperties.clear();
-	}
-
-	public void removeProperty(EsperTemporalProperty property) {
-//		property.destroy(builder);
 	}
 
 	public void setEngine(IExecutionEngine<?> executionEngine) {

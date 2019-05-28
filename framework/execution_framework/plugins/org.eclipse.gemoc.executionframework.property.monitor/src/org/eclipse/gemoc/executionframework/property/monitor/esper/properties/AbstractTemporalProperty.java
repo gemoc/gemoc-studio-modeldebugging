@@ -1,4 +1,4 @@
-package org.eclipse.gemoc.executionframework.property.monitor.esper;
+package org.eclipse.gemoc.executionframework.property.monitor.esper.properties;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import org.eclipse.gemoc.executionframework.property.monitor.esper.TruthValue;
 import org.eclipse.viatra.query.patternlanguage.emf.specification.SpecificationBuilder;
 import org.eclipse.viatra.query.runtime.api.IPatternMatch;
 import org.eclipse.viatra.query.runtime.api.IQuerySpecification;

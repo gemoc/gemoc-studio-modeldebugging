@@ -13,7 +13,7 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.debug.internal.ui.SWTFactory;
 import org.eclipse.gemoc.commons.eclipse.ui.ViewHelper;
 import org.eclipse.gemoc.commons.eclipse.ui.dialogs.SelectAnyIFileDialog;
-import org.eclipse.gemoc.executionframework.property.monitor.esper.AbstractTemporalProperty.PropertyState;
+import org.eclipse.gemoc.executionframework.property.monitor.esper.properties.AbstractTemporalProperty.PropertyState;
 import org.eclipse.gemoc.executionframework.property.monitor.manager.PropertyManager;
 import org.eclipse.gemoc.executionframework.ui.Activator;
 import org.eclipse.gemoc.executionframework.ui.views.engine.EnginesStatusView;
