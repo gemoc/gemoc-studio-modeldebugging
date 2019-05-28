@@ -10,9 +10,7 @@ import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
-import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 
-import org.eclipse.gemoc.executionframework.property.model.property.LowerBounded;
 import org.eclipse.gemoc.executionframework.property.model.property.PropertyPackage;
 
 /**
@@ -60,8 +58,8 @@ public class LowerBoundedItemProvider extends ScopeItemProvider {
 						getResourceLocator(), getString("_UI_LowerBounded_lowerBoundPattern_feature"),
 						getString("_UI_PropertyDescriptor_description", "_UI_LowerBounded_lowerBoundPattern_feature",
 								"_UI_LowerBounded_type"),
-						PropertyPackage.Literals.LOWER_BOUNDED__LOWER_BOUND_PATTERN, true, false, true,
-						ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+						PropertyPackage.Literals.LOWER_BOUNDED__LOWER_BOUND_PATTERN, true, false, true, null, null,
+						null));
 	}
 
 	/**
@@ -93,9 +91,7 @@ public class LowerBoundedItemProvider extends ScopeItemProvider {
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((LowerBounded) object).getLowerBoundPattern();
-		return label == null || label.length() == 0 ? getString("_UI_LowerBounded_type")
-				: getString("_UI_LowerBounded_type") + " " + label;
+		return getString("_UI_LowerBounded_type");
 	}
 
 	/**

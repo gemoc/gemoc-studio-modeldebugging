@@ -10,15 +10,13 @@ import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 
-import org.eclipse.gemoc.executionframework.property.model.property.After;
-
 /**
  * This is the item provider adapter for a {@link org.eclipse.gemoc.executionframework.property.model.property.After} object.
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
  */
-public class AfterItemProvider extends UpperBoundedItemProvider {
+public class AfterItemProvider extends LowerBoundedItemProvider {
 	/**
 	 * This constructs an instance from a factory and a notifier.
 	 * <!-- begin-user-doc -->
@@ -73,9 +71,7 @@ public class AfterItemProvider extends UpperBoundedItemProvider {
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((After) object).getUpperBoundPattern();
-		return label == null || label.length() == 0 ? getString("_UI_After_type")
-				: getString("_UI_After_type") + " " + label;
+		return getString("_UI_After_type");
 	}
 
 	/**

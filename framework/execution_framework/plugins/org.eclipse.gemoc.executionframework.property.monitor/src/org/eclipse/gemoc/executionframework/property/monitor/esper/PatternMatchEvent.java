@@ -8,17 +8,17 @@ public class PatternMatchEvent {
 
 	private String patternName;
 	
-	private boolean appearance;
+	private int status;
 
-	public PatternMatchEvent(IPatternMatch patternMatch, String patternName, boolean appearance) {
+	public PatternMatchEvent(IPatternMatch patternMatch, String patternName, int status) {
 		this.patternName = patternName;
 		this.match = patternMatch;
-		this.appearance = appearance;
+		this.status = status;
 	}
 
 	@Override
 	public String toString() {
-		return "match for " + patternName;
+		return "match " + status + " for " + patternName;
 	}
 
 	public IPatternMatch getMatch() {
@@ -29,7 +29,7 @@ public class PatternMatchEvent {
 		return patternName;
 	}
 	
-	public boolean getAppearance() {
-		return appearance;
+	public int getStatus() {
+		return status;
 	}
 }

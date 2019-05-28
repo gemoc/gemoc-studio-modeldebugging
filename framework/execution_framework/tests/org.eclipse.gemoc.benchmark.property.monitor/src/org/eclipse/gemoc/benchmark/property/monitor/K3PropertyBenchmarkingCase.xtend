@@ -11,15 +11,18 @@ class K3PropertyBenchmarkingCase extends K3BenchmarkingCase {
 	
 	val Set<EPLProperty> properties
 	
-	new(URI entryPointElementUri, K3Language language, Set<EPLProperty> properties) {
-		super(entryPointElementUri, language, #{}, #{new PropertyManager()})
+	new(URI entryPointElementUri, String initializationArguments, K3Language language, Set<EPLProperty> properties) {
+		super(entryPointElementUri, initializationArguments, language, #{}, #{new PropertyManager()})
 		this.properties = properties
 	}
 	
 	override initialize() {
 		val t = super.initialize()
 		val t1 = System.nanoTime
-		addonsToLoad.filter(PropertyManager).forEach[m|properties.forEach[p|m.addProperty(p)]]
+		if (properties !== null) {
+			val propertyManager = addonsToLoad.filter(PropertyManager).head
+			properties.forEach[p|propertyManager?.addProperty(p)]
+		}
 		t + System.nanoTime - t1
 	}
 	

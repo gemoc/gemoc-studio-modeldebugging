@@ -1,24 +1,20 @@
 package org.eclipse.gemoc.benchmark.cases
 
 import java.util.Set
-import org.eclipse.gemoc.benchmark.utils.AbstractEngineHelper
-import org.eclipse.gemoc.benchmark.utils.AbstractRunConfigurationHelper
 import org.eclipse.gemoc.executionframework.engine.core.AbstractExecutionEngine
 import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionContext
 import org.eclipse.gemoc.xdsmlframework.api.core.IRunConfiguration
 import org.eclipse.gemoc.xdsmlframework.api.engine_addon.IEngineAddon
+import org.eclipse.gemoc.benchmark.utils.AbstractEngineProvider
+import org.eclipse.gemoc.benchmark.utils.AbstractRunConfigurationProvider
 
 abstract class BenchmarkingCase<E extends AbstractExecutionEngine<C, R>, C extends IExecutionContext<R, ?, ?>, R extends IRunConfiguration> {
-
-	val AbstractEngineHelper<E, C, R> engineHelper = getEngineHelper
-	
-	val AbstractRunConfigurationHelper<R> runConfigurationHelper = getRunConfigurationHelper
 	
 	protected val Set<IEngineAddon> addonsToLoad
 	
-	protected def AbstractEngineHelper<E, C, R> getEngineHelper()
+	protected def AbstractEngineProvider<E, C, R> getEngineHelper()
 	
-	protected def AbstractRunConfigurationHelper<R> getRunConfigurationHelper()
+	protected def AbstractRunConfigurationProvider<R> getRunConfigurationHelper()
 	
 	new(Set<IEngineAddon> addonsToLoad) {
 		this.addonsToLoad = addonsToLoad

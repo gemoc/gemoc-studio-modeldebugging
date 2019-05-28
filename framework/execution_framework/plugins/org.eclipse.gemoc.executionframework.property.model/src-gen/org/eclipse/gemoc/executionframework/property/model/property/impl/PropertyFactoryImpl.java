@@ -69,8 +69,6 @@ public class PropertyFactoryImpl extends EFactoryImpl implements PropertyFactory
 			return createUniversality();
 		case PropertyPackage.EXISTENCE:
 			return createExistence();
-		case PropertyPackage.BOUNDED_EXISTENCE:
-			return createBoundedExistence();
 		case PropertyPackage.RESPONSE:
 			return createResponse();
 		case PropertyPackage.PRECEDENCE:
@@ -100,6 +98,8 @@ public class PropertyFactoryImpl extends EFactoryImpl implements PropertyFactory
 		switch (eDataType.getClassifierID()) {
 		case PropertyPackage.QUANTIFIER:
 			return createQuantifierFromString(eDataType, initialValue);
+		case PropertyPackage.BOUND_TYPE:
+			return createBoundTypeFromString(eDataType, initialValue);
 		default:
 			throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -115,6 +115,8 @@ public class PropertyFactoryImpl extends EFactoryImpl implements PropertyFactory
 		switch (eDataType.getClassifierID()) {
 		case PropertyPackage.QUANTIFIER:
 			return convertQuantifierToString(eDataType, instanceValue);
+		case PropertyPackage.BOUND_TYPE:
+			return convertBoundTypeToString(eDataType, instanceValue);
 		default:
 			throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -178,16 +180,6 @@ public class PropertyFactoryImpl extends EFactoryImpl implements PropertyFactory
 	public Existence createExistence() {
 		ExistenceImpl existence = new ExistenceImpl();
 		return existence;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public BoundedExistence createBoundedExistence() {
-		BoundedExistenceImpl boundedExistence = new BoundedExistenceImpl();
-		return boundedExistence;
 	}
 
 	/**
@@ -279,6 +271,28 @@ public class PropertyFactoryImpl extends EFactoryImpl implements PropertyFactory
 	 * @generated
 	 */
 	public String convertQuantifierToString(EDataType eDataType, Object instanceValue) {
+		return instanceValue == null ? null : instanceValue.toString();
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public BoundType createBoundTypeFromString(EDataType eDataType, String initialValue) {
+		BoundType result = BoundType.get(initialValue);
+		if (result == null)
+			throw new IllegalArgumentException(
+					"The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+		return result;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String convertBoundTypeToString(EDataType eDataType, Object instanceValue) {
 		return instanceValue == null ? null : instanceValue.toString();
 	}
 

@@ -10,8 +10,6 @@ import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 
-import org.eclipse.gemoc.executionframework.property.model.property.Absence;
-
 /**
  * This is the item provider adapter for a {@link org.eclipse.gemoc.executionframework.property.model.property.Absence} object.
  * <!-- begin-user-doc -->
@@ -73,9 +71,7 @@ public class AbsenceItemProvider extends TemporalPropertyItemProvider {
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((Absence) object).getPattern();
-		return label == null || label.length() == 0 ? getString("_UI_Absence_type")
-				: getString("_UI_Absence_type") + " " + label;
+		return getString("_UI_Absence_type");
 	}
 
 	/**

@@ -17,7 +17,7 @@ import org.eclipse.jdt.core.IType
 import org.eclipse.jdt.core.search.SearchMatch
 import org.eclipse.jdt.core.search.SearchRequestor
 
-abstract class AbstractEngineHelper<E extends AbstractExecutionEngine<C, R>, C extends IExecutionContext<R, ?, ?>, R extends IRunConfiguration> {
+abstract class AbstractEngineProvider<E extends AbstractExecutionEngine<C, R>, C extends IExecutionContext<R, ?, ?>, R extends IRunConfiguration> {
 
 	E executionEngine;
 

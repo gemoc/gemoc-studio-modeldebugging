@@ -10,15 +10,13 @@ import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 
-import org.eclipse.gemoc.executionframework.property.model.property.Before;
-
 /**
  * This is the item provider adapter for a {@link org.eclipse.gemoc.executionframework.property.model.property.Before} object.
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
  */
-public class BeforeItemProvider extends LowerBoundedItemProvider {
+public class BeforeItemProvider extends UpperBoundedItemProvider {
 	/**
 	 * This constructs an instance from a factory and a notifier.
 	 * <!-- begin-user-doc -->
@@ -73,9 +71,7 @@ public class BeforeItemProvider extends LowerBoundedItemProvider {
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((Before) object).getLowerBoundPattern();
-		return label == null || label.length() == 0 ? getString("_UI_Before_type")
-				: getString("_UI_Before_type") + " " + label;
+		return getString("_UI_Before_type");
 	}
 
 	/**

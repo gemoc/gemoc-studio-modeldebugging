@@ -4,6 +4,8 @@ package org.eclipse.gemoc.executionframework.property.model.property;
 
 import org.eclipse.emf.ecore.EObject;
 
+import org.eclipse.viatra.query.patternlanguage.emf.vql.Pattern;
+
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Property</b></em>'.
@@ -22,29 +24,29 @@ import org.eclipse.emf.ecore.EObject;
  */
 public interface Property extends EObject {
 	/**
-	 * Returns the value of the '<em><b>Pattern</b></em>' attribute.
+	 * Returns the value of the '<em><b>Pattern</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Pattern</em>' attribute isn't clear,
+	 * If the meaning of the '<em>Pattern</em>' reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Pattern</em>' attribute.
-	 * @see #setPattern(String)
+	 * @return the value of the '<em>Pattern</em>' reference.
+	 * @see #setPattern(Pattern)
 	 * @see org.eclipse.gemoc.executionframework.property.model.property.PropertyPackage#getProperty_Pattern()
 	 * @model required="true"
 	 * @generated
 	 */
-	String getPattern();
+	Pattern getPattern();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.gemoc.executionframework.property.model.property.Property#getPattern <em>Pattern</em>}' attribute.
+	 * Sets the value of the '{@link org.eclipse.gemoc.executionframework.property.model.property.Property#getPattern <em>Pattern</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Pattern</em>' attribute.
+	 * @param value the new value of the '<em>Pattern</em>' reference.
 	 * @see #getPattern()
 	 * @generated
 	 */
-	void setPattern(String value);
+	void setPattern(Pattern value);
 
 } // Property

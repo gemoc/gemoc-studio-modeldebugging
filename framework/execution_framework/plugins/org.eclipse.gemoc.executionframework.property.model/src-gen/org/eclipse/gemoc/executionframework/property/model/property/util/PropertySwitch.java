@@ -131,17 +131,6 @@ public class PropertySwitch<T> extends Switch<T> {
 				result = defaultCase(theEObject);
 			return result;
 		}
-		case PropertyPackage.BOUNDED_EXISTENCE: {
-			BoundedExistence boundedExistence = (BoundedExistence) theEObject;
-			T result = caseBoundedExistence(boundedExistence);
-			if (result == null)
-				result = caseTemporalProperty(boundedExistence);
-			if (result == null)
-				result = caseProperty(boundedExistence);
-			if (result == null)
-				result = defaultCase(theEObject);
-			return result;
-		}
 		case PropertyPackage.ORDERED_TEMPORAL_PROPERTY: {
 			OrderedTemporalProperty orderedTemporalProperty = (OrderedTemporalProperty) theEObject;
 			T result = caseOrderedTemporalProperty(orderedTemporalProperty);
@@ -217,7 +206,7 @@ public class PropertySwitch<T> extends Switch<T> {
 			Before before = (Before) theEObject;
 			T result = caseBefore(before);
 			if (result == null)
-				result = caseLowerBounded(before);
+				result = caseUpperBounded(before);
 			if (result == null)
 				result = caseScope(before);
 			if (result == null)
@@ -254,7 +243,7 @@ public class PropertySwitch<T> extends Switch<T> {
 			After after = (After) theEObject;
 			T result = caseAfter(after);
 			if (result == null)
-				result = caseUpperBounded(after);
+				result = caseLowerBounded(after);
 			if (result == null)
 				result = caseScope(after);
 			if (result == null)
@@ -368,21 +357,6 @@ public class PropertySwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseExistence(Existence object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Bounded Existence</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Bounded Existence</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseBoundedExistence(BoundedExistence object) {
 		return null;
 	}
 

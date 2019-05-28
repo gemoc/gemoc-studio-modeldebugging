@@ -5,12 +5,15 @@ package org.eclipse.gemoc.executionframework.property.model.property.impl;
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 import org.eclipse.gemoc.executionframework.property.model.property.Property;
 import org.eclipse.gemoc.executionframework.property.model.property.PropertyPackage;
+
+import org.eclipse.viatra.query.patternlanguage.emf.vql.Pattern;
 
 /**
  * <!-- begin-user-doc -->
@@ -27,24 +30,14 @@ import org.eclipse.gemoc.executionframework.property.model.property.PropertyPack
  */
 public class PropertyImpl extends MinimalEObjectImpl.Container implements Property {
 	/**
-	 * The default value of the '{@link #getPattern() <em>Pattern</em>}' attribute.
+	 * The cached value of the '{@link #getPattern() <em>Pattern</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getPattern()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String PATTERN_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getPattern() <em>Pattern</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getPattern()
-	 * @generated
-	 * @ordered
-	 */
-	protected String pattern = PATTERN_EDEFAULT;
+	protected Pattern pattern;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -70,7 +63,16 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getPattern() {
+	public Pattern getPattern() {
+		if (pattern != null && pattern.eIsProxy()) {
+			InternalEObject oldPattern = (InternalEObject) pattern;
+			pattern = (Pattern) eResolveProxy(oldPattern);
+			if (pattern != oldPattern) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, PropertyPackage.PROPERTY__PATTERN,
+							oldPattern, pattern));
+			}
+		}
 		return pattern;
 	}
 
@@ -79,8 +81,17 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setPattern(String newPattern) {
-		String oldPattern = pattern;
+	public Pattern basicGetPattern() {
+		return pattern;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setPattern(Pattern newPattern) {
+		Pattern oldPattern = pattern;
 		pattern = newPattern;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, PropertyPackage.PROPERTY__PATTERN, oldPattern,
@@ -96,7 +107,9 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 		case PropertyPackage.PROPERTY__PATTERN:
-			return getPattern();
+			if (resolve)
+				return getPattern();
+			return basicGetPattern();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -110,7 +123,7 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 		case PropertyPackage.PROPERTY__PATTERN:
-			setPattern((String) newValue);
+			setPattern((Pattern) newValue);
 			return;
 		}
 		super.eSet(featureID, newValue);
@@ -125,7 +138,7 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
 	public void eUnset(int featureID) {
 		switch (featureID) {
 		case PropertyPackage.PROPERTY__PATTERN:
-			setPattern(PATTERN_EDEFAULT);
+			setPattern((Pattern) null);
 			return;
 		}
 		super.eUnset(featureID);
@@ -140,26 +153,9 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 		case PropertyPackage.PROPERTY__PATTERN:
-			return PATTERN_EDEFAULT == null ? pattern != null : !PATTERN_EDEFAULT.equals(pattern);
+			return pattern != null;
 		}
 		return super.eIsSet(featureID);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String toString() {
-		if (eIsProxy())
-			return super.toString();
-
-		StringBuilder result = new StringBuilder(super.toString());
-		result.append(" (pattern: ");
-		result.append(pattern);
-		result.append(')');
-		return result.toString();
 	}
 
 } //PropertyImpl

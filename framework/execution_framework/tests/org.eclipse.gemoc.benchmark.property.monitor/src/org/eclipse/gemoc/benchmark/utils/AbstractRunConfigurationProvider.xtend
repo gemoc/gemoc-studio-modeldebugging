@@ -9,7 +9,7 @@ import org.eclipse.gemoc.dsl.debug.ide.launch.AbstractDSLLaunchConfigurationDele
 import org.eclipse.gemoc.xdsmlframework.api.core.IRunConfiguration
 import org.eclipse.gemoc.xdsmlframework.api.extensions.engine_addon.EngineAddonSpecificationExtensionPoint
 
-abstract class AbstractRunConfigurationHelper<R extends IRunConfiguration> {
+abstract class AbstractRunConfigurationProvider<R extends IRunConfiguration> {
 	
 	protected val ILaunchConfigurationWorkingCopy launchConfiguration
 

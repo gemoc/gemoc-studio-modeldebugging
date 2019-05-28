@@ -1,9 +1,15 @@
 package org.eclipse.gemoc.executionframework.property.monitor.manager;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.LinkedTransferQueue;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TransferQueue;
 import java.util.stream.Collectors;
 
 import org.eclipse.emf.common.util.URI;
@@ -11,29 +17,23 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.gemoc.executionframework.property.model.property.EPLProperty;
+import org.eclipse.gemoc.executionframework.property.model.property.TemporalProperty;
+import org.eclipse.gemoc.executionframework.property.monitor.esper.AbstractTemporalProperty;
+import org.eclipse.gemoc.executionframework.property.monitor.esper.AbstractTemporalProperty.PropertyState;
 import org.eclipse.gemoc.executionframework.property.monitor.esper.EsperTemporalProperty;
-import org.eclipse.gemoc.executionframework.property.monitor.esper.EsperTemporalProperty.PropertyState;
-import org.eclipse.gemoc.executionframework.property.monitor.esper.PatternMatchEvent;
-import org.eclipse.gemoc.executionframework.property.monitor.esper.StepEvent;
 import org.eclipse.gemoc.trace.commons.model.trace.Step;
 import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine;
 import org.eclipse.gemoc.xdsmlframework.api.engine_addon.IEngineAddon;
 import org.eclipse.viatra.query.patternlanguage.emf.specification.SpecificationBuilder;
 import org.eclipse.viatra.query.runtime.api.AdvancedViatraQueryEngine;
-import org.eclipse.viatra.query.runtime.api.IMatchUpdateListener;
 import org.eclipse.viatra.query.runtime.api.IPatternMatch;
 import org.eclipse.viatra.query.runtime.api.IQuerySpecification;
-import org.eclipse.viatra.query.runtime.api.ViatraQueryMatcher;
 import org.eclipse.viatra.query.runtime.emf.EMFScope;
 
-import com.espertech.esper.client.Configuration;
-import com.espertech.esper.client.EPServiceProvider;
-import com.espertech.esper.client.EPServiceProviderManager;
-import com.espertech.esper.client.time.CurrentTimeEvent;
-import com.espertech.esper.client.util.FastClassClassLoaderProvider;
+import com.espertech.esper.common.client.configuration.Configuration;
+import com.espertech.esper.runtime.client.EPRuntime;
+import com.espertech.esper.runtime.client.EPRuntimeProvider;
 
-@SuppressWarnings("rawtypes")
 public class PropertyManager implements IEngineAddon {
 
 	private final ResourceSet patternResourceSet = new ResourceSetImpl();
@@ -43,41 +43,25 @@ public class PropertyManager implements IEngineAddon {
 	private IExecutionEngine<?> executionEngine;
 
 	private final SpecificationBuilder builder = new SpecificationBuilder();
+	private final PropertyCompiler compiler = new PropertyCompiler(builder);
 
-	private EPServiceProvider epService;
-
-	public PropertyManager() {
-		Configuration config = new Configuration();
-		config.addEventType(PatternMatchEvent.class);
-		config.addEventType(StepEvent.class);
-		config.getEngineDefaults().getThreading().setInternalTimerEnabled(false);
-		config.getTransientConfiguration().put(FastClassClassLoaderProvider.NAME, new FastClassClassLoaderProvider() {
-			@Override
-			public ClassLoader classloader(Class clazz) {
-				final ClassLoader loader = Thread.currentThread().getContextClassLoader();
-				if (isSubscriber(clazz)) {
-					return makeBridge(loader, clazz.getClassLoader());
-				}
-				return loader;
-			}
-		});
-		ClassLoader contextClassloader = Thread.currentThread().getContextClassLoader();
-		Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
-		epService = EPServiceProviderManager.getProvider("" + System.nanoTime(), config);
-		Thread.currentThread().setContextClassLoader(contextClassloader);
-	}
+	private Configuration configuration;
+	private EPRuntime runtime;
 
 	private final PropertyState[] samplePropertyStateArray = new PropertyState[0];
 
 	public PropertyState[] getPropertiesStates() {
-		return esperTemporalProperties.values().stream().map(v -> v.getPropertyState()).collect(Collectors.toList())
-				.toArray(samplePropertyStateArray);
+		final List<PropertyState> result = new ArrayList<>(
+				temporalProperties.stream().map(p -> p.getPropertyState()).collect(Collectors.toList()));
+//		result.addAll(esperTemporalProperties.values().stream().map(v -> v.getPropertyState()).collect(Collectors.toList()));
+		return result.toArray(samplePropertyStateArray);
 	}
 
 //	private final LinkedTransferQueue<Object> matchQueue = new LinkedTransferQueue<>();
 
 	@Override
 	public void engineInitialized(IExecutionEngine<?> executionEngine) {
+		this.executionEngine = executionEngine;
 		initialize();
 //		final IGemocDebugger debugger = executionEngine.getAddon(OmniscientGenericSequentialModelDebugger.class);
 //		if (debugger != null) {
@@ -97,34 +81,39 @@ public class PropertyManager implements IEngineAddon {
 		if (propertyResource != null) {
 			if (propertyResource.getErrors().size() == 0 && !propertyResource.getContents().isEmpty()) {
 				final EObject topElement = propertyResource.getContents().get(0);
-				if (topElement instanceof EPLProperty) {
-					final EPLProperty property = (EPLProperty) topElement;
+				if (topElement instanceof TemporalProperty) {
+					final TemporalProperty property = (TemporalProperty) topElement;
 					addProperty(property);
 				}
 			}
 		}
 	}
 
-	public void addProperty(EPLProperty property) {
-		final EsperTemporalProperty p = new EsperTemporalProperty(epService.getEPAdministrator(), builder,
-				property);
-		final String pName = property.getName();
-		esperTemporalProperties.put(pName, p);
+	private final List<AbstractTemporalProperty> temporalProperties = new ArrayList<>();
+	private final List<AbstractTemporalProperty> activeTemporalProperties = new ArrayList<>();
+	private final TransferQueue<AbstractTemporalProperty> temporalPropertiesToRemove = new LinkedTransferQueue<>();
+
+	public void addProperty(TemporalProperty property) {
+		temporalProperties.add(compiler.compileProperty(property));
 	}
 
 	public void clearProperties() {
 		esperTemporalProperties.values().forEach(p -> removeProperty(p));
 		esperTemporalProperties.clear();
+		temporalProperties.forEach(p -> p.destroy(builder));
+		temporalProperties.clear();
 	}
 
 	public void removeProperty(EsperTemporalProperty property) {
-		property.destroy(builder);
+//		property.destroy(builder);
 	}
 
 	public void setEngine(IExecutionEngine<?> executionEngine) {
 		this.executionEngine = executionEngine;
 		executionEngine.getExecutionContext().getExecutionPlatform().addEngineAddon(this);
 	}
+
+	private boolean initialized = false;
 
 	public void initialize() {
 		final ResourceSet rs = executionEngine.getExecutionContext().getResourceModel().getResourceSet();
@@ -134,37 +123,18 @@ public class PropertyManager implements IEngineAddon {
 		queries.forEach(q -> {
 			queryEngine.getMatcher(q);
 		});
-		esperTemporalProperties.values().forEach(p -> {
-//			p.registerStatement(epService.getEPAdministrator(), matchQueue);
-			p.registerStatement(epService.getEPAdministrator(), null);
+		configuration = new Configuration();
+		configuration.getRuntime().getThreading().setInternalTimerEnabled(false);
+		activeTemporalProperties.addAll(temporalProperties);
+		activeTemporalProperties.forEach(p -> {
+			configuration.getCommon().addEventType(p.getName(), new HashMap<>());
 			p.getQueries().entrySet().forEach(e -> {
-				final ViatraQueryMatcher<? extends IPatternMatch> m = queryEngine.getMatcher(e.getValue());
-				final IMatchUpdateListener<IPatternMatch> listener = new IMatchUpdateListener<IPatternMatch>() {
-					@Override
-					public void notifyAppearance(IPatternMatch match) {
-						epService.getEPRuntime().sendEvent(new PatternMatchEvent(match, e.getKey(), true));
-					}
-
-					@Override
-					public void notifyDisappearance(IPatternMatch match) {
-						epService.getEPRuntime().sendEvent(new PatternMatchEvent(match, e.getKey(), false));
-					}
-				};
-				queryEngine.addMatchUpdateListener(m, listener, false);
+				queryEngine.getMatcher(e.getValue());
 			});
 		});
-//		epService.getEPAdministrator().createEPL("select * from StepEvent").addListener((n, o) -> {
-//			Arrays.stream(n).forEach(e -> {
-//				final String name = (String) e.get("name");
-//				final boolean start = (boolean) e.get("start");
-//				System.out.println((start ? "---[New] step started: " : "---[New] step ended: ") + name);
-//			});
-//			Arrays.stream(o).forEach(e -> {
-//				final String name = (String) e.get("name");
-//				final boolean start = (boolean) e.get("start");
-//				System.out.println((start ? "---[Old] step started: " : "---[Old] step ended: ") + name);
-//			});
-//		});
+		runtime = EPRuntimeProvider.getRuntime(executionEngine.getName(), configuration);
+		activeTemporalProperties.forEach(p -> p.deploy(runtime, prop -> temporalPropertiesToRemove.add(prop)));
+		initialized = true;
 	}
 
 	public void reset() {
@@ -173,10 +143,14 @@ public class PropertyManager implements IEngineAddon {
 			queryEngine.dispose();
 			queryEngine = null;
 		}
-		if (epService != null) {
-			epService.getEPAdministrator().destroyAllStatements();
+		if (runtime != null) {
+			runtime.destroy();
+			runtime = null;
 		}
-		stepNb = 0;
+		initialized = false;
+		queries.clear();
+		activeTemporalProperties.clear();
+		temporalPropertiesToRemove.clear();
 	}
 
 	@Override
@@ -189,98 +163,83 @@ public class PropertyManager implements IEngineAddon {
 		reset();
 	}
 
+	private final Object executionAboutToStopObject = new Object();
+	
 	private void finalizeProperties() {
-		esperTemporalProperties.values().forEach(p -> p.getPropertyState().finalize());
+		final Map<String, Object> event = new HashMap<>();
+		event.put("executionAboutToStop", executionAboutToStopObject);
+		activeTemporalProperties.forEach(p -> {
+			runtime.getEventService().sendEventMap(event, p.getName());
+		});
+		
+//		esperTemporalProperties.values().forEach(p -> p.getPropertyState().finalize());
 	}
 
-//	private final LinkedTransferQueue<Object> stepQueue = new LinkedTransferQueue<>();
-//	private final Object token = new Object();
-//	private Thread delayingThread = null;
+	private final boolean logging = true;
 
-	private int stepNb = 0;
+	private final ThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(5);
+	
+	private void handleMatches() {
+		if (queryEngine != null) {
+			final Set<IPatternMatch> currentMatches = new PatternMatchSet();
+			queryEngine.getCurrentMatchers().stream().flatMap(m -> m.getAllMatches().stream())
+					.forEach(m -> currentMatches.add(m.toImmutable()));
+//			executor.execute(() -> {
+				activeTemporalProperties.forEach(p -> {
+					final Map<String, Object> event = p.produceNewMatches(currentMatches);
+					if (event != null) {
+						if (logging) {
+							if (event.isEmpty()) {
+								System.out.println("----[Sending] Empty Event");
+							} else {
+								System.out.println("----[Sending] "
+										+ event.entrySet().stream().map(e -> e.getKey() + ": " + e.getValue())
+												.reduce((s1, s2) -> s1 + "; " + s2).orElse("ERROR: Empty Map"));
+							}
+						}
+						runtime.getEventService().sendEventMap(event, p.getName());
+					}
+				});
+				AbstractTemporalProperty toRemove = temporalPropertiesToRemove.poll();
+				while (toRemove != null) {
+					activeTemporalProperties.remove(toRemove);
+					toRemove = temporalPropertiesToRemove.poll();
+				}
+//			});
+		}
+	}
 
 	@Override
 	public void aboutToExecuteStep(IExecutionEngine<?> engine, Step<?> stepToExecute) {
-		stepNb++;
-		epService.getEPRuntime().sendEvent(new StepEvent(stepToExecute.getMseoccurrence().getMse().getName(), true));
-		final CurrentTimeEvent timeEvent = new CurrentTimeEvent(stepNb * 1000);
-		epService.getEPRuntime().sendEvent(timeEvent);
-//		if (delayingThread == null) {
-//			delayingThread = new Thread(() -> {
-//				try {
-//					queryEngine.delayUpdatePropagation(() -> stepQueue.take());
-//				} catch (InvocationTargetException e) {
-//					e.printStackTrace();
-//				}
-//			});
-//			delayingThread.start();
-//		}
-//		update();
+		if (initialized) {
+			handleMatches();
+		}
+
+//		Arrays.stream(runtime.getDeploymentService().getStatementNames()).map(n -> epAdmin.getStatement(n)).forEach(statement -> {
+//			if (statement.iterator().hasNext()) {
+//				final EventBean event = statement.iterator().next();
+//				final HashMap<String, Object> properties = new HashMap<>();
+//				Arrays.stream(event.getEventType().getPropertyNames()).forEach(s -> properties.put(s, event.get(s)));
+//				properties.entrySet().forEach(e -> System.out
+//						.println("------[" + statement.getName() + "] " + e.getKey() + ": " + e.getValue()));
+//			}
+//		});
 	}
 
 	@Override
 	public void stepExecuted(IExecutionEngine<?> engine, Step<?> stepExecuted) {
-		stepNb++;
-		epService.getEPRuntime().sendEvent(new StepEvent(stepExecuted.getMseoccurrence().getMse().getName(), false));
-		final CurrentTimeEvent timeEvent = new CurrentTimeEvent(stepNb * 1000);
-		epService.getEPRuntime().sendEvent(timeEvent);
-//		update();
-	}
-
-	private boolean isSubscriber(Class<?> clazz) {
-		boolean result = false;
-		Class<?> tmp = clazz.getSuperclass();
-		while (!result && tmp != null && tmp != Object.class) {
-			if (tmp == EsperTemporalProperty.class) {
-				result = true;
-			} else {
-				tmp = tmp.getSuperclass();
-			}
+		if (initialized) {
+			handleMatches();
 		}
-		return result;
-	}
-
-	private ClassLoader makeBridge(ClassLoader targetSpace, ClassLoader privateSpace) {
-		return new ClassLoader(targetSpace) {
-			@Override
-			protected Class<?> findClass(String name) throws ClassNotFoundException {
-				return privateSpace.loadClass(name);
-			}
-		};
-	}
-
-//	private void update() {
-//		stepQueue.add(token);
-//		try {
-//			delayingThread.join();
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
-
-//		queryEngine.getCurrentMatchers().forEach(matcher -> {
-//			queryEngine.addMatchUpdateListener(matcher, new IMatchUpdateListener<IPatternMatch>() {
-//				@Override
-//				public void notifyAppearance(IPatternMatch match) {
-//					matchQueue.put(match);
-//				}
-//
-//				@Override
-//				public void notifyDisappearance(IPatternMatch match) {
-//
-//				}
-//			}, false);
-//			final IQuerySpecification<?> specification = matcher.getSpecification();
-//			final int count = matcher.countMatches();
-//			propertyToState.get(specification).value = "" + count;
-//		});
-
-//		delayingThread = new Thread(() -> {
-//			try {
-//				queryEngine.delayUpdatePropagation(() -> stepQueue.take());
-//			} catch (InvocationTargetException e) {
-//				e.printStackTrace();
+//		Arrays.stream(epAdmin.getStatementNames()).map(n -> epAdmin.getStatement(n)).forEach(statement -> {
+//			if (statement.iterator().hasNext()) {
+//				final String name = statement.getName();
+//				final EventBean event = statement.iterator().next();
+//				final HashMap<String, Object> properties = new HashMap<>();
+//				Arrays.stream(event.getEventType().getPropertyNames()).forEach(s -> properties.put(s, event.get(s)));
+//				properties.entrySet()
+//						.forEach(e -> System.out.println("------[" + name + "] " + e.getKey() + ": " + e.getValue()));
 //			}
 //		});
-//		delayingThread.start();
-//	}
+	}
 }

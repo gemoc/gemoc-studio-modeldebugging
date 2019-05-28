@@ -10,9 +10,7 @@ import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
-import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 
-import org.eclipse.gemoc.executionframework.property.model.property.OrderedTemporalProperty;
 import org.eclipse.gemoc.executionframework.property.model.property.PropertyPackage;
 
 /**
@@ -60,8 +58,8 @@ public class OrderedTemporalPropertyItemProvider extends TemporalPropertyItemPro
 						getResourceLocator(), getString("_UI_OrderedTemporalProperty_otherPattern_feature"),
 						getString("_UI_PropertyDescriptor_description",
 								"_UI_OrderedTemporalProperty_otherPattern_feature", "_UI_OrderedTemporalProperty_type"),
-						PropertyPackage.Literals.ORDERED_TEMPORAL_PROPERTY__OTHER_PATTERN, true, false, true,
-						ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+						PropertyPackage.Literals.ORDERED_TEMPORAL_PROPERTY__OTHER_PATTERN, true, false, true, null,
+						null, null));
 	}
 
 	/**
@@ -93,9 +91,7 @@ public class OrderedTemporalPropertyItemProvider extends TemporalPropertyItemPro
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((OrderedTemporalProperty) object).getPattern();
-		return label == null || label.length() == 0 ? getString("_UI_OrderedTemporalProperty_type")
-				: getString("_UI_OrderedTemporalProperty_type") + " " + label;
+		return getString("_UI_OrderedTemporalProperty_type");
 	}
 
 	/**

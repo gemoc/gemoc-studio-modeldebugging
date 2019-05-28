@@ -14,7 +14,7 @@ import org.eclipse.gemoc.executionframework.property.model.property.PropertyPack
  *
  * @generated
  */
-public class BeforeImpl extends LowerBoundedImpl implements Before {
+public class BeforeImpl extends UpperBoundedImpl implements Before {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

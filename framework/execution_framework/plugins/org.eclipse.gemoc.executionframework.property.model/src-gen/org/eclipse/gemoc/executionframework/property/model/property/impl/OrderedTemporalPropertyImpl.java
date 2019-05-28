@@ -5,11 +5,14 @@ package org.eclipse.gemoc.executionframework.property.model.property.impl;
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import org.eclipse.gemoc.executionframework.property.model.property.OrderedTemporalProperty;
 import org.eclipse.gemoc.executionframework.property.model.property.PropertyPackage;
+
+import org.eclipse.viatra.query.patternlanguage.emf.vql.Pattern;
 
 /**
  * <!-- begin-user-doc -->
@@ -26,24 +29,14 @@ import org.eclipse.gemoc.executionframework.property.model.property.PropertyPack
  */
 public abstract class OrderedTemporalPropertyImpl extends TemporalPropertyImpl implements OrderedTemporalProperty {
 	/**
-	 * The default value of the '{@link #getOtherPattern() <em>Other Pattern</em>}' attribute.
+	 * The cached value of the '{@link #getOtherPattern() <em>Other Pattern</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getOtherPattern()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String OTHER_PATTERN_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getOtherPattern() <em>Other Pattern</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getOtherPattern()
-	 * @generated
-	 * @ordered
-	 */
-	protected String otherPattern = OTHER_PATTERN_EDEFAULT;
+	protected Pattern otherPattern;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -69,7 +62,16 @@ public abstract class OrderedTemporalPropertyImpl extends TemporalPropertyImpl i
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getOtherPattern() {
+	public Pattern getOtherPattern() {
+		if (otherPattern != null && otherPattern.eIsProxy()) {
+			InternalEObject oldOtherPattern = (InternalEObject) otherPattern;
+			otherPattern = (Pattern) eResolveProxy(oldOtherPattern);
+			if (otherPattern != oldOtherPattern) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE,
+							PropertyPackage.ORDERED_TEMPORAL_PROPERTY__OTHER_PATTERN, oldOtherPattern, otherPattern));
+			}
+		}
 		return otherPattern;
 	}
 
@@ -78,8 +80,17 @@ public abstract class OrderedTemporalPropertyImpl extends TemporalPropertyImpl i
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setOtherPattern(String newOtherPattern) {
-		String oldOtherPattern = otherPattern;
+	public Pattern basicGetOtherPattern() {
+		return otherPattern;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setOtherPattern(Pattern newOtherPattern) {
+		Pattern oldOtherPattern = otherPattern;
 		otherPattern = newOtherPattern;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET,
@@ -95,7 +106,9 @@ public abstract class OrderedTemporalPropertyImpl extends TemporalPropertyImpl i
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 		case PropertyPackage.ORDERED_TEMPORAL_PROPERTY__OTHER_PATTERN:
-			return getOtherPattern();
+			if (resolve)
+				return getOtherPattern();
+			return basicGetOtherPattern();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -109,7 +122,7 @@ public abstract class OrderedTemporalPropertyImpl extends TemporalPropertyImpl i
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 		case PropertyPackage.ORDERED_TEMPORAL_PROPERTY__OTHER_PATTERN:
-			setOtherPattern((String) newValue);
+			setOtherPattern((Pattern) newValue);
 			return;
 		}
 		super.eSet(featureID, newValue);
@@ -124,7 +137,7 @@ public abstract class OrderedTemporalPropertyImpl extends TemporalPropertyImpl i
 	public void eUnset(int featureID) {
 		switch (featureID) {
 		case PropertyPackage.ORDERED_TEMPORAL_PROPERTY__OTHER_PATTERN:
-			setOtherPattern(OTHER_PATTERN_EDEFAULT);
+			setOtherPattern((Pattern) null);
 			return;
 		}
 		super.eUnset(featureID);
@@ -139,26 +152,9 @@ public abstract class OrderedTemporalPropertyImpl extends TemporalPropertyImpl i
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 		case PropertyPackage.ORDERED_TEMPORAL_PROPERTY__OTHER_PATTERN:
-			return OTHER_PATTERN_EDEFAULT == null ? otherPattern != null : !OTHER_PATTERN_EDEFAULT.equals(otherPattern);
+			return otherPattern != null;
 		}
 		return super.eIsSet(featureID);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String toString() {
-		if (eIsProxy())
-			return super.toString();
-
-		StringBuilder result = new StringBuilder(super.toString());
-		result.append(" (otherPattern: ");
-		result.append(otherPattern);
-		result.append(')');
-		return result.toString();
 	}
 
 } //OrderedTemporalPropertyImpl

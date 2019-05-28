@@ -69,7 +69,7 @@ public interface PropertyPackage extends EPackage {
 	int PROPERTY = 0;
 
 	/**
-	 * The feature id for the '<em><b>Pattern</b></em>' attribute.
+	 * The feature id for the '<em><b>Pattern</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -106,7 +106,7 @@ public interface PropertyPackage extends EPackage {
 	int QUANTIFIED_PROPERTY = 1;
 
 	/**
-	 * The feature id for the '<em><b>Pattern</b></em>' attribute.
+	 * The feature id for the '<em><b>Pattern</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -161,7 +161,7 @@ public interface PropertyPackage extends EPackage {
 	int TEMPORAL_PROPERTY = 2;
 
 	/**
-	 * The feature id for the '<em><b>Pattern</b></em>' attribute.
+	 * The feature id for the '<em><b>Pattern</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -271,7 +271,7 @@ public interface PropertyPackage extends EPackage {
 	int ABSENCE = 4;
 
 	/**
-	 * The feature id for the '<em><b>Pattern</b></em>' attribute.
+	 * The feature id for the '<em><b>Pattern</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -317,7 +317,7 @@ public interface PropertyPackage extends EPackage {
 	int UNIVERSALITY = 5;
 
 	/**
-	 * The feature id for the '<em><b>Pattern</b></em>' attribute.
+	 * The feature id for the '<em><b>Pattern</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -363,7 +363,7 @@ public interface PropertyPackage extends EPackage {
 	int EXISTENCE = 6;
 
 	/**
-	 * The feature id for the '<em><b>Pattern</b></em>' attribute.
+	 * The feature id for the '<em><b>Pattern</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -381,13 +381,31 @@ public interface PropertyPackage extends EPackage {
 	int EXISTENCE__SCOPE = TEMPORAL_PROPERTY__SCOPE;
 
 	/**
+	 * The feature id for the '<em><b>N</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXISTENCE__N = TEMPORAL_PROPERTY_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Bound Type</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXISTENCE__BOUND_TYPE = TEMPORAL_PROPERTY_FEATURE_COUNT + 1;
+
+	/**
 	 * The number of structural features of the '<em>Existence</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int EXISTENCE_FEATURE_COUNT = TEMPORAL_PROPERTY_FEATURE_COUNT + 0;
+	int EXISTENCE_FEATURE_COUNT = TEMPORAL_PROPERTY_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of operations of the '<em>Existence</em>' class.
@@ -399,61 +417,6 @@ public interface PropertyPackage extends EPackage {
 	int EXISTENCE_OPERATION_COUNT = TEMPORAL_PROPERTY_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.gemoc.executionframework.property.model.property.impl.BoundedExistenceImpl <em>Bounded Existence</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see org.eclipse.gemoc.executionframework.property.model.property.impl.BoundedExistenceImpl
-	 * @see org.eclipse.gemoc.executionframework.property.model.property.impl.PropertyPackageImpl#getBoundedExistence()
-	 * @generated
-	 */
-	int BOUNDED_EXISTENCE = 7;
-
-	/**
-	 * The feature id for the '<em><b>Pattern</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int BOUNDED_EXISTENCE__PATTERN = TEMPORAL_PROPERTY__PATTERN;
-
-	/**
-	 * The feature id for the '<em><b>Scope</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int BOUNDED_EXISTENCE__SCOPE = TEMPORAL_PROPERTY__SCOPE;
-
-	/**
-	 * The feature id for the '<em><b>N</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int BOUNDED_EXISTENCE__N = TEMPORAL_PROPERTY_FEATURE_COUNT + 0;
-
-	/**
-	 * The number of structural features of the '<em>Bounded Existence</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int BOUNDED_EXISTENCE_FEATURE_COUNT = TEMPORAL_PROPERTY_FEATURE_COUNT + 1;
-
-	/**
-	 * The number of operations of the '<em>Bounded Existence</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int BOUNDED_EXISTENCE_OPERATION_COUNT = TEMPORAL_PROPERTY_OPERATION_COUNT + 0;
-
-	/**
 	 * The meta object id for the '{@link org.eclipse.gemoc.executionframework.property.model.property.impl.OrderedTemporalPropertyImpl <em>Ordered Temporal Property</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -461,10 +424,10 @@ public interface PropertyPackage extends EPackage {
 	 * @see org.eclipse.gemoc.executionframework.property.model.property.impl.PropertyPackageImpl#getOrderedTemporalProperty()
 	 * @generated
 	 */
-	int ORDERED_TEMPORAL_PROPERTY = 8;
+	int ORDERED_TEMPORAL_PROPERTY = 7;
 
 	/**
-	 * The feature id for the '<em><b>Pattern</b></em>' attribute.
+	 * The feature id for the '<em><b>Pattern</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -482,7 +445,7 @@ public interface PropertyPackage extends EPackage {
 	int ORDERED_TEMPORAL_PROPERTY__SCOPE = TEMPORAL_PROPERTY__SCOPE;
 
 	/**
-	 * The feature id for the '<em><b>Other Pattern</b></em>' attribute.
+	 * The feature id for the '<em><b>Other Pattern</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -516,10 +479,10 @@ public interface PropertyPackage extends EPackage {
 	 * @see org.eclipse.gemoc.executionframework.property.model.property.impl.PropertyPackageImpl#getResponse()
 	 * @generated
 	 */
-	int RESPONSE = 9;
+	int RESPONSE = 8;
 
 	/**
-	 * The feature id for the '<em><b>Pattern</b></em>' attribute.
+	 * The feature id for the '<em><b>Pattern</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -537,7 +500,7 @@ public interface PropertyPackage extends EPackage {
 	int RESPONSE__SCOPE = ORDERED_TEMPORAL_PROPERTY__SCOPE;
 
 	/**
-	 * The feature id for the '<em><b>Other Pattern</b></em>' attribute.
+	 * The feature id for the '<em><b>Other Pattern</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -571,10 +534,10 @@ public interface PropertyPackage extends EPackage {
 	 * @see org.eclipse.gemoc.executionframework.property.model.property.impl.PropertyPackageImpl#getPrecedence()
 	 * @generated
 	 */
-	int PRECEDENCE = 10;
+	int PRECEDENCE = 9;
 
 	/**
-	 * The feature id for the '<em><b>Pattern</b></em>' attribute.
+	 * The feature id for the '<em><b>Pattern</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -592,7 +555,7 @@ public interface PropertyPackage extends EPackage {
 	int PRECEDENCE__SCOPE = ORDERED_TEMPORAL_PROPERTY__SCOPE;
 
 	/**
-	 * The feature id for the '<em><b>Other Pattern</b></em>' attribute.
+	 * The feature id for the '<em><b>Other Pattern</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -626,7 +589,7 @@ public interface PropertyPackage extends EPackage {
 	 * @see org.eclipse.gemoc.executionframework.property.model.property.impl.PropertyPackageImpl#getScope()
 	 * @generated
 	 */
-	int SCOPE = 11;
+	int SCOPE = 10;
 
 	/**
 	 * The number of structural features of the '<em>Scope</em>' class.
@@ -654,7 +617,7 @@ public interface PropertyPackage extends EPackage {
 	 * @see org.eclipse.gemoc.executionframework.property.model.property.impl.PropertyPackageImpl#getGlobally()
 	 * @generated
 	 */
-	int GLOBALLY = 12;
+	int GLOBALLY = 11;
 
 	/**
 	 * The number of structural features of the '<em>Globally</em>' class.
@@ -682,10 +645,10 @@ public interface PropertyPackage extends EPackage {
 	 * @see org.eclipse.gemoc.executionframework.property.model.property.impl.PropertyPackageImpl#getLowerBounded()
 	 * @generated
 	 */
-	int LOWER_BOUNDED = 13;
+	int LOWER_BOUNDED = 12;
 
 	/**
-	 * The feature id for the '<em><b>Lower Bound Pattern</b></em>' attribute.
+	 * The feature id for the '<em><b>Lower Bound Pattern</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -719,10 +682,10 @@ public interface PropertyPackage extends EPackage {
 	 * @see org.eclipse.gemoc.executionframework.property.model.property.impl.PropertyPackageImpl#getUpperBounded()
 	 * @generated
 	 */
-	int UPPER_BOUNDED = 14;
+	int UPPER_BOUNDED = 13;
 
 	/**
-	 * The feature id for the '<em><b>Upper Bound Pattern</b></em>' attribute.
+	 * The feature id for the '<em><b>Upper Bound Pattern</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -756,16 +719,16 @@ public interface PropertyPackage extends EPackage {
 	 * @see org.eclipse.gemoc.executionframework.property.model.property.impl.PropertyPackageImpl#getBefore()
 	 * @generated
 	 */
-	int BEFORE = 15;
+	int BEFORE = 14;
 
 	/**
-	 * The feature id for the '<em><b>Lower Bound Pattern</b></em>' attribute.
+	 * The feature id for the '<em><b>Upper Bound Pattern</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int BEFORE__LOWER_BOUND_PATTERN = LOWER_BOUNDED__LOWER_BOUND_PATTERN;
+	int BEFORE__UPPER_BOUND_PATTERN = UPPER_BOUNDED__UPPER_BOUND_PATTERN;
 
 	/**
 	 * The number of structural features of the '<em>Before</em>' class.
@@ -774,7 +737,7 @@ public interface PropertyPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int BEFORE_FEATURE_COUNT = LOWER_BOUNDED_FEATURE_COUNT + 0;
+	int BEFORE_FEATURE_COUNT = UPPER_BOUNDED_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of operations of the '<em>Before</em>' class.
@@ -783,7 +746,7 @@ public interface PropertyPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int BEFORE_OPERATION_COUNT = LOWER_BOUNDED_OPERATION_COUNT + 0;
+	int BEFORE_OPERATION_COUNT = UPPER_BOUNDED_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.gemoc.executionframework.property.model.property.impl.BetweenImpl <em>Between</em>}' class.
@@ -793,10 +756,10 @@ public interface PropertyPackage extends EPackage {
 	 * @see org.eclipse.gemoc.executionframework.property.model.property.impl.PropertyPackageImpl#getBetween()
 	 * @generated
 	 */
-	int BETWEEN = 16;
+	int BETWEEN = 15;
 
 	/**
-	 * The feature id for the '<em><b>Lower Bound Pattern</b></em>' attribute.
+	 * The feature id for the '<em><b>Lower Bound Pattern</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -805,7 +768,7 @@ public interface PropertyPackage extends EPackage {
 	int BETWEEN__LOWER_BOUND_PATTERN = LOWER_BOUNDED__LOWER_BOUND_PATTERN;
 
 	/**
-	 * The feature id for the '<em><b>Upper Bound Pattern</b></em>' attribute.
+	 * The feature id for the '<em><b>Upper Bound Pattern</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -839,10 +802,10 @@ public interface PropertyPackage extends EPackage {
 	 * @see org.eclipse.gemoc.executionframework.property.model.property.impl.PropertyPackageImpl#getAfterUntil()
 	 * @generated
 	 */
-	int AFTER_UNTIL = 17;
+	int AFTER_UNTIL = 16;
 
 	/**
-	 * The feature id for the '<em><b>Lower Bound Pattern</b></em>' attribute.
+	 * The feature id for the '<em><b>Lower Bound Pattern</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -851,7 +814,7 @@ public interface PropertyPackage extends EPackage {
 	int AFTER_UNTIL__LOWER_BOUND_PATTERN = LOWER_BOUNDED__LOWER_BOUND_PATTERN;
 
 	/**
-	 * The feature id for the '<em><b>Upper Bound Pattern</b></em>' attribute.
+	 * The feature id for the '<em><b>Upper Bound Pattern</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -885,16 +848,16 @@ public interface PropertyPackage extends EPackage {
 	 * @see org.eclipse.gemoc.executionframework.property.model.property.impl.PropertyPackageImpl#getAfter()
 	 * @generated
 	 */
-	int AFTER = 18;
+	int AFTER = 17;
 
 	/**
-	 * The feature id for the '<em><b>Upper Bound Pattern</b></em>' attribute.
+	 * The feature id for the '<em><b>Lower Bound Pattern</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int AFTER__UPPER_BOUND_PATTERN = UPPER_BOUNDED__UPPER_BOUND_PATTERN;
+	int AFTER__LOWER_BOUND_PATTERN = LOWER_BOUNDED__LOWER_BOUND_PATTERN;
 
 	/**
 	 * The number of structural features of the '<em>After</em>' class.
@@ -903,7 +866,7 @@ public interface PropertyPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int AFTER_FEATURE_COUNT = UPPER_BOUNDED_FEATURE_COUNT + 0;
+	int AFTER_FEATURE_COUNT = LOWER_BOUNDED_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of operations of the '<em>After</em>' class.
@@ -912,7 +875,7 @@ public interface PropertyPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int AFTER_OPERATION_COUNT = UPPER_BOUNDED_OPERATION_COUNT + 0;
+	int AFTER_OPERATION_COUNT = LOWER_BOUNDED_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.gemoc.executionframework.property.model.property.Quantifier <em>Quantifier</em>}' enum.
@@ -922,7 +885,17 @@ public interface PropertyPackage extends EPackage {
 	 * @see org.eclipse.gemoc.executionframework.property.model.property.impl.PropertyPackageImpl#getQuantifier()
 	 * @generated
 	 */
-	int QUANTIFIER = 19;
+	int QUANTIFIER = 18;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.gemoc.executionframework.property.model.property.BoundType <em>Bound Type</em>}' enum.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.eclipse.gemoc.executionframework.property.model.property.BoundType
+	 * @see org.eclipse.gemoc.executionframework.property.model.property.impl.PropertyPackageImpl#getBoundType()
+	 * @generated
+	 */
+	int BOUND_TYPE = 19;
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.gemoc.executionframework.property.model.property.Property <em>Property</em>}'.
@@ -935,15 +908,15 @@ public interface PropertyPackage extends EPackage {
 	EClass getProperty();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.gemoc.executionframework.property.model.property.Property#getPattern <em>Pattern</em>}'.
+	 * Returns the meta object for the reference '{@link org.eclipse.gemoc.executionframework.property.model.property.Property#getPattern <em>Pattern</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Pattern</em>'.
+	 * @return the meta object for the reference '<em>Pattern</em>'.
 	 * @see org.eclipse.gemoc.executionframework.property.model.property.Property#getPattern()
 	 * @see #getProperty()
 	 * @generated
 	 */
-	EAttribute getProperty_Pattern();
+	EReference getProperty_Pattern();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.gemoc.executionframework.property.model.property.QuantifiedProperty <em>Quantified Property</em>}'.
@@ -1083,25 +1056,26 @@ public interface PropertyPackage extends EPackage {
 	EClass getExistence();
 
 	/**
-	 * Returns the meta object for class '{@link org.eclipse.gemoc.executionframework.property.model.property.BoundedExistence <em>Bounded Existence</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Bounded Existence</em>'.
-	 * @see org.eclipse.gemoc.executionframework.property.model.property.BoundedExistence
-	 * @generated
-	 */
-	EClass getBoundedExistence();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.gemoc.executionframework.property.model.property.BoundedExistence#getN <em>N</em>}'.
+	 * Returns the meta object for the attribute '{@link org.eclipse.gemoc.executionframework.property.model.property.Existence#getN <em>N</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the attribute '<em>N</em>'.
-	 * @see org.eclipse.gemoc.executionframework.property.model.property.BoundedExistence#getN()
-	 * @see #getBoundedExistence()
+	 * @see org.eclipse.gemoc.executionframework.property.model.property.Existence#getN()
+	 * @see #getExistence()
 	 * @generated
 	 */
-	EAttribute getBoundedExistence_N();
+	EAttribute getExistence_N();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.gemoc.executionframework.property.model.property.Existence#getBoundType <em>Bound Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Bound Type</em>'.
+	 * @see org.eclipse.gemoc.executionframework.property.model.property.Existence#getBoundType()
+	 * @see #getExistence()
+	 * @generated
+	 */
+	EAttribute getExistence_BoundType();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.gemoc.executionframework.property.model.property.OrderedTemporalProperty <em>Ordered Temporal Property</em>}'.
@@ -1114,15 +1088,15 @@ public interface PropertyPackage extends EPackage {
 	EClass getOrderedTemporalProperty();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.gemoc.executionframework.property.model.property.OrderedTemporalProperty#getOtherPattern <em>Other Pattern</em>}'.
+	 * Returns the meta object for the reference '{@link org.eclipse.gemoc.executionframework.property.model.property.OrderedTemporalProperty#getOtherPattern <em>Other Pattern</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Other Pattern</em>'.
+	 * @return the meta object for the reference '<em>Other Pattern</em>'.
 	 * @see org.eclipse.gemoc.executionframework.property.model.property.OrderedTemporalProperty#getOtherPattern()
 	 * @see #getOrderedTemporalProperty()
 	 * @generated
 	 */
-	EAttribute getOrderedTemporalProperty_OtherPattern();
+	EReference getOrderedTemporalProperty_OtherPattern();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.gemoc.executionframework.property.model.property.Response <em>Response</em>}'.
@@ -1175,15 +1149,15 @@ public interface PropertyPackage extends EPackage {
 	EClass getLowerBounded();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.gemoc.executionframework.property.model.property.LowerBounded#getLowerBoundPattern <em>Lower Bound Pattern</em>}'.
+	 * Returns the meta object for the reference '{@link org.eclipse.gemoc.executionframework.property.model.property.LowerBounded#getLowerBoundPattern <em>Lower Bound Pattern</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Lower Bound Pattern</em>'.
+	 * @return the meta object for the reference '<em>Lower Bound Pattern</em>'.
 	 * @see org.eclipse.gemoc.executionframework.property.model.property.LowerBounded#getLowerBoundPattern()
 	 * @see #getLowerBounded()
 	 * @generated
 	 */
-	EAttribute getLowerBounded_LowerBoundPattern();
+	EReference getLowerBounded_LowerBoundPattern();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.gemoc.executionframework.property.model.property.UpperBounded <em>Upper Bounded</em>}'.
@@ -1196,15 +1170,15 @@ public interface PropertyPackage extends EPackage {
 	EClass getUpperBounded();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.gemoc.executionframework.property.model.property.UpperBounded#getUpperBoundPattern <em>Upper Bound Pattern</em>}'.
+	 * Returns the meta object for the reference '{@link org.eclipse.gemoc.executionframework.property.model.property.UpperBounded#getUpperBoundPattern <em>Upper Bound Pattern</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Upper Bound Pattern</em>'.
+	 * @return the meta object for the reference '<em>Upper Bound Pattern</em>'.
 	 * @see org.eclipse.gemoc.executionframework.property.model.property.UpperBounded#getUpperBoundPattern()
 	 * @see #getUpperBounded()
 	 * @generated
 	 */
-	EAttribute getUpperBounded_UpperBoundPattern();
+	EReference getUpperBounded_UpperBoundPattern();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.gemoc.executionframework.property.model.property.Before <em>Before</em>}'.
@@ -1257,6 +1231,16 @@ public interface PropertyPackage extends EPackage {
 	EEnum getQuantifier();
 
 	/**
+	 * Returns the meta object for enum '{@link org.eclipse.gemoc.executionframework.property.model.property.BoundType <em>Bound Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for enum '<em>Bound Type</em>'.
+	 * @see org.eclipse.gemoc.executionframework.property.model.property.BoundType
+	 * @generated
+	 */
+	EEnum getBoundType();
+
+	/**
 	 * Returns the factory that creates the instances of the model.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1290,12 +1274,12 @@ public interface PropertyPackage extends EPackage {
 		EClass PROPERTY = eINSTANCE.getProperty();
 
 		/**
-		 * The meta object literal for the '<em><b>Pattern</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Pattern</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute PROPERTY__PATTERN = eINSTANCE.getProperty_Pattern();
+		EReference PROPERTY__PATTERN = eINSTANCE.getProperty_Pattern();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.gemoc.executionframework.property.model.property.impl.QuantifiedPropertyImpl <em>Quantified Property</em>}' class.
@@ -1414,22 +1398,20 @@ public interface PropertyPackage extends EPackage {
 		EClass EXISTENCE = eINSTANCE.getExistence();
 
 		/**
-		 * The meta object literal for the '{@link org.eclipse.gemoc.executionframework.property.model.property.impl.BoundedExistenceImpl <em>Bounded Existence</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see org.eclipse.gemoc.executionframework.property.model.property.impl.BoundedExistenceImpl
-		 * @see org.eclipse.gemoc.executionframework.property.model.property.impl.PropertyPackageImpl#getBoundedExistence()
-		 * @generated
-		 */
-		EClass BOUNDED_EXISTENCE = eINSTANCE.getBoundedExistence();
-
-		/**
 		 * The meta object literal for the '<em><b>N</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute BOUNDED_EXISTENCE__N = eINSTANCE.getBoundedExistence_N();
+		EAttribute EXISTENCE__N = eINSTANCE.getExistence_N();
+
+		/**
+		 * The meta object literal for the '<em><b>Bound Type</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute EXISTENCE__BOUND_TYPE = eINSTANCE.getExistence_BoundType();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.gemoc.executionframework.property.model.property.impl.OrderedTemporalPropertyImpl <em>Ordered Temporal Property</em>}' class.
@@ -1442,12 +1424,12 @@ public interface PropertyPackage extends EPackage {
 		EClass ORDERED_TEMPORAL_PROPERTY = eINSTANCE.getOrderedTemporalProperty();
 
 		/**
-		 * The meta object literal for the '<em><b>Other Pattern</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Other Pattern</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute ORDERED_TEMPORAL_PROPERTY__OTHER_PATTERN = eINSTANCE.getOrderedTemporalProperty_OtherPattern();
+		EReference ORDERED_TEMPORAL_PROPERTY__OTHER_PATTERN = eINSTANCE.getOrderedTemporalProperty_OtherPattern();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.gemoc.executionframework.property.model.property.impl.ResponseImpl <em>Response</em>}' class.
@@ -1500,12 +1482,12 @@ public interface PropertyPackage extends EPackage {
 		EClass LOWER_BOUNDED = eINSTANCE.getLowerBounded();
 
 		/**
-		 * The meta object literal for the '<em><b>Lower Bound Pattern</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Lower Bound Pattern</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute LOWER_BOUNDED__LOWER_BOUND_PATTERN = eINSTANCE.getLowerBounded_LowerBoundPattern();
+		EReference LOWER_BOUNDED__LOWER_BOUND_PATTERN = eINSTANCE.getLowerBounded_LowerBoundPattern();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.gemoc.executionframework.property.model.property.impl.UpperBoundedImpl <em>Upper Bounded</em>}' class.
@@ -1518,12 +1500,12 @@ public interface PropertyPackage extends EPackage {
 		EClass UPPER_BOUNDED = eINSTANCE.getUpperBounded();
 
 		/**
-		 * The meta object literal for the '<em><b>Upper Bound Pattern</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Upper Bound Pattern</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute UPPER_BOUNDED__UPPER_BOUND_PATTERN = eINSTANCE.getUpperBounded_UpperBoundPattern();
+		EReference UPPER_BOUNDED__UPPER_BOUND_PATTERN = eINSTANCE.getUpperBounded_UpperBoundPattern();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.gemoc.executionframework.property.model.property.impl.BeforeImpl <em>Before</em>}' class.
@@ -1574,6 +1556,16 @@ public interface PropertyPackage extends EPackage {
 		 * @generated
 		 */
 		EEnum QUANTIFIER = eINSTANCE.getQuantifier();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.gemoc.executionframework.property.model.property.BoundType <em>Bound Type</em>}' enum.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.eclipse.gemoc.executionframework.property.model.property.BoundType
+		 * @see org.eclipse.gemoc.executionframework.property.model.property.impl.PropertyPackageImpl#getBoundType()
+		 * @generated
+		 */
+		EEnum BOUND_TYPE = eINSTANCE.getBoundType();
 
 	}
 

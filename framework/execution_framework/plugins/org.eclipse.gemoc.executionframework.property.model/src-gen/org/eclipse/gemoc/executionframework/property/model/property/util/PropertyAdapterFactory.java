@@ -102,11 +102,6 @@ public class PropertyAdapterFactory extends AdapterFactoryImpl {
 		}
 
 		@Override
-		public Adapter caseBoundedExistence(BoundedExistence object) {
-			return createBoundedExistenceAdapter();
-		}
-
-		@Override
 		public Adapter caseOrderedTemporalProperty(OrderedTemporalProperty object) {
 			return createOrderedTemporalPropertyAdapter();
 		}
@@ -275,20 +270,6 @@ public class PropertyAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createExistenceAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.gemoc.executionframework.property.model.property.BoundedExistence <em>Bounded Existence</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see org.eclipse.gemoc.executionframework.property.model.property.BoundedExistence
-	 * @generated
-	 */
-	public Adapter createBoundedExistenceAdapter() {
 		return null;
 	}
 

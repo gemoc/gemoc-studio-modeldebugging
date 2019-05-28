@@ -10,8 +10,6 @@ import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 
-import org.eclipse.gemoc.executionframework.property.model.property.Response;
-
 /**
  * This is the item provider adapter for a {@link org.eclipse.gemoc.executionframework.property.model.property.Response} object.
  * <!-- begin-user-doc -->
@@ -73,9 +71,7 @@ public class ResponseItemProvider extends OrderedTemporalPropertyItemProvider {
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((Response) object).getPattern();
-		return label == null || label.length() == 0 ? getString("_UI_Response_type")
-				: getString("_UI_Response_type") + " " + label;
+		return getString("_UI_Response_type");
 	}
 
 	/**

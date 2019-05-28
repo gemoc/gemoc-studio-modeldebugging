@@ -12,5 +12,5 @@ package org.eclipse.gemoc.executionframework.property.model.property;
  * @model
  * @generated
  */
-public interface Before extends LowerBounded {
+public interface Before extends UpperBounded {
 } // Before

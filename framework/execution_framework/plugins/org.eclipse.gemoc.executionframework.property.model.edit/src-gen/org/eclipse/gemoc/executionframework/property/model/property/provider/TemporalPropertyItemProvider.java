@@ -125,9 +125,7 @@ public class TemporalPropertyItemProvider extends PropertyItemProvider {
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((TemporalProperty) object).getPattern();
-		return label == null || label.length() == 0 ? getString("_UI_TemporalProperty_type")
-				: getString("_UI_TemporalProperty_type") + " " + label;
+		return getString("_UI_TemporalProperty_type");
 	}
 
 	/**

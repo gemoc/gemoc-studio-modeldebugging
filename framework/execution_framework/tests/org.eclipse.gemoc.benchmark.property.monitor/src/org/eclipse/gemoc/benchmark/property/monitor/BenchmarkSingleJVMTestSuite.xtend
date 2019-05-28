@@ -15,36 +15,38 @@ import org.eclipse.core.runtime.IProgressMonitor
 import org.eclipse.core.runtime.Status
 import org.eclipse.core.runtime.jobs.Job
 import org.eclipse.emf.common.util.URI
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
 import org.eclipse.gemoc.benchmark.cases.BenchmarkingCase
-import org.eclipse.gemoc.benchmark.languages.BenchmarkLanguage
 import org.eclipse.gemoc.benchmark.utils.CSVHelper
 import org.eclipse.gemoc.benchmark.utils.EclipseTestUtil
+import org.eclipse.gemoc.benchmark.utils.Util
+import org.eclipse.gemoc.executionframework.property.model.property.EPLProperty
 import org.junit.After
 import org.junit.Test
 
 import static org.eclipse.gemoc.benchmark.property.monitor.LanguageData.*
 import static org.eclipse.gemoc.benchmark.utils.BenchmarkHelpers.*
+import org.eclipse.core.resources.IFolder
 
 class BenchmarkSingleJVMTestSuite {
 
+	public static val String monitoringCaseProperty = "monitoringCaseProperty"
 	public static val String modelProperty = "modelProperty"
+	public static val String initializationArgumentsProperty = "initializationArgumentsProperty"
+	public static val String caseNumberProperty = "caseNumberProperty"
 	public static val String paramProperty = "paramProperty"
 	public static val String languageProperty = "languageProperty"
-	public static val String tracingCaseProperty = "tracingCaseProperty"
+	public static val String temporalPropertyProperty = "temporalPropertyProperty"
 	public static val String outputFolderProperty = "outputFolderProperty"
-	public static val String tmpAddFileProperty = "tmpAddFileProperty"
-	public static val String tmpRestoreFileProperty = "tmpRestoreFileProperty"
-	public static val String tmpExecuteFileProperty = "tmpExecuteFileProperty"
+	public static val String tmpExecutionTimeFileProperty = "tmpExecutionTimeFileProperty"
 
 	public static val String errorString = "!!!!ERROR"
-
-	var BenchmarkLanguage language
-	var URI modelURI
-	var BenchmarkingCase benchmarkingCase
-
+	
 	def void log(String s) {
 		println("### [single test case] " + s)
 	}
+	
+	var BenchmarkingCase<?, ?, ?> benchmarkingCase
 
 	private def execute(IProgressMonitor m) {
 		// Create engine parameterized with inputs
@@ -59,7 +61,10 @@ class BenchmarkSingleJVMTestSuite {
 	val Map<String,PrintWriter> writers = new HashMap
 	
 	private def void addCSV(String filename, String folder) {
+		val dir = new File(folder)
+		dir.mkdirs
 		val csv = new File(folder + "/" + filename)
+		csv.createNewFile
 		val csvStream = new FileOutputStream(csv)
 		val csvWriter = new PrintWriter(csvStream, true)
 		streams.put(filename, csvStream)
@@ -84,35 +89,26 @@ class BenchmarkSingleJVMTestSuite {
 		val emptyPrintStream = createEmptyPrintStream
 		System.setOut(emptyPrintStream)
 		System.setErr(emptyPrintStream)
-
-		// Read properties
-		val String model = System.getProperty(modelProperty)
-		val String tracingCaseString = System.getProperty(tracingCaseProperty)
-		val String languageName = System.getProperty(languageProperty)
-		val String outputFolder = System.getProperty(outputFolderProperty)
 		
-		val String addCSVFilename = "add"+tracingCaseString+".csv"
-		val String restoreCSVFilename = "restore"+tracingCaseString+".csv"
-		val String executionCSVFilename = "execute"+tracingCaseString+".csv"
-		val String initializationCSVFilename = "initialize"+tracingCaseString+".csv"
+		val modelName = System.getProperty(modelProperty)
+		val initializationArguments = System.getProperty(initializationArgumentsProperty)
+		val caseNumber = System.getProperty(caseNumberProperty)
+		val monitoringCase = System.getProperty(monitoringCaseProperty)
+		val languageName = System.getProperty(languageProperty)
+		val propertyName = System.getProperty(temporalPropertyProperty)
+		val outputFolder = System.getProperty(outputFolderProperty)
 		
-		System.setProperty(tmpAddFileProperty,"")
-		System.setProperty(tmpRestoreFileProperty,"")
-		System.setProperty(tmpExecuteFileProperty,"")
+		val String executionCSVFilename = '''execution«modelName»_«propertyName»_«caseNumber».csv'''
+		val String initializationCSVFilename = '''initialize«modelName»_«propertyName»_«caseNumber».csv'''
+		
+		System.setProperty(tmpExecutionTimeFileProperty,"")
 		
 		val csv = new CSVHelper
 		
-		addCSV(addCSVFilename, outputFolder)
-		addCSV(restoreCSVFilename, outputFolder)
 		addCSV(executionCSVFilename, outputFolder)
 		addCSV(initializationCSVFilename, outputFolder)
-
-//		switch (tracingCaseString) {
-//			case "Clone": benchmarkingCase = new CloneBasedTracingCase
-//			case "Generic": benchmarkingCase = new GenericTracingCase
-//			case "Generated": benchmarkingCase = new GeneratedTracingCase
-//			case "None" : benchmarkingCase = new NoTracingCase
-//		}
+		
+		Util::cleanWorkspace
 		
 		val job = new Job("single test case") {
 
@@ -130,38 +126,44 @@ class BenchmarkSingleJVMTestSuite {
 					// TODO copy single model
 					val modelFolder = new File(modelFolderName)
 					val modelFolderInWS = copyFolderInWS(modelFolder, eclipseProject, m)
-
-					// Create model URI
-					val modelFileInProject = modelFolderInWS.getFile(model)
-					modelURI = URI.createPlatformResourceURI(modelFileInProject.fullPath.toString, true)
-					//TODO instantiate benchmarking case with modelUri
+					
+					val modelFileInProject = modelFolderInWS.getFile(modelName)
+					val modelURI = URI.createPlatformResourceURI(modelFileInProject.fullPath.toString, true)
+					
+					val propertyFolder = new File(propertyFolderName)
+					val propertyFolderInWS = copyFolderInWS(propertyFolder, eclipseProject, m)
+					
+//					val property = loadProperty(propertyFolderInWS, propertyName)
+					val property1 = loadProperty(propertyFolderInWS, "exists_p_after_q.property")
+					val property2 = loadProperty(propertyFolderInWS, "exists_p_between_q_and_r_RIGHT.property")
+					
+					benchmarkingCase = switch (monitoringCase) {
+//						case "K3Language": new K3PropertyBenchmarkingCase(modelURI, initializationArguments, languages.get(languageName), #{property})
+						case "K3Language": new K3PropertyBenchmarkingCase(
+							modelURI, initializationArguments, languages.get(languageName), #{property1, property2}
+						)
+					}
 					
 					log("Warming up.")
 					for (var i = 0; i < 10; i++) {
 						benchmarkingCase.initialize()
 						execute(m)
+						log("cleaning up")
+						Util::cleanup("org.eclipse.gemoc.example.k3fsm.k3dsa")
+						log("cleaned up")
 					}
 					
 					for (var i = 0; i < 20; i++) {
 						log("Starting measure "+i)
 						val long initTime = benchmarkingCase.initialize()
-						val tmpAddFile = File.createTempFile("benchmarkAdd", "benchmark")
-						val tmpRestoreFile = File.createTempFile("benchmarkRestore", "benchmark")
-						val tmpExecuteFile = File.createTempFile("benchmarkExecute", "benchmark")
-						System.setProperty(tmpAddFileProperty,tmpAddFile.absolutePath)
-						System.setProperty(tmpRestoreFileProperty,tmpRestoreFile.absolutePath)
-						System.setProperty(tmpExecuteFileProperty,tmpExecuteFile.absolutePath)
+						val tmpExecutionTimeFile = File.createTempFile("benchmarkExecution", "benchmark")
+						System.setProperty(tmpExecutionTimeFileProperty,tmpExecutionTimeFile.absolutePath)
 						execute(m)
-						val addResults = getResults(tmpAddFile)
-						val restoreResults = getResults(tmpRestoreFile)
-						csv.addStateExecutionTimes.add(addResults.map[s|Long.parseLong(s)])
-						csv.restoreStateExecutionTimes.add(restoreResults.map[s|Long.parseLong(s)])
-						csv.totalExecutionTimes.add(Long.parseLong(getResults(tmpExecuteFile).head))
+						csv.totalExecutionTimes.add(Long.parseLong(getResults(tmpExecutionTimeFile).head))
 						csv.initializationTimes.add(initTime)
+						Util::cleanup("org.eclipse.gemoc.example.k3fsm.k3dsa")
 					}
 					
-					writers.get(addCSVFilename).println(csv.exportAddStateExecutionTimes)
-					writers.get(restoreCSVFilename).println(csv.exportRestoreStateExecutionTimes)
 					writers.get(executionCSVFilename).println(csv.exportExecutionTimes)
 					writers.get(initializationCSVFilename).println(csv.exportInitializationTimes)
 
@@ -190,5 +192,34 @@ class BenchmarkSingleJVMTestSuite {
 	def void closeCSV() {
 		streams.values.forEach[v|v.close]
 		writers.values.forEach[v|v.close]
+	}
+
+	static val resourceSet = new ResourceSetImpl
+	
+	static def loadProperty(IFolder propertyFolder, String propertyName) {
+		val propertyFileInProject = propertyFolder.getFile(propertyName)
+		return if (propertyFileInProject.exists) {
+			val propertyURI = URI.createPlatformResourceURI(propertyFileInProject.fullPath.toString, true)
+			val propertyResource = resourceSet.getResource(propertyURI, true)
+			if (propertyResource !== null) {
+				if (propertyResource.errors.size == 0 && !propertyResource.contents.empty) {
+					val topElement = propertyResource.contents.get(0)
+					if (topElement instanceof EPLProperty) {
+						return topElement as EPLProperty
+					} else {
+						println("[ERROR] Root element is not a property: " + propertyURI.toString)
+						return null
+					}
+				} else {
+					println("[ERROR] Resource is empty or contains errors: " + propertyURI.toString)
+					return null
+				}
+			} else {
+				println("[ERROR] Property resource not found: " + propertyURI.toString)
+				return null
+			}
+		} else {
+			null
+		}
 	}
 }

@@ -18,6 +18,7 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
 import org.eclipse.gemoc.executionframework.property.model.property.PropertyFactory;
 import org.eclipse.gemoc.executionframework.property.model.property.PropertyPackage;
 import org.eclipse.gemoc.executionframework.property.model.property.QuantifiedProperty;
+import org.eclipse.gemoc.executionframework.property.model.property.Quantifier;
 
 /**
  * This is the item provider adapter for a {@link org.eclipse.gemoc.executionframework.property.model.property.QuantifiedProperty} object.
@@ -143,7 +144,8 @@ public class QuantifiedPropertyItemProvider extends PropertyItemProvider {
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((QuantifiedProperty) object).getPattern();
+		Quantifier labelValue = ((QuantifiedProperty) object).getQuantifier();
+		String label = labelValue == null ? null : labelValue.toString();
 		return label == null || label.length() == 0 ? getString("_UI_QuantifiedProperty_type")
 				: getString("_UI_QuantifiedProperty_type") + " " + label;
 	}
@@ -195,9 +197,6 @@ public class QuantifiedPropertyItemProvider extends PropertyItemProvider {
 
 		newChildDescriptors.add(createChildParameter(PropertyPackage.Literals.QUANTIFIED_PROPERTY__PROPERTY,
 				PropertyFactory.eINSTANCE.createExistence()));
-
-		newChildDescriptors.add(createChildParameter(PropertyPackage.Literals.QUANTIFIED_PROPERTY__PROPERTY,
-				PropertyFactory.eINSTANCE.createBoundedExistence()));
 
 		newChildDescriptors.add(createChildParameter(PropertyPackage.Literals.QUANTIFIED_PROPERTY__PROPERTY,
 				PropertyFactory.eINSTANCE.createResponse()));

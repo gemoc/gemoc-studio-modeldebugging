@@ -2,6 +2,8 @@
  */
 package org.eclipse.gemoc.executionframework.property.model.property;
 
+import org.eclipse.viatra.query.patternlanguage.emf.vql.Pattern;
+
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Ordered Temporal Property</b></em>'.
@@ -20,29 +22,29 @@ package org.eclipse.gemoc.executionframework.property.model.property;
  */
 public interface OrderedTemporalProperty extends TemporalProperty {
 	/**
-	 * Returns the value of the '<em><b>Other Pattern</b></em>' attribute.
+	 * Returns the value of the '<em><b>Other Pattern</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Other Pattern</em>' attribute isn't clear,
+	 * If the meaning of the '<em>Other Pattern</em>' reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Other Pattern</em>' attribute.
-	 * @see #setOtherPattern(String)
+	 * @return the value of the '<em>Other Pattern</em>' reference.
+	 * @see #setOtherPattern(Pattern)
 	 * @see org.eclipse.gemoc.executionframework.property.model.property.PropertyPackage#getOrderedTemporalProperty_OtherPattern()
 	 * @model required="true"
 	 * @generated
 	 */
-	String getOtherPattern();
+	Pattern getOtherPattern();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.gemoc.executionframework.property.model.property.OrderedTemporalProperty#getOtherPattern <em>Other Pattern</em>}' attribute.
+	 * Sets the value of the '{@link org.eclipse.gemoc.executionframework.property.model.property.OrderedTemporalProperty#getOtherPattern <em>Other Pattern</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Other Pattern</em>' attribute.
+	 * @param value the new value of the '<em>Other Pattern</em>' reference.
 	 * @see #getOtherPattern()
 	 * @generated
 	 */
-	void setOtherPattern(String value);
+	void setOtherPattern(Pattern value);
 
 } // OrderedTemporalProperty

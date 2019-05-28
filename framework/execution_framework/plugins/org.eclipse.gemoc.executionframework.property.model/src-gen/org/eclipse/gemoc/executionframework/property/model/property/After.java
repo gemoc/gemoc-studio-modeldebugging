@@ -12,5 +12,5 @@ package org.eclipse.gemoc.executionframework.property.model.property;
  * @model
  * @generated
  */
-public interface After extends UpperBounded {
+public interface After extends LowerBounded {
 } // After

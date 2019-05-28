@@ -14,7 +14,7 @@ import org.eclipse.gemoc.executionframework.property.model.property.PropertyPack
  *
  * @generated
  */
-public class AfterImpl extends UpperBoundedImpl implements After {
+public class AfterImpl extends LowerBoundedImpl implements After {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

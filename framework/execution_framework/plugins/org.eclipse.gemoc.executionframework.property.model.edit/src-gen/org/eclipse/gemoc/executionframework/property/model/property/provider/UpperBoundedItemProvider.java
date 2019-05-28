@@ -10,10 +10,8 @@ import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
-import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 
 import org.eclipse.gemoc.executionframework.property.model.property.PropertyPackage;
-import org.eclipse.gemoc.executionframework.property.model.property.UpperBounded;
 
 /**
  * This is the item provider adapter for a {@link org.eclipse.gemoc.executionframework.property.model.property.UpperBounded} object.
@@ -60,8 +58,8 @@ public class UpperBoundedItemProvider extends ScopeItemProvider {
 						getResourceLocator(), getString("_UI_UpperBounded_upperBoundPattern_feature"),
 						getString("_UI_PropertyDescriptor_description", "_UI_UpperBounded_upperBoundPattern_feature",
 								"_UI_UpperBounded_type"),
-						PropertyPackage.Literals.UPPER_BOUNDED__UPPER_BOUND_PATTERN, true, false, true,
-						ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+						PropertyPackage.Literals.UPPER_BOUNDED__UPPER_BOUND_PATTERN, true, false, true, null, null,
+						null));
 	}
 
 	/**
@@ -93,9 +91,7 @@ public class UpperBoundedItemProvider extends ScopeItemProvider {
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((UpperBounded) object).getUpperBoundPattern();
-		return label == null || label.length() == 0 ? getString("_UI_UpperBounded_type")
-				: getString("_UI_UpperBounded_type") + " " + label;
+		return getString("_UI_UpperBounded_type");
 	}
 
 	/**

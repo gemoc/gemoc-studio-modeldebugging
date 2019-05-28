@@ -77,15 +77,6 @@ public interface PropertyFactory extends EFactory {
 	Existence createExistence();
 
 	/**
-	 * Returns a new object of class '<em>Bounded Existence</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Bounded Existence</em>'.
-	 * @generated
-	 */
-	BoundedExistence createBoundedExistence();
-
-	/**
 	 * Returns a new object of class '<em>Response</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

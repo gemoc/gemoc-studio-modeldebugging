@@ -17,10 +17,8 @@ import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
-import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 
-import org.eclipse.gemoc.executionframework.property.model.property.Property;
 import org.eclipse.gemoc.executionframework.property.model.property.PropertyPackage;
 
 /**
@@ -69,8 +67,7 @@ public class PropertyItemProvider extends ItemProviderAdapter implements IEditin
 						getResourceLocator(), getString("_UI_Property_pattern_feature"),
 						getString("_UI_PropertyDescriptor_description", "_UI_Property_pattern_feature",
 								"_UI_Property_type"),
-						PropertyPackage.Literals.PROPERTY__PATTERN, true, false, true,
-						ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+						PropertyPackage.Literals.PROPERTY__PATTERN, true, false, true, null, null, null));
 	}
 
 	/**
@@ -102,9 +99,7 @@ public class PropertyItemProvider extends ItemProviderAdapter implements IEditin
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((Property) object).getPattern();
-		return label == null || label.length() == 0 ? getString("_UI_Property_type")
-				: getString("_UI_Property_type") + " " + label;
+		return getString("_UI_Property_type");
 	}
 
 	/**

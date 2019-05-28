@@ -211,29 +211,6 @@ public class PropertyItemProviderAdapterFactory extends PropertyAdapterFactory
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link org.eclipse.gemoc.executionframework.property.model.property.BoundedExistence} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected BoundedExistenceItemProvider boundedExistenceItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link org.eclipse.gemoc.executionframework.property.model.property.BoundedExistence}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createBoundedExistenceAdapter() {
-		if (boundedExistenceItemProvider == null) {
-			boundedExistenceItemProvider = new BoundedExistenceItemProvider(this);
-		}
-
-		return boundedExistenceItemProvider;
-	}
-
-	/**
 	 * This keeps track of the one adapter used for all {@link org.eclipse.gemoc.executionframework.property.model.property.Response} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -505,8 +482,6 @@ public class PropertyItemProviderAdapterFactory extends PropertyAdapterFactory
 			universalityItemProvider.dispose();
 		if (existenceItemProvider != null)
 			existenceItemProvider.dispose();
-		if (boundedExistenceItemProvider != null)
-			boundedExistenceItemProvider.dispose();
 		if (responseItemProvider != null)
 			responseItemProvider.dispose();
 		if (precedenceItemProvider != null)

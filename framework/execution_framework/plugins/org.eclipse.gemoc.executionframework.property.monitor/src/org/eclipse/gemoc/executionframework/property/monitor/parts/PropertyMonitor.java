@@ -4,11 +4,16 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.debug.internal.ui.SWTFactory;
 import org.eclipse.gemoc.commons.eclipse.ui.ViewHelper;
 import org.eclipse.gemoc.commons.eclipse.ui.dialogs.SelectAnyIFileDialog;
-import org.eclipse.gemoc.executionframework.property.monitor.esper.EsperTemporalProperty.PropertyState;
+import org.eclipse.gemoc.executionframework.property.monitor.esper.AbstractTemporalProperty.PropertyState;
 import org.eclipse.gemoc.executionframework.property.monitor.manager.PropertyManager;
 import org.eclipse.gemoc.executionframework.ui.Activator;
 import org.eclipse.gemoc.executionframework.ui.views.engine.EnginesStatusView;
@@ -35,6 +40,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.ui.progress.UIJob;
 
 @SuppressWarnings("restriction")
 public class PropertyMonitor implements IEngineSelectionListener {
@@ -61,7 +67,30 @@ public class PropertyMonitor implements IEngineSelectionListener {
 			public void widgetSelected(SelectionEvent evt) {
 				final SelectAnyIFileDialog dialog = new SelectAnyIFileDialog();
 				if (dialog.open() == Dialog.OK) {
-					addProperty(((IResource) dialog.getResult()[0]).getFullPath());
+					final Job addPropertyJob = new Job("adding property") {
+						@Override
+						protected IStatus run(IProgressMonitor monitor) {
+							propertyManager.addProperty(((IResource) dialog.getResult()[0]).getFullPath().toPortableString());
+							return Status.OK_STATUS;
+						}
+					};
+					Job.getJobManager().addJobChangeListener(new JobChangeAdapter() {
+						@Override
+						public void done(IJobChangeEvent event) {
+							if (event.getJob() == addPropertyJob) {
+								Job.getJobManager().removeJobChangeListener(this);
+								UIJob job = new UIJob("adding property") {
+									@Override
+									public IStatus runInUIThread(IProgressMonitor monitor) {
+										propertyTreeViewer.setInput(propertyManager);
+										return Status.OK_STATUS;
+									}
+								};
+								job.schedule();
+							}
+						}
+					});
+					addPropertyJob.schedule();
 				}
 			}
 		});
@@ -147,11 +176,6 @@ public class PropertyMonitor implements IEngineSelectionListener {
 		group.setLayout(locationLayout);
 		group.setLayoutData(gd);
 		return group;
-	}
-
-	private void addProperty(IPath propertyPath) {
-		propertyManager.addProperty(propertyPath.toPortableString());
-		propertyTreeViewer.setInput(propertyManager);
 	}
 
 	private void removeProperties() {

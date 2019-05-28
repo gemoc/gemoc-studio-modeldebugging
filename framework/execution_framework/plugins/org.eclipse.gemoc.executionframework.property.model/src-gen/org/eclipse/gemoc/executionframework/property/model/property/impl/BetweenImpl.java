@@ -5,12 +5,15 @@ package org.eclipse.gemoc.executionframework.property.model.property.impl;
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import org.eclipse.gemoc.executionframework.property.model.property.Between;
 import org.eclipse.gemoc.executionframework.property.model.property.PropertyPackage;
 import org.eclipse.gemoc.executionframework.property.model.property.UpperBounded;
+
+import org.eclipse.viatra.query.patternlanguage.emf.vql.Pattern;
 
 /**
  * <!-- begin-user-doc -->
@@ -27,24 +30,14 @@ import org.eclipse.gemoc.executionframework.property.model.property.UpperBounded
  */
 public class BetweenImpl extends LowerBoundedImpl implements Between {
 	/**
-	 * The default value of the '{@link #getUpperBoundPattern() <em>Upper Bound Pattern</em>}' attribute.
+	 * The cached value of the '{@link #getUpperBoundPattern() <em>Upper Bound Pattern</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getUpperBoundPattern()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String UPPER_BOUND_PATTERN_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getUpperBoundPattern() <em>Upper Bound Pattern</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getUpperBoundPattern()
-	 * @generated
-	 * @ordered
-	 */
-	protected String upperBoundPattern = UPPER_BOUND_PATTERN_EDEFAULT;
+	protected Pattern upperBoundPattern;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -70,7 +63,16 @@ public class BetweenImpl extends LowerBoundedImpl implements Between {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getUpperBoundPattern() {
+	public Pattern getUpperBoundPattern() {
+		if (upperBoundPattern != null && upperBoundPattern.eIsProxy()) {
+			InternalEObject oldUpperBoundPattern = (InternalEObject) upperBoundPattern;
+			upperBoundPattern = (Pattern) eResolveProxy(oldUpperBoundPattern);
+			if (upperBoundPattern != oldUpperBoundPattern) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE,
+							PropertyPackage.BETWEEN__UPPER_BOUND_PATTERN, oldUpperBoundPattern, upperBoundPattern));
+			}
+		}
 		return upperBoundPattern;
 	}
 
@@ -79,8 +81,17 @@ public class BetweenImpl extends LowerBoundedImpl implements Between {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setUpperBoundPattern(String newUpperBoundPattern) {
-		String oldUpperBoundPattern = upperBoundPattern;
+	public Pattern basicGetUpperBoundPattern() {
+		return upperBoundPattern;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setUpperBoundPattern(Pattern newUpperBoundPattern) {
+		Pattern oldUpperBoundPattern = upperBoundPattern;
 		upperBoundPattern = newUpperBoundPattern;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, PropertyPackage.BETWEEN__UPPER_BOUND_PATTERN,
@@ -96,7 +107,9 @@ public class BetweenImpl extends LowerBoundedImpl implements Between {
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 		case PropertyPackage.BETWEEN__UPPER_BOUND_PATTERN:
-			return getUpperBoundPattern();
+			if (resolve)
+				return getUpperBoundPattern();
+			return basicGetUpperBoundPattern();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -110,7 +123,7 @@ public class BetweenImpl extends LowerBoundedImpl implements Between {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 		case PropertyPackage.BETWEEN__UPPER_BOUND_PATTERN:
-			setUpperBoundPattern((String) newValue);
+			setUpperBoundPattern((Pattern) newValue);
 			return;
 		}
 		super.eSet(featureID, newValue);
@@ -125,7 +138,7 @@ public class BetweenImpl extends LowerBoundedImpl implements Between {
 	public void eUnset(int featureID) {
 		switch (featureID) {
 		case PropertyPackage.BETWEEN__UPPER_BOUND_PATTERN:
-			setUpperBoundPattern(UPPER_BOUND_PATTERN_EDEFAULT);
+			setUpperBoundPattern((Pattern) null);
 			return;
 		}
 		super.eUnset(featureID);
@@ -140,8 +153,7 @@ public class BetweenImpl extends LowerBoundedImpl implements Between {
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 		case PropertyPackage.BETWEEN__UPPER_BOUND_PATTERN:
-			return UPPER_BOUND_PATTERN_EDEFAULT == null ? upperBoundPattern != null
-					: !UPPER_BOUND_PATTERN_EDEFAULT.equals(upperBoundPattern);
+			return upperBoundPattern != null;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -180,23 +192,6 @@ public class BetweenImpl extends LowerBoundedImpl implements Between {
 			}
 		}
 		return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String toString() {
-		if (eIsProxy())
-			return super.toString();
-
-		StringBuilder result = new StringBuilder(super.toString());
-		result.append(" (upperBoundPattern: ");
-		result.append(upperBoundPattern);
-		result.append(')');
-		return result.toString();
 	}
 
 } //BetweenImpl

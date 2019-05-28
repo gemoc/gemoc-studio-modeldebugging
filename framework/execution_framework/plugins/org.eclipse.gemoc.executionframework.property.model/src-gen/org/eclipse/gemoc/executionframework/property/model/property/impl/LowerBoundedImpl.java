@@ -5,11 +5,14 @@ package org.eclipse.gemoc.executionframework.property.model.property.impl;
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import org.eclipse.gemoc.executionframework.property.model.property.LowerBounded;
 import org.eclipse.gemoc.executionframework.property.model.property.PropertyPackage;
+
+import org.eclipse.viatra.query.patternlanguage.emf.vql.Pattern;
 
 /**
  * <!-- begin-user-doc -->
@@ -26,24 +29,14 @@ import org.eclipse.gemoc.executionframework.property.model.property.PropertyPack
  */
 public abstract class LowerBoundedImpl extends ScopeImpl implements LowerBounded {
 	/**
-	 * The default value of the '{@link #getLowerBoundPattern() <em>Lower Bound Pattern</em>}' attribute.
+	 * The cached value of the '{@link #getLowerBoundPattern() <em>Lower Bound Pattern</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getLowerBoundPattern()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String LOWER_BOUND_PATTERN_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getLowerBoundPattern() <em>Lower Bound Pattern</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getLowerBoundPattern()
-	 * @generated
-	 * @ordered
-	 */
-	protected String lowerBoundPattern = LOWER_BOUND_PATTERN_EDEFAULT;
+	protected Pattern lowerBoundPattern;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -69,7 +62,17 @@ public abstract class LowerBoundedImpl extends ScopeImpl implements LowerBounded
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getLowerBoundPattern() {
+	public Pattern getLowerBoundPattern() {
+		if (lowerBoundPattern != null && lowerBoundPattern.eIsProxy()) {
+			InternalEObject oldLowerBoundPattern = (InternalEObject) lowerBoundPattern;
+			lowerBoundPattern = (Pattern) eResolveProxy(oldLowerBoundPattern);
+			if (lowerBoundPattern != oldLowerBoundPattern) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE,
+							PropertyPackage.LOWER_BOUNDED__LOWER_BOUND_PATTERN, oldLowerBoundPattern,
+							lowerBoundPattern));
+			}
+		}
 		return lowerBoundPattern;
 	}
 
@@ -78,8 +81,17 @@ public abstract class LowerBoundedImpl extends ScopeImpl implements LowerBounded
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setLowerBoundPattern(String newLowerBoundPattern) {
-		String oldLowerBoundPattern = lowerBoundPattern;
+	public Pattern basicGetLowerBoundPattern() {
+		return lowerBoundPattern;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setLowerBoundPattern(Pattern newLowerBoundPattern) {
+		Pattern oldLowerBoundPattern = lowerBoundPattern;
 		lowerBoundPattern = newLowerBoundPattern;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, PropertyPackage.LOWER_BOUNDED__LOWER_BOUND_PATTERN,
@@ -95,7 +107,9 @@ public abstract class LowerBoundedImpl extends ScopeImpl implements LowerBounded
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 		case PropertyPackage.LOWER_BOUNDED__LOWER_BOUND_PATTERN:
-			return getLowerBoundPattern();
+			if (resolve)
+				return getLowerBoundPattern();
+			return basicGetLowerBoundPattern();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -109,7 +123,7 @@ public abstract class LowerBoundedImpl extends ScopeImpl implements LowerBounded
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 		case PropertyPackage.LOWER_BOUNDED__LOWER_BOUND_PATTERN:
-			setLowerBoundPattern((String) newValue);
+			setLowerBoundPattern((Pattern) newValue);
 			return;
 		}
 		super.eSet(featureID, newValue);
@@ -124,7 +138,7 @@ public abstract class LowerBoundedImpl extends ScopeImpl implements LowerBounded
 	public void eUnset(int featureID) {
 		switch (featureID) {
 		case PropertyPackage.LOWER_BOUNDED__LOWER_BOUND_PATTERN:
-			setLowerBoundPattern(LOWER_BOUND_PATTERN_EDEFAULT);
+			setLowerBoundPattern((Pattern) null);
 			return;
 		}
 		super.eUnset(featureID);
@@ -139,27 +153,9 @@ public abstract class LowerBoundedImpl extends ScopeImpl implements LowerBounded
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 		case PropertyPackage.LOWER_BOUNDED__LOWER_BOUND_PATTERN:
-			return LOWER_BOUND_PATTERN_EDEFAULT == null ? lowerBoundPattern != null
-					: !LOWER_BOUND_PATTERN_EDEFAULT.equals(lowerBoundPattern);
+			return lowerBoundPattern != null;
 		}
 		return super.eIsSet(featureID);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String toString() {
-		if (eIsProxy())
-			return super.toString();
-
-		StringBuilder result = new StringBuilder(super.toString());
-		result.append(" (lowerBoundPattern: ");
-		result.append(lowerBoundPattern);
-		result.append(')');
-		return result.toString();
 	}
 
 } //LowerBoundedImpl

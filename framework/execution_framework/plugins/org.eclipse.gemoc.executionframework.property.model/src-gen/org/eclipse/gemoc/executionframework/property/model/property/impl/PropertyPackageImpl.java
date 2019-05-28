@@ -15,7 +15,7 @@ import org.eclipse.gemoc.executionframework.property.model.property.After;
 import org.eclipse.gemoc.executionframework.property.model.property.AfterUntil;
 import org.eclipse.gemoc.executionframework.property.model.property.Before;
 import org.eclipse.gemoc.executionframework.property.model.property.Between;
-import org.eclipse.gemoc.executionframework.property.model.property.BoundedExistence;
+import org.eclipse.gemoc.executionframework.property.model.property.BoundType;
 import org.eclipse.gemoc.executionframework.property.model.property.EPLProperty;
 import org.eclipse.gemoc.executionframework.property.model.property.Existence;
 import org.eclipse.gemoc.executionframework.property.model.property.Globally;
@@ -102,13 +102,6 @@ public class PropertyPackageImpl extends EPackageImpl implements PropertyPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass boundedExistenceEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	private EClass orderedTemporalPropertyEClass = null;
 
 	/**
@@ -187,6 +180,13 @@ public class PropertyPackageImpl extends EPackageImpl implements PropertyPackage
 	 * @generated
 	 */
 	private EEnum quantifierEEnum = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EEnum boundTypeEEnum = null;
 
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
@@ -272,8 +272,8 @@ public class PropertyPackageImpl extends EPackageImpl implements PropertyPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getProperty_Pattern() {
-		return (EAttribute) propertyEClass.getEStructuralFeatures().get(0);
+	public EReference getProperty_Pattern() {
+		return (EReference) propertyEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -398,8 +398,8 @@ public class PropertyPackageImpl extends EPackageImpl implements PropertyPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getBoundedExistence() {
-		return boundedExistenceEClass;
+	public EAttribute getExistence_N() {
+		return (EAttribute) existenceEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -407,8 +407,8 @@ public class PropertyPackageImpl extends EPackageImpl implements PropertyPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getBoundedExistence_N() {
-		return (EAttribute) boundedExistenceEClass.getEStructuralFeatures().get(0);
+	public EAttribute getExistence_BoundType() {
+		return (EAttribute) existenceEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -425,8 +425,8 @@ public class PropertyPackageImpl extends EPackageImpl implements PropertyPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getOrderedTemporalProperty_OtherPattern() {
-		return (EAttribute) orderedTemporalPropertyEClass.getEStructuralFeatures().get(0);
+	public EReference getOrderedTemporalProperty_OtherPattern() {
+		return (EReference) orderedTemporalPropertyEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -479,8 +479,8 @@ public class PropertyPackageImpl extends EPackageImpl implements PropertyPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getLowerBounded_LowerBoundPattern() {
-		return (EAttribute) lowerBoundedEClass.getEStructuralFeatures().get(0);
+	public EReference getLowerBounded_LowerBoundPattern() {
+		return (EReference) lowerBoundedEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -497,8 +497,8 @@ public class PropertyPackageImpl extends EPackageImpl implements PropertyPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getUpperBounded_UpperBoundPattern() {
-		return (EAttribute) upperBoundedEClass.getEStructuralFeatures().get(0);
+	public EReference getUpperBounded_UpperBoundPattern() {
+		return (EReference) upperBoundedEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -551,6 +551,15 @@ public class PropertyPackageImpl extends EPackageImpl implements PropertyPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EEnum getBoundType() {
+		return boundTypeEEnum;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public PropertyFactory getPropertyFactory() {
 		return (PropertyFactory) getEFactoryInstance();
 	}
@@ -576,7 +585,7 @@ public class PropertyPackageImpl extends EPackageImpl implements PropertyPackage
 
 		// Create classes and their features
 		propertyEClass = createEClass(PROPERTY);
-		createEAttribute(propertyEClass, PROPERTY__PATTERN);
+		createEReference(propertyEClass, PROPERTY__PATTERN);
 
 		quantifiedPropertyEClass = createEClass(QUANTIFIED_PROPERTY);
 		createEAttribute(quantifiedPropertyEClass, QUANTIFIED_PROPERTY__QUANTIFIER);
@@ -596,12 +605,11 @@ public class PropertyPackageImpl extends EPackageImpl implements PropertyPackage
 		universalityEClass = createEClass(UNIVERSALITY);
 
 		existenceEClass = createEClass(EXISTENCE);
-
-		boundedExistenceEClass = createEClass(BOUNDED_EXISTENCE);
-		createEAttribute(boundedExistenceEClass, BOUNDED_EXISTENCE__N);
+		createEAttribute(existenceEClass, EXISTENCE__N);
+		createEAttribute(existenceEClass, EXISTENCE__BOUND_TYPE);
 
 		orderedTemporalPropertyEClass = createEClass(ORDERED_TEMPORAL_PROPERTY);
-		createEAttribute(orderedTemporalPropertyEClass, ORDERED_TEMPORAL_PROPERTY__OTHER_PATTERN);
+		createEReference(orderedTemporalPropertyEClass, ORDERED_TEMPORAL_PROPERTY__OTHER_PATTERN);
 
 		responseEClass = createEClass(RESPONSE);
 
@@ -612,10 +620,10 @@ public class PropertyPackageImpl extends EPackageImpl implements PropertyPackage
 		globallyEClass = createEClass(GLOBALLY);
 
 		lowerBoundedEClass = createEClass(LOWER_BOUNDED);
-		createEAttribute(lowerBoundedEClass, LOWER_BOUNDED__LOWER_BOUND_PATTERN);
+		createEReference(lowerBoundedEClass, LOWER_BOUNDED__LOWER_BOUND_PATTERN);
 
 		upperBoundedEClass = createEClass(UPPER_BOUNDED);
-		createEAttribute(upperBoundedEClass, UPPER_BOUNDED__UPPER_BOUND_PATTERN);
+		createEReference(upperBoundedEClass, UPPER_BOUNDED__UPPER_BOUND_PATTERN);
 
 		beforeEClass = createEClass(BEFORE);
 
@@ -627,6 +635,7 @@ public class PropertyPackageImpl extends EPackageImpl implements PropertyPackage
 
 		// Create enums
 		quantifierEEnum = createEEnum(QUANTIFIER);
+		boundTypeEEnum = createEEnum(BOUND_TYPE);
 	}
 
 	/**
@@ -667,25 +676,25 @@ public class PropertyPackageImpl extends EPackageImpl implements PropertyPackage
 		absenceEClass.getESuperTypes().add(this.getTemporalProperty());
 		universalityEClass.getESuperTypes().add(this.getTemporalProperty());
 		existenceEClass.getESuperTypes().add(this.getTemporalProperty());
-		boundedExistenceEClass.getESuperTypes().add(this.getTemporalProperty());
 		orderedTemporalPropertyEClass.getESuperTypes().add(this.getTemporalProperty());
 		responseEClass.getESuperTypes().add(this.getOrderedTemporalProperty());
 		precedenceEClass.getESuperTypes().add(this.getOrderedTemporalProperty());
 		globallyEClass.getESuperTypes().add(this.getScope());
 		lowerBoundedEClass.getESuperTypes().add(this.getScope());
 		upperBoundedEClass.getESuperTypes().add(this.getScope());
-		beforeEClass.getESuperTypes().add(this.getLowerBounded());
+		beforeEClass.getESuperTypes().add(this.getUpperBounded());
 		betweenEClass.getESuperTypes().add(this.getLowerBounded());
 		betweenEClass.getESuperTypes().add(this.getUpperBounded());
 		afterUntilEClass.getESuperTypes().add(this.getLowerBounded());
 		afterUntilEClass.getESuperTypes().add(this.getUpperBounded());
-		afterEClass.getESuperTypes().add(this.getUpperBounded());
+		afterEClass.getESuperTypes().add(this.getLowerBounded());
 
 		// Initialize classes, features, and operations; add parameters
 		initEClass(propertyEClass, Property.class, "Property", !IS_ABSTRACT, !IS_INTERFACE,
 				IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getProperty_Pattern(), ecorePackage.getEString(), "pattern", null, 1, 1, Property.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getProperty_Pattern(), thePatternLanguagePackage.getPattern(), null, "pattern", null, 1, 1,
+				Property.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES,
+				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(quantifiedPropertyEClass, QuantifiedProperty.class, "QuantifiedProperty", !IS_ABSTRACT,
 				!IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -723,17 +732,16 @@ public class PropertyPackageImpl extends EPackageImpl implements PropertyPackage
 
 		initEClass(existenceEClass, Existence.class, "Existence", !IS_ABSTRACT, !IS_INTERFACE,
 				IS_GENERATED_INSTANCE_CLASS);
-
-		initEClass(boundedExistenceEClass, BoundedExistence.class, "BoundedExistence", !IS_ABSTRACT, !IS_INTERFACE,
-				IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getBoundedExistence_N(), ecorePackage.getEInt(), "n", "1", 1, 1, BoundedExistence.class,
+		initEAttribute(getExistence_N(), ecorePackage.getEInt(), "n", "1", 1, 1, Existence.class, !IS_TRANSIENT,
+				!IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getExistence_BoundType(), this.getBoundType(), "boundType", null, 0, 1, Existence.class,
 				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(orderedTemporalPropertyEClass, OrderedTemporalProperty.class, "OrderedTemporalProperty", IS_ABSTRACT,
 				!IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getOrderedTemporalProperty_OtherPattern(), ecorePackage.getEString(), "otherPattern", null, 1, 1,
-				OrderedTemporalProperty.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
-				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getOrderedTemporalProperty_OtherPattern(), thePatternLanguagePackage.getPattern(), null,
+				"otherPattern", null, 1, 1, OrderedTemporalProperty.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+				!IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(responseEClass, Response.class, "Response", !IS_ABSTRACT, !IS_INTERFACE,
 				IS_GENERATED_INSTANCE_CLASS);
@@ -748,15 +756,15 @@ public class PropertyPackageImpl extends EPackageImpl implements PropertyPackage
 
 		initEClass(lowerBoundedEClass, LowerBounded.class, "LowerBounded", IS_ABSTRACT, !IS_INTERFACE,
 				IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getLowerBounded_LowerBoundPattern(), ecorePackage.getEString(), "lowerBoundPattern", null, 1, 1,
-				LowerBounded.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-				!IS_DERIVED, IS_ORDERED);
+		initEReference(getLowerBounded_LowerBoundPattern(), thePatternLanguagePackage.getPattern(), null,
+				"lowerBoundPattern", null, 1, 1, LowerBounded.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+				!IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(upperBoundedEClass, UpperBounded.class, "UpperBounded", IS_ABSTRACT, !IS_INTERFACE,
 				IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getUpperBounded_UpperBoundPattern(), ecorePackage.getEString(), "upperBoundPattern", null, 1, 1,
-				UpperBounded.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-				!IS_DERIVED, IS_ORDERED);
+		initEReference(getUpperBounded_UpperBoundPattern(), thePatternLanguagePackage.getPattern(), null,
+				"upperBoundPattern", null, 1, 1, UpperBounded.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+				!IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(beforeEClass, Before.class, "Before", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -771,6 +779,11 @@ public class PropertyPackageImpl extends EPackageImpl implements PropertyPackage
 		initEEnum(quantifierEEnum, Quantifier.class, "Quantifier");
 		addEEnumLiteral(quantifierEEnum, Quantifier.FORALL);
 		addEEnumLiteral(quantifierEEnum, Quantifier.EXISTS);
+
+		initEEnum(boundTypeEEnum, BoundType.class, "BoundType");
+		addEEnumLiteral(boundTypeEEnum, BoundType.EXACT);
+		addEEnumLiteral(boundTypeEEnum, BoundType.LOWER_BOUND);
+		addEEnumLiteral(boundTypeEEnum, BoundType.UPPER_BOUND);
 
 		// Create resource
 		createResource(eNS_URI);

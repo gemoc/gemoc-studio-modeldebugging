@@ -13,10 +13,22 @@
         <ecoreEnumLiteral href="property.ecore#//Quantifier/EXISTS"/>
       </genEnumLiterals>
     </genEnums>
+    <genEnums typeSafeEnumCompatible="false">
+      <ecoreEnum href="property.ecore#//BoundType"/>
+      <genEnumLiterals>
+        <ecoreEnumLiteral href="property.ecore#//BoundType/EXACT"/>
+      </genEnumLiterals>
+      <genEnumLiterals>
+        <ecoreEnumLiteral href="property.ecore#//BoundType/LOWER_BOUND"/>
+      </genEnumLiterals>
+      <genEnumLiterals>
+        <ecoreEnumLiteral href="property.ecore#//BoundType/UPPER_BOUND"/>
+      </genEnumLiterals>
+    </genEnums>
     <genClasses>
       <ecoreClass href="property.ecore#//Property"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true">
-        <ecoreFeature xsi:type="ecore:EAttribute" href="property.ecore#//Property/pattern"/>
+        <ecoreFeature xsi:type="ecore:EReference" href="property.ecore#//Property/pattern"/>
       </genFeatures>
     </genClasses>
     <genClasses>
@@ -57,17 +69,17 @@
     </genClasses>
     <genClasses>
       <ecoreClass href="property.ecore#//Existence"/>
-    </genClasses>
-    <genClasses>
-      <ecoreClass href="property.ecore#//BoundedExistence"/>
       <genFeatures createChild="false">
-        <ecoreFeature xsi:type="ecore:EAttribute" href="property.ecore#//BoundedExistence/n"/>
+        <ecoreFeature xsi:type="ecore:EAttribute" href="property.ecore#//Existence/n"/>
+      </genFeatures>
+      <genFeatures createChild="false">
+        <ecoreFeature xsi:type="ecore:EAttribute" href="property.ecore#//Existence/boundType"/>
       </genFeatures>
     </genClasses>
     <genClasses>
       <ecoreClass href="property.ecore#//OrderedTemporalProperty"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true">
-        <ecoreFeature xsi:type="ecore:EAttribute" href="property.ecore#//OrderedTemporalProperty/otherPattern"/>
+        <ecoreFeature xsi:type="ecore:EReference" href="property.ecore#//OrderedTemporalProperty/otherPattern"/>
       </genFeatures>
     </genClasses>
     <genClasses>
@@ -85,13 +97,13 @@
     <genClasses>
       <ecoreClass href="property.ecore#//LowerBounded"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true">
-        <ecoreFeature xsi:type="ecore:EAttribute" href="property.ecore#//LowerBounded/lowerBoundPattern"/>
+        <ecoreFeature xsi:type="ecore:EReference" href="property.ecore#//LowerBounded/lowerBoundPattern"/>
       </genFeatures>
     </genClasses>
     <genClasses>
       <ecoreClass href="property.ecore#//UpperBounded"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true">
-        <ecoreFeature xsi:type="ecore:EAttribute" href="property.ecore#//UpperBounded/upperBoundPattern"/>
+        <ecoreFeature xsi:type="ecore:EReference" href="property.ecore#//UpperBounded/upperBoundPattern"/>
       </genFeatures>
     </genClasses>
     <genClasses>
