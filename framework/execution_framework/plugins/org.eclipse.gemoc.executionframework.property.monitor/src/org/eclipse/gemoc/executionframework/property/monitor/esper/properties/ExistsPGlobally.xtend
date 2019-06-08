@@ -24,13 +24,13 @@ class ExistsPGlobally extends AbstractExistenceProperty {
 			'''
 				select * from «name»
 				match_recognize (
-					measures P1 as P, ExecEnd as EoE
+					measures P1 as P, EoE as EoE
 					«pattern»
 					define
 						P as P.«pFqn»? is not null,
 						P1 as P1.«pFqn»? is not null,
 						nP as nP.«pFqn»? is null,
-						ExecEnd as ExecEnd.executionAboutToStop? is not null
+						EoE as EoE.executionAboutToStop? is not null
 				)
 			'''
 		return result
@@ -38,11 +38,11 @@ class ExistsPGlobally extends AbstractExistenceProperty {
 	
 	private def String rec(int i) {
 		'''«IF i == 0»
-			nP*? (P«IF exists.boundType == BoundType.LOWER_BOUND»1«ENDIF» | ExecEnd)
+			nP*? (P«IF exists.boundType == BoundType.LOWER_BOUND»1«ENDIF» | EoE)
 			«ELSEIF i == 1»
-			nP*? (P1«IF exists.boundType != BoundType.LOWER_BOUND» «rec(i - 1)»«ENDIF» | ExecEnd)
+			nP*? (P1«IF exists.boundType != BoundType.LOWER_BOUND» «rec(i - 1)»«ENDIF» | EoE)
 			«ELSE»
-			nP*? (P«IF exists.boundType == BoundType.UPPER_BOUND»1«ENDIF» «rec(i - 1)» | ExecEnd)
+			nP*? (P«IF exists.boundType == BoundType.UPPER_BOUND»1«ENDIF» «rec(i - 1)» | EoE)
 			«ENDIF»'''
 	}
 	
@@ -51,7 +51,6 @@ class ExistsPGlobally extends AbstractExistenceProperty {
 			'''
 				pattern («rec(exists.n)»)
 			'''
-		println(pattern)
 		return pattern
 	}
 	
@@ -62,11 +61,11 @@ class ExistsPGlobally extends AbstractExistenceProperty {
 			return if (reachedP) TruthValue.SATISFIED else TruthValue.VIOLATED
 		} else {
 			val execEnd = events.get("EoE")
-			val reachedExecEnd = !(execEnd === null || execEnd.empty)
+			val reachedEoE = !(execEnd === null || execEnd.empty)
 			if (exists.boundType == BoundType.UPPER_BOUND) {
-				return if (reachedExecEnd) TruthValue.SATISFIED else TruthValue.VIOLATED
+				return if (reachedEoE) TruthValue.SATISFIED else TruthValue.VIOLATED
 			} else {
-				return if (reachedP && reachedExecEnd) TruthValue.SATISFIED else TruthValue.VIOLATED
+				return if (reachedP && reachedEoE) TruthValue.SATISFIED else TruthValue.VIOLATED
 			}
 		}
 	}

@@ -1,0 +1,175 @@
+package ad.queries.x10
+
+import "http://org.gemoc.activitydiagram.sequential.xactivitydiagram/activitydiagram/" as ad
+import java ^java.lang.String
+
+pattern alwaysPattern() {
+	find alwaysPatternAux(_, _, "alwaysVar_0");
+	find alwaysPatternAux(_, _, "alwaysVar_1");
+	find alwaysPatternAux(_, _, "alwaysVar_2");
+	find alwaysPatternAux(_, _, "alwaysVar_3");
+	find alwaysPatternAux(_, _, "alwaysVar_4");
+	find alwaysPatternAux(_, _, "alwaysVar_5");
+	find alwaysPatternAux(_, _, "alwaysVar_6");
+	find alwaysPatternAux(_, _, "alwaysVar_7");
+	find alwaysPatternAux(_, _, "alwaysVar_8");
+	find alwaysPatternAux(_, _, "alwaysVar_9");
+}
+
+pattern existsPattern() {
+	find existsPatternAux(_, _, "existsVar_0");
+	find existsPatternAux(_, _, "existsVar_1");
+	find existsPatternAux(_, _, "existsVar_2");
+	find existsPatternAux(_, _, "existsVar_3");
+	find existsPatternAux(_, _, "existsVar_4");
+	find existsPatternAux(_, _, "existsVar_5");
+	find existsPatternAux(_, _, "existsVar_6");
+	find existsPatternAux(_, _, "existsVar_7");
+	find existsPatternAux(_, _, "existsVar_8");
+	find existsPatternAux(_, _, "existsVar_9");
+}
+
+pattern neverPattern() {
+	find neverPatternAux(_, _, "neverVar_0");
+	find neverPatternAux(_, _, "neverVar_1");
+	find neverPatternAux(_, _, "neverVar_2");
+	find neverPatternAux(_, _, "neverVar_3");
+	find neverPatternAux(_, _, "neverVar_4");
+	find neverPatternAux(_, _, "neverVar_5");
+	find neverPatternAux(_, _, "neverVar_6");
+	find neverPatternAux(_, _, "neverVar_7");
+	find neverPatternAux(_, _, "neverVar_8");
+	find neverPatternAux(_, _, "neverVar_9");
+}
+
+pattern precedence1Pattern() {
+	find precedence1PatternAux(_, _, "precedenceVar1_0");
+	find precedence1PatternAux(_, _, "precedenceVar1_1");
+	find precedence1PatternAux(_, _, "precedenceVar1_2");
+	find precedence1PatternAux(_, _, "precedenceVar1_3");
+	find precedence1PatternAux(_, _, "precedenceVar1_4");
+	find precedence1PatternAux(_, _, "precedenceVar1_5");
+	find precedence1PatternAux(_, _, "precedenceVar1_6");
+	find precedence1PatternAux(_, _, "precedenceVar1_7");
+	find precedence1PatternAux(_, _, "precedenceVar1_8");
+	find precedence1PatternAux(_, _, "precedenceVar1_9");
+}
+
+pattern precedence2Pattern() {
+	find precedence2PatternAux(_, _, "precedenceVar2_0");
+	find precedence2PatternAux(_, _, "precedenceVar2_1");
+	find precedence2PatternAux(_, _, "precedenceVar2_2");
+	find precedence2PatternAux(_, _, "precedenceVar2_3");
+	find precedence2PatternAux(_, _, "precedenceVar2_4");
+	find precedence2PatternAux(_, _, "precedenceVar2_5");
+	find precedence2PatternAux(_, _, "precedenceVar2_6");
+	find precedence2PatternAux(_, _, "precedenceVar2_7");
+	find precedence2PatternAux(_, _, "precedenceVar2_8");
+	find precedence2PatternAux(_, _, "precedenceVar2_9");
+}
+
+pattern response1Pattern() {
+	find response1PatternAux(_, _, "responseVar1_0");
+	find response1PatternAux(_, _, "responseVar1_1");
+	find response1PatternAux(_, _, "responseVar1_2");
+	find response1PatternAux(_, _, "responseVar1_3");
+	find response1PatternAux(_, _, "responseVar1_4");
+	find response1PatternAux(_, _, "responseVar1_5");
+	find response1PatternAux(_, _, "responseVar1_6");
+	find response1PatternAux(_, _, "responseVar1_7");
+	find response1PatternAux(_, _, "responseVar1_8");
+	find response1PatternAux(_, _, "responseVar1_9");
+}
+
+pattern response2Pattern() {
+	find response2PatternAux(_, _, "responseVar2_0");
+	find response2PatternAux(_, _, "responseVar2_1");
+	find response2PatternAux(_, _, "responseVar2_2");
+	find response2PatternAux(_, _, "responseVar2_3");
+	find response2PatternAux(_, _, "responseVar2_4");
+	find response2PatternAux(_, _, "responseVar2_5");
+	find response2PatternAux(_, _, "responseVar2_6");
+	find response2PatternAux(_, _, "responseVar2_7");
+	find response2PatternAux(_, _, "responseVar2_8");
+	find response2PatternAux(_, _, "responseVar2_9");
+}
+
+pattern precedence3Pattern() {
+	find precedence3PatternAux(_, _, "precedenceVar3_0");
+	find precedence3PatternAux(_, _, "precedenceVar3_1");
+	find precedence3PatternAux(_, _, "precedenceVar3_2");
+	find precedence3PatternAux(_, _, "precedenceVar3_3");
+	find precedence3PatternAux(_, _, "precedenceVar3_4");
+	find precedence3PatternAux(_, _, "precedenceVar3_5");
+	find precedence3PatternAux(_, _, "precedenceVar3_6");
+	find precedence3PatternAux(_, _, "precedenceVar3_7");
+	find precedence3PatternAux(_, _, "precedenceVar3_8");
+	find precedence3PatternAux(_, _, "precedenceVar3_9");
+}
+
+pattern precedence4Pattern() {
+	find precedence4PatternAux(_, _, "precedenceVar4_0");
+	find precedence4PatternAux(_, _, "precedenceVar4_1");
+	find precedence4PatternAux(_, _, "precedenceVar4_2");
+	find precedence4PatternAux(_, _, "precedenceVar4_3");
+	find precedence4PatternAux(_, _, "precedenceVar4_4");
+	find precedence4PatternAux(_, _, "precedenceVar4_5");
+	find precedence4PatternAux(_, _, "precedenceVar4_6");
+	find precedence4PatternAux(_, _, "precedenceVar4_7");
+	find precedence4PatternAux(_, _, "precedenceVar4_8");
+	find precedence4PatternAux(_, _, "precedenceVar4_9");
+}
+
+pattern alwaysPatternAux(alwaysVar: IntegerVariable, varValue : IntegerValue, varName : java String) {
+	IntegerVariable.name(alwaysVar, varName);
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	neg IntegerValue.value(varValue, 10);
+}
+
+pattern existsPatternAux(alwaysVar: IntegerVariable, varValue : IntegerValue, varName : java String) {
+	IntegerVariable.name(alwaysVar, varName);
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 3);
+}
+
+pattern neverPatternAux(alwaysVar: IntegerVariable, varValue : IntegerValue, varName : java String) {
+	IntegerVariable.name(alwaysVar, varName);
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	neg IntegerValue.value(varValue, 10);
+}
+
+pattern precedence1PatternAux(alwaysVar: IntegerVariable, varValue : IntegerValue, varName : java String) {
+	IntegerVariable.name(alwaysVar, varName);
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 1);
+}
+
+pattern precedence2PatternAux(alwaysVar: IntegerVariable, varValue : IntegerValue, varName : java String) {
+	IntegerVariable.name(alwaysVar, varName);
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 4);
+}
+
+pattern response1PatternAux(alwaysVar: IntegerVariable, varValue : IntegerValue, varName : java String) {
+	IntegerVariable.name(alwaysVar, varName);
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 1);
+}
+
+pattern response2PatternAux(alwaysVar: IntegerVariable, varValue : IntegerValue, varName : java String) {
+	IntegerVariable.name(alwaysVar, varName);
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 4);
+}
+
+pattern precedence3PatternAux(alwaysVar: IntegerVariable, varValue : IntegerValue, varName : java String) {
+	IntegerVariable.name(alwaysVar, varName);
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 0);
+}
+
+pattern precedence4PatternAux(alwaysVar: IntegerVariable, varValue : IntegerValue, varName : java String) {
+	IntegerVariable.name(alwaysVar, varName);
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 0);
+}

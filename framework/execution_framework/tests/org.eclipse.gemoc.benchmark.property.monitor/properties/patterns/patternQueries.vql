@@ -1,0 +1,57 @@
+package ad.queries
+
+import "http://org.gemoc.activitydiagram.sequential.xactivitydiagram/activitydiagram/" as ad
+
+pattern alwaysPattern(alwaysVar: IntegerVariable, varValue : IntegerValue) {
+	IntegerVariable.name(alwaysVar, "alwaysVar_0");
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	neg IntegerValue.value(varValue, 10);
+}
+
+pattern existsPattern(alwaysVar: IntegerVariable, varValue : IntegerValue) {
+	IntegerVariable.name(alwaysVar, "existsVar_0");
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 3);
+}
+
+pattern neverPattern(alwaysVar: IntegerVariable, varValue : IntegerValue) {
+	IntegerVariable.name(alwaysVar, "neverVar_0");
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	neg IntegerValue.value(varValue, 10);
+}
+
+pattern precedence1Pattern(alwaysVar: IntegerVariable, varValue : IntegerValue) {
+	IntegerVariable.name(alwaysVar, "precedenceVar1_0");
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 1);
+}
+
+pattern precedence2Pattern(alwaysVar: IntegerVariable, varValue : IntegerValue) {
+	IntegerVariable.name(alwaysVar, "precedenceVar2_0");
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 4);
+}
+
+pattern response1Pattern(alwaysVar: IntegerVariable, varValue : IntegerValue) {
+	IntegerVariable.name(alwaysVar, "responseVar1_0");
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 1);
+}
+
+pattern response2Pattern(alwaysVar: IntegerVariable, varValue : IntegerValue) {
+	IntegerVariable.name(alwaysVar, "responseVar2_0");
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 4);
+}
+
+pattern precedence3Pattern(alwaysVar: IntegerVariable, varValue : IntegerValue) {
+	IntegerVariable.name(alwaysVar, "precedenceVar3_0");
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 0);
+}
+
+pattern precedence4Pattern(alwaysVar: IntegerVariable, varValue : IntegerValue) {
+	IntegerVariable.name(alwaysVar, "precedenceVar4_0");
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 0);
+}

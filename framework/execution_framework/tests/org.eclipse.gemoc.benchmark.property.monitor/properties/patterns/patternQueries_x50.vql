@@ -1,0 +1,535 @@
+package ad.queries.x50
+
+import "http://org.gemoc.activitydiagram.sequential.xactivitydiagram/activitydiagram/" as ad
+import java ^java.lang.String
+
+pattern alwaysPattern() {
+	find alwaysPatternAux(_, _, "alwaysVar_0");
+	find alwaysPatternAux(_, _, "alwaysVar_1");
+	find alwaysPatternAux(_, _, "alwaysVar_2");
+	find alwaysPatternAux(_, _, "alwaysVar_3");
+	find alwaysPatternAux(_, _, "alwaysVar_4");
+	find alwaysPatternAux(_, _, "alwaysVar_5");
+	find alwaysPatternAux(_, _, "alwaysVar_6");
+	find alwaysPatternAux(_, _, "alwaysVar_7");
+	find alwaysPatternAux(_, _, "alwaysVar_8");
+	find alwaysPatternAux(_, _, "alwaysVar_9");
+	find alwaysPatternAux(_, _, "alwaysVar_10");
+	find alwaysPatternAux(_, _, "alwaysVar_11");
+	find alwaysPatternAux(_, _, "alwaysVar_12");
+	find alwaysPatternAux(_, _, "alwaysVar_13");
+	find alwaysPatternAux(_, _, "alwaysVar_14");
+	find alwaysPatternAux(_, _, "alwaysVar_15");
+	find alwaysPatternAux(_, _, "alwaysVar_16");
+	find alwaysPatternAux(_, _, "alwaysVar_17");
+	find alwaysPatternAux(_, _, "alwaysVar_18");
+	find alwaysPatternAux(_, _, "alwaysVar_19");
+	find alwaysPatternAux(_, _, "alwaysVar_20");
+	find alwaysPatternAux(_, _, "alwaysVar_21");
+	find alwaysPatternAux(_, _, "alwaysVar_22");
+	find alwaysPatternAux(_, _, "alwaysVar_23");
+	find alwaysPatternAux(_, _, "alwaysVar_24");
+	find alwaysPatternAux(_, _, "alwaysVar_25");
+	find alwaysPatternAux(_, _, "alwaysVar_26");
+	find alwaysPatternAux(_, _, "alwaysVar_27");
+	find alwaysPatternAux(_, _, "alwaysVar_28");
+	find alwaysPatternAux(_, _, "alwaysVar_29");
+	find alwaysPatternAux(_, _, "alwaysVar_30");
+	find alwaysPatternAux(_, _, "alwaysVar_31");
+	find alwaysPatternAux(_, _, "alwaysVar_32");
+	find alwaysPatternAux(_, _, "alwaysVar_33");
+	find alwaysPatternAux(_, _, "alwaysVar_34");
+	find alwaysPatternAux(_, _, "alwaysVar_35");
+	find alwaysPatternAux(_, _, "alwaysVar_36");
+	find alwaysPatternAux(_, _, "alwaysVar_37");
+	find alwaysPatternAux(_, _, "alwaysVar_38");
+	find alwaysPatternAux(_, _, "alwaysVar_39");
+	find alwaysPatternAux(_, _, "alwaysVar_40");
+	find alwaysPatternAux(_, _, "alwaysVar_41");
+	find alwaysPatternAux(_, _, "alwaysVar_42");
+	find alwaysPatternAux(_, _, "alwaysVar_43");
+	find alwaysPatternAux(_, _, "alwaysVar_44");
+	find alwaysPatternAux(_, _, "alwaysVar_45");
+	find alwaysPatternAux(_, _, "alwaysVar_46");
+	find alwaysPatternAux(_, _, "alwaysVar_47");
+	find alwaysPatternAux(_, _, "alwaysVar_48");
+	find alwaysPatternAux(_, _, "alwaysVar_49");
+}
+
+pattern existsPattern() {
+	find existsPatternAux(_, _, "existsVar_0");
+	find existsPatternAux(_, _, "existsVar_1");
+	find existsPatternAux(_, _, "existsVar_2");
+	find existsPatternAux(_, _, "existsVar_3");
+	find existsPatternAux(_, _, "existsVar_4");
+	find existsPatternAux(_, _, "existsVar_5");
+	find existsPatternAux(_, _, "existsVar_6");
+	find existsPatternAux(_, _, "existsVar_7");
+	find existsPatternAux(_, _, "existsVar_8");
+	find existsPatternAux(_, _, "existsVar_9");
+	find existsPatternAux(_, _, "existsVar_10");
+	find existsPatternAux(_, _, "existsVar_11");
+	find existsPatternAux(_, _, "existsVar_12");
+	find existsPatternAux(_, _, "existsVar_13");
+	find existsPatternAux(_, _, "existsVar_14");
+	find existsPatternAux(_, _, "existsVar_15");
+	find existsPatternAux(_, _, "existsVar_16");
+	find existsPatternAux(_, _, "existsVar_17");
+	find existsPatternAux(_, _, "existsVar_18");
+	find existsPatternAux(_, _, "existsVar_19");
+	find existsPatternAux(_, _, "existsVar_20");
+	find existsPatternAux(_, _, "existsVar_21");
+	find existsPatternAux(_, _, "existsVar_22");
+	find existsPatternAux(_, _, "existsVar_23");
+	find existsPatternAux(_, _, "existsVar_24");
+	find existsPatternAux(_, _, "existsVar_25");
+	find existsPatternAux(_, _, "existsVar_26");
+	find existsPatternAux(_, _, "existsVar_27");
+	find existsPatternAux(_, _, "existsVar_28");
+	find existsPatternAux(_, _, "existsVar_29");
+	find existsPatternAux(_, _, "existsVar_30");
+	find existsPatternAux(_, _, "existsVar_31");
+	find existsPatternAux(_, _, "existsVar_32");
+	find existsPatternAux(_, _, "existsVar_33");
+	find existsPatternAux(_, _, "existsVar_34");
+	find existsPatternAux(_, _, "existsVar_35");
+	find existsPatternAux(_, _, "existsVar_36");
+	find existsPatternAux(_, _, "existsVar_37");
+	find existsPatternAux(_, _, "existsVar_38");
+	find existsPatternAux(_, _, "existsVar_39");
+	find existsPatternAux(_, _, "existsVar_40");
+	find existsPatternAux(_, _, "existsVar_41");
+	find existsPatternAux(_, _, "existsVar_42");
+	find existsPatternAux(_, _, "existsVar_43");
+	find existsPatternAux(_, _, "existsVar_44");
+	find existsPatternAux(_, _, "existsVar_45");
+	find existsPatternAux(_, _, "existsVar_46");
+	find existsPatternAux(_, _, "existsVar_47");
+	find existsPatternAux(_, _, "existsVar_48");
+	find existsPatternAux(_, _, "existsVar_49");
+}
+
+pattern neverPattern() {
+	find neverPatternAux(_, _, "neverVar_0");
+	find neverPatternAux(_, _, "neverVar_1");
+	find neverPatternAux(_, _, "neverVar_2");
+	find neverPatternAux(_, _, "neverVar_3");
+	find neverPatternAux(_, _, "neverVar_4");
+	find neverPatternAux(_, _, "neverVar_5");
+	find neverPatternAux(_, _, "neverVar_6");
+	find neverPatternAux(_, _, "neverVar_7");
+	find neverPatternAux(_, _, "neverVar_8");
+	find neverPatternAux(_, _, "neverVar_9");
+	find neverPatternAux(_, _, "neverVar_10");
+	find neverPatternAux(_, _, "neverVar_11");
+	find neverPatternAux(_, _, "neverVar_12");
+	find neverPatternAux(_, _, "neverVar_13");
+	find neverPatternAux(_, _, "neverVar_14");
+	find neverPatternAux(_, _, "neverVar_15");
+	find neverPatternAux(_, _, "neverVar_16");
+	find neverPatternAux(_, _, "neverVar_17");
+	find neverPatternAux(_, _, "neverVar_18");
+	find neverPatternAux(_, _, "neverVar_19");
+	find neverPatternAux(_, _, "neverVar_20");
+	find neverPatternAux(_, _, "neverVar_21");
+	find neverPatternAux(_, _, "neverVar_22");
+	find neverPatternAux(_, _, "neverVar_23");
+	find neverPatternAux(_, _, "neverVar_24");
+	find neverPatternAux(_, _, "neverVar_25");
+	find neverPatternAux(_, _, "neverVar_26");
+	find neverPatternAux(_, _, "neverVar_27");
+	find neverPatternAux(_, _, "neverVar_28");
+	find neverPatternAux(_, _, "neverVar_29");
+	find neverPatternAux(_, _, "neverVar_30");
+	find neverPatternAux(_, _, "neverVar_31");
+	find neverPatternAux(_, _, "neverVar_32");
+	find neverPatternAux(_, _, "neverVar_33");
+	find neverPatternAux(_, _, "neverVar_34");
+	find neverPatternAux(_, _, "neverVar_35");
+	find neverPatternAux(_, _, "neverVar_36");
+	find neverPatternAux(_, _, "neverVar_37");
+	find neverPatternAux(_, _, "neverVar_38");
+	find neverPatternAux(_, _, "neverVar_39");
+	find neverPatternAux(_, _, "neverVar_40");
+	find neverPatternAux(_, _, "neverVar_41");
+	find neverPatternAux(_, _, "neverVar_42");
+	find neverPatternAux(_, _, "neverVar_43");
+	find neverPatternAux(_, _, "neverVar_44");
+	find neverPatternAux(_, _, "neverVar_45");
+	find neverPatternAux(_, _, "neverVar_46");
+	find neverPatternAux(_, _, "neverVar_47");
+	find neverPatternAux(_, _, "neverVar_48");
+	find neverPatternAux(_, _, "neverVar_49");
+}
+
+pattern precedence1Pattern() {
+	find precedence1PatternAux(_, _, "precedenceVar1_0");
+	find precedence1PatternAux(_, _, "precedenceVar1_1");
+	find precedence1PatternAux(_, _, "precedenceVar1_2");
+	find precedence1PatternAux(_, _, "precedenceVar1_3");
+	find precedence1PatternAux(_, _, "precedenceVar1_4");
+	find precedence1PatternAux(_, _, "precedenceVar1_5");
+	find precedence1PatternAux(_, _, "precedenceVar1_6");
+	find precedence1PatternAux(_, _, "precedenceVar1_7");
+	find precedence1PatternAux(_, _, "precedenceVar1_8");
+	find precedence1PatternAux(_, _, "precedenceVar1_9");
+	find precedence1PatternAux(_, _, "precedenceVar1_10");
+	find precedence1PatternAux(_, _, "precedenceVar1_11");
+	find precedence1PatternAux(_, _, "precedenceVar1_12");
+	find precedence1PatternAux(_, _, "precedenceVar1_13");
+	find precedence1PatternAux(_, _, "precedenceVar1_14");
+	find precedence1PatternAux(_, _, "precedenceVar1_15");
+	find precedence1PatternAux(_, _, "precedenceVar1_16");
+	find precedence1PatternAux(_, _, "precedenceVar1_17");
+	find precedence1PatternAux(_, _, "precedenceVar1_18");
+	find precedence1PatternAux(_, _, "precedenceVar1_19");
+	find precedence1PatternAux(_, _, "precedenceVar1_20");
+	find precedence1PatternAux(_, _, "precedenceVar1_21");
+	find precedence1PatternAux(_, _, "precedenceVar1_22");
+	find precedence1PatternAux(_, _, "precedenceVar1_23");
+	find precedence1PatternAux(_, _, "precedenceVar1_24");
+	find precedence1PatternAux(_, _, "precedenceVar1_25");
+	find precedence1PatternAux(_, _, "precedenceVar1_26");
+	find precedence1PatternAux(_, _, "precedenceVar1_27");
+	find precedence1PatternAux(_, _, "precedenceVar1_28");
+	find precedence1PatternAux(_, _, "precedenceVar1_29");
+	find precedence1PatternAux(_, _, "precedenceVar1_30");
+	find precedence1PatternAux(_, _, "precedenceVar1_31");
+	find precedence1PatternAux(_, _, "precedenceVar1_32");
+	find precedence1PatternAux(_, _, "precedenceVar1_33");
+	find precedence1PatternAux(_, _, "precedenceVar1_34");
+	find precedence1PatternAux(_, _, "precedenceVar1_35");
+	find precedence1PatternAux(_, _, "precedenceVar1_36");
+	find precedence1PatternAux(_, _, "precedenceVar1_37");
+	find precedence1PatternAux(_, _, "precedenceVar1_38");
+	find precedence1PatternAux(_, _, "precedenceVar1_39");
+	find precedence1PatternAux(_, _, "precedenceVar1_40");
+	find precedence1PatternAux(_, _, "precedenceVar1_41");
+	find precedence1PatternAux(_, _, "precedenceVar1_42");
+	find precedence1PatternAux(_, _, "precedenceVar1_43");
+	find precedence1PatternAux(_, _, "precedenceVar1_44");
+	find precedence1PatternAux(_, _, "precedenceVar1_45");
+	find precedence1PatternAux(_, _, "precedenceVar1_46");
+	find precedence1PatternAux(_, _, "precedenceVar1_47");
+	find precedence1PatternAux(_, _, "precedenceVar1_48");
+	find precedence1PatternAux(_, _, "precedenceVar1_49");
+}
+
+pattern precedence2Pattern() {
+	find precedence2PatternAux(_, _, "precedenceVar2_0");
+	find precedence2PatternAux(_, _, "precedenceVar2_1");
+	find precedence2PatternAux(_, _, "precedenceVar2_2");
+	find precedence2PatternAux(_, _, "precedenceVar2_3");
+	find precedence2PatternAux(_, _, "precedenceVar2_4");
+	find precedence2PatternAux(_, _, "precedenceVar2_5");
+	find precedence2PatternAux(_, _, "precedenceVar2_6");
+	find precedence2PatternAux(_, _, "precedenceVar2_7");
+	find precedence2PatternAux(_, _, "precedenceVar2_8");
+	find precedence2PatternAux(_, _, "precedenceVar2_9");
+	find precedence2PatternAux(_, _, "precedenceVar2_10");
+	find precedence2PatternAux(_, _, "precedenceVar2_11");
+	find precedence2PatternAux(_, _, "precedenceVar2_12");
+	find precedence2PatternAux(_, _, "precedenceVar2_13");
+	find precedence2PatternAux(_, _, "precedenceVar2_14");
+	find precedence2PatternAux(_, _, "precedenceVar2_15");
+	find precedence2PatternAux(_, _, "precedenceVar2_16");
+	find precedence2PatternAux(_, _, "precedenceVar2_17");
+	find precedence2PatternAux(_, _, "precedenceVar2_18");
+	find precedence2PatternAux(_, _, "precedenceVar2_19");
+	find precedence2PatternAux(_, _, "precedenceVar2_20");
+	find precedence2PatternAux(_, _, "precedenceVar2_21");
+	find precedence2PatternAux(_, _, "precedenceVar2_22");
+	find precedence2PatternAux(_, _, "precedenceVar2_23");
+	find precedence2PatternAux(_, _, "precedenceVar2_24");
+	find precedence2PatternAux(_, _, "precedenceVar2_25");
+	find precedence2PatternAux(_, _, "precedenceVar2_26");
+	find precedence2PatternAux(_, _, "precedenceVar2_27");
+	find precedence2PatternAux(_, _, "precedenceVar2_28");
+	find precedence2PatternAux(_, _, "precedenceVar2_29");
+	find precedence2PatternAux(_, _, "precedenceVar2_30");
+	find precedence2PatternAux(_, _, "precedenceVar2_31");
+	find precedence2PatternAux(_, _, "precedenceVar2_32");
+	find precedence2PatternAux(_, _, "precedenceVar2_33");
+	find precedence2PatternAux(_, _, "precedenceVar2_34");
+	find precedence2PatternAux(_, _, "precedenceVar2_35");
+	find precedence2PatternAux(_, _, "precedenceVar2_36");
+	find precedence2PatternAux(_, _, "precedenceVar2_37");
+	find precedence2PatternAux(_, _, "precedenceVar2_38");
+	find precedence2PatternAux(_, _, "precedenceVar2_39");
+	find precedence2PatternAux(_, _, "precedenceVar2_40");
+	find precedence2PatternAux(_, _, "precedenceVar2_41");
+	find precedence2PatternAux(_, _, "precedenceVar2_42");
+	find precedence2PatternAux(_, _, "precedenceVar2_43");
+	find precedence2PatternAux(_, _, "precedenceVar2_44");
+	find precedence2PatternAux(_, _, "precedenceVar2_45");
+	find precedence2PatternAux(_, _, "precedenceVar2_46");
+	find precedence2PatternAux(_, _, "precedenceVar2_47");
+	find precedence2PatternAux(_, _, "precedenceVar2_48");
+	find precedence2PatternAux(_, _, "precedenceVar2_49");
+}
+
+pattern response1Pattern() {
+	find response1PatternAux(_, _, "responseVar1_0");
+	find response1PatternAux(_, _, "responseVar1_1");
+	find response1PatternAux(_, _, "responseVar1_2");
+	find response1PatternAux(_, _, "responseVar1_3");
+	find response1PatternAux(_, _, "responseVar1_4");
+	find response1PatternAux(_, _, "responseVar1_5");
+	find response1PatternAux(_, _, "responseVar1_6");
+	find response1PatternAux(_, _, "responseVar1_7");
+	find response1PatternAux(_, _, "responseVar1_8");
+	find response1PatternAux(_, _, "responseVar1_9");
+	find response1PatternAux(_, _, "responseVar1_10");
+	find response1PatternAux(_, _, "responseVar1_11");
+	find response1PatternAux(_, _, "responseVar1_12");
+	find response1PatternAux(_, _, "responseVar1_13");
+	find response1PatternAux(_, _, "responseVar1_14");
+	find response1PatternAux(_, _, "responseVar1_15");
+	find response1PatternAux(_, _, "responseVar1_16");
+	find response1PatternAux(_, _, "responseVar1_17");
+	find response1PatternAux(_, _, "responseVar1_18");
+	find response1PatternAux(_, _, "responseVar1_19");
+	find response1PatternAux(_, _, "responseVar1_20");
+	find response1PatternAux(_, _, "responseVar1_21");
+	find response1PatternAux(_, _, "responseVar1_22");
+	find response1PatternAux(_, _, "responseVar1_23");
+	find response1PatternAux(_, _, "responseVar1_24");
+	find response1PatternAux(_, _, "responseVar1_25");
+	find response1PatternAux(_, _, "responseVar1_26");
+	find response1PatternAux(_, _, "responseVar1_27");
+	find response1PatternAux(_, _, "responseVar1_28");
+	find response1PatternAux(_, _, "responseVar1_29");
+	find response1PatternAux(_, _, "responseVar1_30");
+	find response1PatternAux(_, _, "responseVar1_31");
+	find response1PatternAux(_, _, "responseVar1_32");
+	find response1PatternAux(_, _, "responseVar1_33");
+	find response1PatternAux(_, _, "responseVar1_34");
+	find response1PatternAux(_, _, "responseVar1_35");
+	find response1PatternAux(_, _, "responseVar1_36");
+	find response1PatternAux(_, _, "responseVar1_37");
+	find response1PatternAux(_, _, "responseVar1_38");
+	find response1PatternAux(_, _, "responseVar1_39");
+	find response1PatternAux(_, _, "responseVar1_40");
+	find response1PatternAux(_, _, "responseVar1_41");
+	find response1PatternAux(_, _, "responseVar1_42");
+	find response1PatternAux(_, _, "responseVar1_43");
+	find response1PatternAux(_, _, "responseVar1_44");
+	find response1PatternAux(_, _, "responseVar1_45");
+	find response1PatternAux(_, _, "responseVar1_46");
+	find response1PatternAux(_, _, "responseVar1_47");
+	find response1PatternAux(_, _, "responseVar1_48");
+	find response1PatternAux(_, _, "responseVar1_49");
+}
+
+pattern response2Pattern() {
+	find response2PatternAux(_, _, "responseVar2_0");
+	find response2PatternAux(_, _, "responseVar2_1");
+	find response2PatternAux(_, _, "responseVar2_2");
+	find response2PatternAux(_, _, "responseVar2_3");
+	find response2PatternAux(_, _, "responseVar2_4");
+	find response2PatternAux(_, _, "responseVar2_5");
+	find response2PatternAux(_, _, "responseVar2_6");
+	find response2PatternAux(_, _, "responseVar2_7");
+	find response2PatternAux(_, _, "responseVar2_8");
+	find response2PatternAux(_, _, "responseVar2_9");
+	find response2PatternAux(_, _, "responseVar2_10");
+	find response2PatternAux(_, _, "responseVar2_11");
+	find response2PatternAux(_, _, "responseVar2_12");
+	find response2PatternAux(_, _, "responseVar2_13");
+	find response2PatternAux(_, _, "responseVar2_14");
+	find response2PatternAux(_, _, "responseVar2_15");
+	find response2PatternAux(_, _, "responseVar2_16");
+	find response2PatternAux(_, _, "responseVar2_17");
+	find response2PatternAux(_, _, "responseVar2_18");
+	find response2PatternAux(_, _, "responseVar2_19");
+	find response2PatternAux(_, _, "responseVar2_20");
+	find response2PatternAux(_, _, "responseVar2_21");
+	find response2PatternAux(_, _, "responseVar2_22");
+	find response2PatternAux(_, _, "responseVar2_23");
+	find response2PatternAux(_, _, "responseVar2_24");
+	find response2PatternAux(_, _, "responseVar2_25");
+	find response2PatternAux(_, _, "responseVar2_26");
+	find response2PatternAux(_, _, "responseVar2_27");
+	find response2PatternAux(_, _, "responseVar2_28");
+	find response2PatternAux(_, _, "responseVar2_29");
+	find response2PatternAux(_, _, "responseVar2_30");
+	find response2PatternAux(_, _, "responseVar2_31");
+	find response2PatternAux(_, _, "responseVar2_32");
+	find response2PatternAux(_, _, "responseVar2_33");
+	find response2PatternAux(_, _, "responseVar2_34");
+	find response2PatternAux(_, _, "responseVar2_35");
+	find response2PatternAux(_, _, "responseVar2_36");
+	find response2PatternAux(_, _, "responseVar2_37");
+	find response2PatternAux(_, _, "responseVar2_38");
+	find response2PatternAux(_, _, "responseVar2_39");
+	find response2PatternAux(_, _, "responseVar2_40");
+	find response2PatternAux(_, _, "responseVar2_41");
+	find response2PatternAux(_, _, "responseVar2_42");
+	find response2PatternAux(_, _, "responseVar2_43");
+	find response2PatternAux(_, _, "responseVar2_44");
+	find response2PatternAux(_, _, "responseVar2_45");
+	find response2PatternAux(_, _, "responseVar2_46");
+	find response2PatternAux(_, _, "responseVar2_47");
+	find response2PatternAux(_, _, "responseVar2_48");
+	find response2PatternAux(_, _, "responseVar2_49");
+}
+
+pattern precedence3Pattern() {
+	find precedence3PatternAux(_, _, "precedenceVar3_0");
+	find precedence3PatternAux(_, _, "precedenceVar3_1");
+	find precedence3PatternAux(_, _, "precedenceVar3_2");
+	find precedence3PatternAux(_, _, "precedenceVar3_3");
+	find precedence3PatternAux(_, _, "precedenceVar3_4");
+	find precedence3PatternAux(_, _, "precedenceVar3_5");
+	find precedence3PatternAux(_, _, "precedenceVar3_6");
+	find precedence3PatternAux(_, _, "precedenceVar3_7");
+	find precedence3PatternAux(_, _, "precedenceVar3_8");
+	find precedence3PatternAux(_, _, "precedenceVar3_9");
+	find precedence3PatternAux(_, _, "precedenceVar3_10");
+	find precedence3PatternAux(_, _, "precedenceVar3_11");
+	find precedence3PatternAux(_, _, "precedenceVar3_12");
+	find precedence3PatternAux(_, _, "precedenceVar3_13");
+	find precedence3PatternAux(_, _, "precedenceVar3_14");
+	find precedence3PatternAux(_, _, "precedenceVar3_15");
+	find precedence3PatternAux(_, _, "precedenceVar3_16");
+	find precedence3PatternAux(_, _, "precedenceVar3_17");
+	find precedence3PatternAux(_, _, "precedenceVar3_18");
+	find precedence3PatternAux(_, _, "precedenceVar3_19");
+	find precedence3PatternAux(_, _, "precedenceVar3_20");
+	find precedence3PatternAux(_, _, "precedenceVar3_21");
+	find precedence3PatternAux(_, _, "precedenceVar3_22");
+	find precedence3PatternAux(_, _, "precedenceVar3_23");
+	find precedence3PatternAux(_, _, "precedenceVar3_24");
+	find precedence3PatternAux(_, _, "precedenceVar3_25");
+	find precedence3PatternAux(_, _, "precedenceVar3_26");
+	find precedence3PatternAux(_, _, "precedenceVar3_27");
+	find precedence3PatternAux(_, _, "precedenceVar3_28");
+	find precedence3PatternAux(_, _, "precedenceVar3_29");
+	find precedence3PatternAux(_, _, "precedenceVar3_30");
+	find precedence3PatternAux(_, _, "precedenceVar3_31");
+	find precedence3PatternAux(_, _, "precedenceVar3_32");
+	find precedence3PatternAux(_, _, "precedenceVar3_33");
+	find precedence3PatternAux(_, _, "precedenceVar3_34");
+	find precedence3PatternAux(_, _, "precedenceVar3_35");
+	find precedence3PatternAux(_, _, "precedenceVar3_36");
+	find precedence3PatternAux(_, _, "precedenceVar3_37");
+	find precedence3PatternAux(_, _, "precedenceVar3_38");
+	find precedence3PatternAux(_, _, "precedenceVar3_39");
+	find precedence3PatternAux(_, _, "precedenceVar3_40");
+	find precedence3PatternAux(_, _, "precedenceVar3_41");
+	find precedence3PatternAux(_, _, "precedenceVar3_42");
+	find precedence3PatternAux(_, _, "precedenceVar3_43");
+	find precedence3PatternAux(_, _, "precedenceVar3_44");
+	find precedence3PatternAux(_, _, "precedenceVar3_45");
+	find precedence3PatternAux(_, _, "precedenceVar3_46");
+	find precedence3PatternAux(_, _, "precedenceVar3_47");
+	find precedence3PatternAux(_, _, "precedenceVar3_48");
+	find precedence3PatternAux(_, _, "precedenceVar3_49");
+}
+
+pattern precedence4Pattern() {
+	find precedence4PatternAux(_, _, "precedenceVar4_0");
+	find precedence4PatternAux(_, _, "precedenceVar4_1");
+	find precedence4PatternAux(_, _, "precedenceVar4_2");
+	find precedence4PatternAux(_, _, "precedenceVar4_3");
+	find precedence4PatternAux(_, _, "precedenceVar4_4");
+	find precedence4PatternAux(_, _, "precedenceVar4_5");
+	find precedence4PatternAux(_, _, "precedenceVar4_6");
+	find precedence4PatternAux(_, _, "precedenceVar4_7");
+	find precedence4PatternAux(_, _, "precedenceVar4_8");
+	find precedence4PatternAux(_, _, "precedenceVar4_9");
+	find precedence4PatternAux(_, _, "precedenceVar4_10");
+	find precedence4PatternAux(_, _, "precedenceVar4_11");
+	find precedence4PatternAux(_, _, "precedenceVar4_12");
+	find precedence4PatternAux(_, _, "precedenceVar4_13");
+	find precedence4PatternAux(_, _, "precedenceVar4_14");
+	find precedence4PatternAux(_, _, "precedenceVar4_15");
+	find precedence4PatternAux(_, _, "precedenceVar4_16");
+	find precedence4PatternAux(_, _, "precedenceVar4_17");
+	find precedence4PatternAux(_, _, "precedenceVar4_18");
+	find precedence4PatternAux(_, _, "precedenceVar4_19");
+	find precedence4PatternAux(_, _, "precedenceVar4_20");
+	find precedence4PatternAux(_, _, "precedenceVar4_21");
+	find precedence4PatternAux(_, _, "precedenceVar4_22");
+	find precedence4PatternAux(_, _, "precedenceVar4_23");
+	find precedence4PatternAux(_, _, "precedenceVar4_24");
+	find precedence4PatternAux(_, _, "precedenceVar4_25");
+	find precedence4PatternAux(_, _, "precedenceVar4_26");
+	find precedence4PatternAux(_, _, "precedenceVar4_27");
+	find precedence4PatternAux(_, _, "precedenceVar4_28");
+	find precedence4PatternAux(_, _, "precedenceVar4_29");
+	find precedence4PatternAux(_, _, "precedenceVar4_30");
+	find precedence4PatternAux(_, _, "precedenceVar4_31");
+	find precedence4PatternAux(_, _, "precedenceVar4_32");
+	find precedence4PatternAux(_, _, "precedenceVar4_33");
+	find precedence4PatternAux(_, _, "precedenceVar4_34");
+	find precedence4PatternAux(_, _, "precedenceVar4_35");
+	find precedence4PatternAux(_, _, "precedenceVar4_36");
+	find precedence4PatternAux(_, _, "precedenceVar4_37");
+	find precedence4PatternAux(_, _, "precedenceVar4_38");
+	find precedence4PatternAux(_, _, "precedenceVar4_39");
+	find precedence4PatternAux(_, _, "precedenceVar4_40");
+	find precedence4PatternAux(_, _, "precedenceVar4_41");
+	find precedence4PatternAux(_, _, "precedenceVar4_42");
+	find precedence4PatternAux(_, _, "precedenceVar4_43");
+	find precedence4PatternAux(_, _, "precedenceVar4_44");
+	find precedence4PatternAux(_, _, "precedenceVar4_45");
+	find precedence4PatternAux(_, _, "precedenceVar4_46");
+	find precedence4PatternAux(_, _, "precedenceVar4_47");
+	find precedence4PatternAux(_, _, "precedenceVar4_48");
+	find precedence4PatternAux(_, _, "precedenceVar4_49");
+}
+
+pattern alwaysPatternAux(alwaysVar: IntegerVariable, varValue : IntegerValue, varName : java String) {
+	IntegerVariable.name(alwaysVar, varName);
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	neg IntegerValue.value(varValue, 10);
+}
+
+pattern existsPatternAux(alwaysVar: IntegerVariable, varValue : IntegerValue, varName : java String) {
+	IntegerVariable.name(alwaysVar, varName);
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 3);
+}
+
+pattern neverPatternAux(alwaysVar: IntegerVariable, varValue : IntegerValue, varName : java String) {
+	IntegerVariable.name(alwaysVar, varName);
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	neg IntegerValue.value(varValue, 10);
+}
+
+pattern precedence1PatternAux(alwaysVar: IntegerVariable, varValue : IntegerValue, varName : java String) {
+	IntegerVariable.name(alwaysVar, varName);
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 1);
+}
+
+pattern precedence2PatternAux(alwaysVar: IntegerVariable, varValue : IntegerValue, varName : java String) {
+	IntegerVariable.name(alwaysVar, varName);
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 4);
+}
+
+pattern response1PatternAux(alwaysVar: IntegerVariable, varValue : IntegerValue, varName : java String) {
+	IntegerVariable.name(alwaysVar, varName);
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 1);
+}
+
+pattern response2PatternAux(alwaysVar: IntegerVariable, varValue : IntegerValue, varName : java String) {
+	IntegerVariable.name(alwaysVar, varName);
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 4);
+}
+
+pattern precedence3PatternAux(alwaysVar: IntegerVariable, varValue : IntegerValue, varName : java String) {
+	IntegerVariable.name(alwaysVar, varName);
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 0);
+}
+
+pattern precedence4PatternAux(alwaysVar: IntegerVariable, varValue : IntegerValue, varName : java String) {
+	IntegerVariable.name(alwaysVar, varName);
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 0);
+}

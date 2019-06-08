@@ -80,7 +80,7 @@ class BenchmarkTimeTestSuite {
 	@Test
 	def void test() {
 		// These params are completely specific to an environment,
-		// and they need the PDE test suite (there, BenchmarkPhase1SingleJVMTestSuite) to have
+		// and they need the PDE test suite (there, BenchmarkSingleJVMTestSuite) to have
 		// been executed at least one before via Eclispe, so that its conf files
 		// are ready.
 		// NOTE: requires passwordless sudo!
@@ -93,7 +93,7 @@ class BenchmarkTimeTestSuite {
 		log ("Preparing tmp folder")
 		val tmpWs = tmpFolderCreator.root
 
-		val List<String> params = #["sudo", "ionice", "-c", "2", "-n", "0", "nice", "-19",
+		val List<String> params = #[//"sudo", "ionice", "-c", "2", "-n", "0", "nice", "-19",
 				javaHome, "-Xms" + minMemory + "m", "-Xmx" + maxMemory + "m",
 				"-Declipse.pde.launch=true", "-Declipse.p2.data.area=@config.dir/p2", "-Dfile.encoding=UTF-8",
 				prepareProperty(BenchmarkSingleJVMTestSuite::modelProperty, modelName),

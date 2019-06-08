@@ -36,7 +36,7 @@ class SPrecedesPAfterQUntilR extends AbstractTemporalProperty {
 			'''
 				select * from «name»
 				match_recognize (
-					measures P as P
+					measures P as P, EoE as EoE
 					pattern (EoE | Q A*? (EoE | R | S | P))
 					define
 						P as P.«pFqn»? is not null,

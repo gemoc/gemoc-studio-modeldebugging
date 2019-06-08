@@ -1,0 +1,39 @@
+package ad.queries
+
+import "http://org.gemoc.activitydiagram.sequential.xactivitydiagram/activitydiagram/" as ad
+
+pattern beforeScope(alwaysVar: IntegerVariable, varValue : IntegerValue) {
+	IntegerVariable.name(alwaysVar, "beforeVar_0");
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 0);
+}
+
+pattern afterScope(alwaysVar: IntegerVariable, varValue : IntegerValue) {
+	IntegerVariable.name(alwaysVar, "afterVar_0");
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 0);
+}
+
+pattern between1Scope(alwaysVar: IntegerVariable, varValue : IntegerValue) {
+	IntegerVariable.name(alwaysVar, "betweenVar1_0");
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 0);
+}
+
+pattern between2Scope(alwaysVar: IntegerVariable, varValue : IntegerValue) {
+	IntegerVariable.name(alwaysVar, "betweenVar2_0");
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 5);
+}
+
+pattern afterUntil1Scope(alwaysVar: IntegerVariable, varValue : IntegerValue) {
+	IntegerVariable.name(alwaysVar, "afterUntilVar1_0");
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 0);
+}
+
+pattern afterUntil2Scope(alwaysVar: IntegerVariable, varValue : IntegerValue) {
+	IntegerVariable.name(alwaysVar, "afterUntilVar2_0");
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 5);
+}

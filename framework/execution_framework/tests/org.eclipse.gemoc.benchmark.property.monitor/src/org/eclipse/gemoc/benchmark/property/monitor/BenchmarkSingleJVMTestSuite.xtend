@@ -10,6 +10,7 @@ import java.util.ArrayList
 import java.util.HashMap
 import java.util.List
 import java.util.Map
+import org.eclipse.core.resources.IFolder
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.IProgressMonitor
 import org.eclipse.core.runtime.Status
@@ -20,13 +21,12 @@ import org.eclipse.gemoc.benchmark.cases.BenchmarkingCase
 import org.eclipse.gemoc.benchmark.utils.CSVHelper
 import org.eclipse.gemoc.benchmark.utils.EclipseTestUtil
 import org.eclipse.gemoc.benchmark.utils.Util
-import org.eclipse.gemoc.executionframework.property.model.property.EPLProperty
+import org.eclipse.gemoc.executionframework.property.model.property.TemporalProperty
 import org.junit.After
 import org.junit.Test
 
 import static org.eclipse.gemoc.benchmark.property.monitor.LanguageData.*
 import static org.eclipse.gemoc.benchmark.utils.BenchmarkHelpers.*
-import org.eclipse.core.resources.IFolder
 
 class BenchmarkSingleJVMTestSuite {
 
@@ -49,7 +49,6 @@ class BenchmarkSingleJVMTestSuite {
 	var BenchmarkingCase<?, ?, ?> benchmarkingCase
 
 	private def execute(IProgressMonitor m) {
-		// Create engine parameterized with inputs
 		log("Preparing engine")
 		System.gc
 		Thread.sleep(3000)
@@ -133,24 +132,17 @@ class BenchmarkSingleJVMTestSuite {
 					val propertyFolder = new File(propertyFolderName)
 					val propertyFolderInWS = copyFolderInWS(propertyFolder, eclipseProject, m)
 					
-//					val property = loadProperty(propertyFolderInWS, propertyName)
-					val property1 = loadProperty(propertyFolderInWS, "exists_p_after_q.property")
-					val property2 = loadProperty(propertyFolderInWS, "exists_p_between_q_and_r_RIGHT.property")
-					
+					val property = loadProperty(propertyFolderInWS, propertyName)
+
 					benchmarkingCase = switch (monitoringCase) {
-//						case "K3Language": new K3PropertyBenchmarkingCase(modelURI, initializationArguments, languages.get(languageName), #{property})
-						case "K3Language": new K3PropertyBenchmarkingCase(
-							modelURI, initializationArguments, languages.get(languageName), #{property1, property2}
-						)
+						case "K3Language": new K3PropertyBenchmarkingCase(modelURI, initializationArguments, languages.get(languageName), #{property})
 					}
 					
 					log("Warming up.")
 					for (var i = 0; i < 10; i++) {
 						benchmarkingCase.initialize()
 						execute(m)
-						log("cleaning up")
-						Util::cleanup("org.eclipse.gemoc.example.k3fsm.k3dsa")
-						log("cleaned up")
+						Util::cleanup("org.eclipse.gemoc.activitydiagram.sequential.k3dsa")
 					}
 					
 					for (var i = 0; i < 20; i++) {
@@ -161,7 +153,7 @@ class BenchmarkSingleJVMTestSuite {
 						execute(m)
 						csv.totalExecutionTimes.add(Long.parseLong(getResults(tmpExecutionTimeFile).head))
 						csv.initializationTimes.add(initTime)
-						Util::cleanup("org.eclipse.gemoc.example.k3fsm.k3dsa")
+						Util::cleanup("org.eclipse.gemoc.activitydiagram.sequential.k3dsa")
 					}
 					
 					writers.get(executionCSVFilename).println(csv.exportExecutionTimes)
@@ -204,8 +196,8 @@ class BenchmarkSingleJVMTestSuite {
 			if (propertyResource !== null) {
 				if (propertyResource.errors.size == 0 && !propertyResource.contents.empty) {
 					val topElement = propertyResource.contents.get(0)
-					if (topElement instanceof EPLProperty) {
-						return topElement as EPLProperty
+					if (topElement instanceof TemporalProperty) {
+						return topElement as TemporalProperty
 					} else {
 						println("[ERROR] Root element is not a property: " + propertyURI.toString)
 						return null

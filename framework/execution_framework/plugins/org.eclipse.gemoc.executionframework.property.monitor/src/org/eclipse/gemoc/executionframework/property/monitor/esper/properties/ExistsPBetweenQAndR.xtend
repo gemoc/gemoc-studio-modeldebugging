@@ -3,7 +3,6 @@ package org.eclipse.gemoc.executionframework.property.monitor.esper.properties
 import java.util.List
 import java.util.Map
 import org.eclipse.gemoc.executionframework.property.model.property.Between
-import org.eclipse.gemoc.executionframework.property.model.property.BoundType
 import org.eclipse.gemoc.executionframework.property.model.property.Existence
 import org.eclipse.gemoc.executionframework.property.monitor.esper.TruthValue
 import org.eclipse.viatra.query.patternlanguage.emf.specification.SpecificationBuilder
@@ -33,39 +32,24 @@ class ExistsPBetweenQAndR extends AbstractExistenceProperty {
 			'''
 				select * from «name»
 				match_recognize (
-					measures P1 as P, P2 as PExcess, Q as Q, ExecEnd as EoE
+					measures P as P, Q as Q, EoE as EoE
 					«pattern»
 					define
 						P as P.«pFqn»? is not null,
-						P1 as P1.«pFqn»? is not null,
-						P2 as P2.«pFqn»? is not null,
-						nP as nP.«pFqn»? is null,
+						nPR as nPR.«pFqn»? is null and nPR.«rFqn»? is null,
 						Q as Q.«qFqn»? is not null,
 						R as R.«rFqn»? is not null,
-						ExecEnd as ExecEnd.executionAboutToStop? is not null
+						EoE as EoE.executionAboutToStop? is not null
 				)
 			'''
 		return result
 	}
 	
-	private def String rec(int i) {
-		'''
-			«IF i == 0»
-			nP*? (P«IF exists.boundType == BoundType.LOWER_BOUND»1«ELSEIF exists.boundType == BoundType.UPPER_BOUND»2«ENDIF» A?? (R | ExecEnd) | (R | ExecEnd))
-			«ELSEIF i == 1»
-			nP*? (P1«IF exists.boundType != BoundType.LOWER_BOUND» «rec(i - 1)»«ENDIF» | (R | ExecEnd))
-			«ELSE»
-			nP*? (P«IF exists.boundType == BoundType.UPPER_BOUND»1«ENDIF» «rec(i - 1)» | (R | ExecEnd))
-			«ENDIF»
-		'''
-	}
-	
 	private def getPattern() {
 		val pattern =
 			'''
-				pattern (Q «rec(exists.n)» | ExecEnd)
+				pattern (EoE | Q nPR* (P nPR*)* (R | EoE))
 			'''
-		println(pattern)
 		return pattern
 	}
 	
@@ -73,35 +57,27 @@ class ExistsPBetweenQAndR extends AbstractExistenceProperty {
 		val lQ = events.get("Q")
 		val reachedQ = !(lQ === null || lQ.empty)
 		if (reachedQ) {
-			val lR = events.get("R")
-			val reachedR = !(lR === null || lR.empty)
-			if (reachedR) {
+			val lEoE = events.get("EoE")
+			val reachedEoE = !(lEoE === null || lEoE.empty)
+			if (reachedEoE) {
+				return TruthValue.SATISFIED
+			} else {
 				val lP = events.get("P")
-				val reachedP = !(lP === null || lP.empty)
-				if (exists.boundType == BoundType.UPPER_BOUND) {
-					if (reachedP) {
-						return TruthValue.UNKNOWN // Property not violated yet
-					} else {
-						val lPExcess = events.get("PExcess")
-						val reachedPExcess = !(lPExcess === null || lPExcess.empty)
-						if (reachedPExcess) {
-							return TruthValue.VIOLATED
-						} else {
-							return TruthValue.UNKNOWN
-						}
+				val nP = if (lP === null) 0 else lP.size
+				return switch (exists.boundType) {
+					case EXACT: {
+						if (nP == exists.n) TruthValue.UNKNOWN else TruthValue.VIOLATED
 					}
-				} else {
-					if (reachedP) {
-						return TruthValue.UNKNOWN
-					} else {
-						return TruthValue.VIOLATED
+					case LOWER_BOUND: {
+						if (nP >= exists.n) TruthValue.UNKNOWN else TruthValue.VIOLATED
+					}
+					case UPPER_BOUND: {
+						if (nP <= exists.n) TruthValue.UNKNOWN else TruthValue.VIOLATED
 					}
 				}
-			} else {
-				return TruthValue.SATISFIED
 			}
 		} else {
-			return TruthValue.SATISFIED // EoE
+			return TruthValue.SATISFIED
 		}
 	}
 }

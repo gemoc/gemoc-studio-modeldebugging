@@ -571,7 +571,12 @@ public class LaunchConfigurationMainTab extends LaunchConfigurationTab {
 
 		String[] params = K3DslHelper.getParametersTypeFromMethodSignature(mainMethod);
 		String firstParam = DslHelper.lastSegment(params[0]);
-		String rootEClass = getModel().getEObject(rootElement).eClass().getName();
+		final EObject rootEObject = getModel().getEObject(rootElement);
+		if (rootEObject == null) {
+			setErrorMessage(LauncherMessages.SequentialMainTab_Language_root_element_not_found);
+			return false;
+		}
+		String rootEClass = rootEObject.eClass().getName();
 		if (!(params.length == 1 && firstParam.equals(rootEClass))) {
 			setErrorMessage(LauncherMessages.SequentialMainTab_Language_incompatible_root_and_main);
 			return false;

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<property:Existence xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:property="http://www.eclipse.gemoc.org/property" n="5">
+  <pattern href="patterns/patternQueries_x50.vql#/0/@patterns.1"/>
+  <scope xsi:type="property:After">
+  	<lowerBoundPattern href="patterns/scopeQueries_x50.vql#/0/@patterns.1"/>
+  </scope>
+</property:Existence>

@@ -12,7 +12,7 @@ class K3RunConfigurationProvider extends AbstractRunConfigurationProvider<K3RunC
 		launchConfiguration.setAttribute(K3RunConfiguration.LAUNCH_METHOD_ENTRY_POINT, language.entryPoint)
 		launchConfiguration.setAttribute(K3RunConfiguration.LAUNCH_INITIALIZATION_METHOD, language.initializationMethod)
 		launchConfiguration.setAttribute(K3RunConfiguration.LAUNCH_INITIALIZATION_ARGUMENTS, initializationArguments)
-		launchConfiguration.setAttribute(K3RunConfiguration.LAUNCH_MODEL_ENTRY_POINT, "/") // entryPointElement.toPlatformString(true)
+		launchConfiguration.setAttribute(K3RunConfiguration.LAUNCH_MODEL_ENTRY_POINT, "/")
 	}
 	
 	override getLaunchConfiguration() {

@@ -33,7 +33,7 @@ class ExistsPAfterQUntilR extends AbstractExistenceProperty {
 			'''
 				select * from «name»
 				match_recognize (
-					measures P1 as P, Q as Q, ExecEnd as EoE
+					measures P1 as P, Q as Q, EoE as EoE
 					«pattern»
 					define
 						P as P.«pFqn»? is not null,
@@ -41,7 +41,7 @@ class ExistsPAfterQUntilR extends AbstractExistenceProperty {
 						nP as nP.«pFqn»? is null,
 						Q as Q.«qFqn»? is not null,
 						R as R.«rFqn»? is not null,
-						ExecEnd as ExecEnd.executionAboutToStop? is not null
+						EoE as EoE.executionAboutToStop? is not null
 				)
 			'''
 		return result
@@ -49,20 +49,19 @@ class ExistsPAfterQUntilR extends AbstractExistenceProperty {
 	
 	private def String rec(int i) {
 		'''«IF i == 0»
-			nP*? (P«IF exists.boundType == BoundType.LOWER_BOUND»1«ENDIF» | (R | ExecEnd))
+			nP*? (P«IF exists.boundType == BoundType.LOWER_BOUND»1«ENDIF» | R | EoE)
 			«ELSEIF i == 1»
-			nP*? (P1«IF exists.boundType != BoundType.LOWER_BOUND» «rec(i - 1)»«ENDIF» | (R | ExecEnd))
+			nP*? (P1«IF exists.boundType != BoundType.LOWER_BOUND» «rec(i - 1)»«ENDIF» | R | EoE)
 			«ELSE»
-			nP*? (P«IF exists.boundType == BoundType.UPPER_BOUND»1«ENDIF» «rec(i - 1)» | (R | ExecEnd))
+			nP*? (P«IF exists.boundType == BoundType.UPPER_BOUND»1«ENDIF» «rec(i - 1)» | R | EoE)
 			«ENDIF»'''
 	}
 	
 	private def getPattern() {
 		val pattern =
 			'''
-				pattern (Q «rec(exists.n)» | ExecEnd)
+				pattern (Q «rec(exists.n)» | EoE)
 			'''
-		println(pattern)
 		return pattern
 	}
 	
@@ -73,9 +72,9 @@ class ExistsPAfterQUntilR extends AbstractExistenceProperty {
 			val lP = events.get("P")
 			val reachedP = !(lP === null || lP.empty)
 			val execEnd = events.get("EoE")
-			val reachedExecEnd = !(execEnd === null || execEnd.empty)
+			val reachedEoE = !(execEnd === null || execEnd.empty)
 			if (reachedP) {
-				if (reachedExecEnd) {
+				if (reachedEoE) {
 					return TruthValue.SATISFIED
 				} else {
 					return TruthValue.UNKNOWN
@@ -84,7 +83,7 @@ class ExistsPAfterQUntilR extends AbstractExistenceProperty {
 				if (exists.boundType == BoundType.UPPER_BOUND) {
 					val lR = events.get("R")
 					val reachedR = !(lR === null || lR.empty)
-					if (reachedExecEnd || reachedR) {
+					if (reachedEoE || reachedR) {
 						return TruthValue.SATISFIED // For upper bound, satisfied if no P1 found at all
 					} else {
 						return TruthValue.VIOLATED // But violated if a P (and not R or EoE) caused the final match

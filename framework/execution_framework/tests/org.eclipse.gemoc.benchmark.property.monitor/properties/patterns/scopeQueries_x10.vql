@@ -1,0 +1,118 @@
+package ad.queries.x10
+
+import "http://org.gemoc.activitydiagram.sequential.xactivitydiagram/activitydiagram/" as ad
+import java ^java.lang.String
+
+pattern beforeScope() {
+	find beforeScopeAux(_, _, "beforeVar_0");
+	find beforeScopeAux(_, _, "beforeVar_1");
+	find beforeScopeAux(_, _, "beforeVar_2");
+	find beforeScopeAux(_, _, "beforeVar_3");
+	find beforeScopeAux(_, _, "beforeVar_4");
+	find beforeScopeAux(_, _, "beforeVar_5");
+	find beforeScopeAux(_, _, "beforeVar_6");
+	find beforeScopeAux(_, _, "beforeVar_7");
+	find beforeScopeAux(_, _, "beforeVar_8");
+	find beforeScopeAux(_, _, "beforeVar_9");
+}
+
+pattern afterScope() {
+	find afterScopeAux(_, _, "afterVar_0");
+	find afterScopeAux(_, _, "afterVar_1");
+	find afterScopeAux(_, _, "afterVar_2");
+	find afterScopeAux(_, _, "afterVar_3");
+	find afterScopeAux(_, _, "afterVar_4");
+	find afterScopeAux(_, _, "afterVar_5");
+	find afterScopeAux(_, _, "afterVar_6");
+	find afterScopeAux(_, _, "afterVar_7");
+	find afterScopeAux(_, _, "afterVar_8");
+	find afterScopeAux(_, _, "afterVar_9");
+}
+
+pattern between1Scope() {
+	find between1ScopeAux(_, _, "betweenVar1_0");
+	find between1ScopeAux(_, _, "betweenVar1_1");
+	find between1ScopeAux(_, _, "betweenVar1_2");
+	find between1ScopeAux(_, _, "betweenVar1_3");
+	find between1ScopeAux(_, _, "betweenVar1_4");
+	find between1ScopeAux(_, _, "betweenVar1_5");
+	find between1ScopeAux(_, _, "betweenVar1_6");
+	find between1ScopeAux(_, _, "betweenVar1_7");
+	find between1ScopeAux(_, _, "betweenVar1_8");
+	find between1ScopeAux(_, _, "betweenVar1_9");
+}
+
+pattern between2Scope() {
+	find between2ScopeAux(_, _, "betweenVar2_0");
+	find between2ScopeAux(_, _, "betweenVar2_1");
+	find between2ScopeAux(_, _, "betweenVar2_2");
+	find between2ScopeAux(_, _, "betweenVar2_3");
+	find between2ScopeAux(_, _, "betweenVar2_4");
+	find between2ScopeAux(_, _, "betweenVar2_5");
+	find between2ScopeAux(_, _, "betweenVar2_6");
+	find between2ScopeAux(_, _, "betweenVar2_7");
+	find between2ScopeAux(_, _, "betweenVar2_8");
+	find between2ScopeAux(_, _, "betweenVar2_9");
+}
+
+pattern afterUntil1Scope() {
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_0");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_1");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_2");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_3");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_4");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_5");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_6");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_7");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_8");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_9");
+}
+
+pattern afterUntil2Scope() {
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_0");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_1");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_2");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_3");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_4");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_5");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_6");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_7");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_8");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_9");
+}
+
+pattern beforeScopeAux(alwaysVar: IntegerVariable, varValue : IntegerValue, varName : java String) {
+	IntegerVariable.name(alwaysVar, varName);
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 0);
+}
+
+pattern afterScopeAux(alwaysVar: IntegerVariable, varValue : IntegerValue, varName : java String) {
+	IntegerVariable.name(alwaysVar, varName);
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 0);
+}
+
+pattern between1ScopeAux(alwaysVar: IntegerVariable, varValue : IntegerValue, varName : java String) {
+	IntegerVariable.name(alwaysVar, varName);
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 0);
+}
+
+pattern between2ScopeAux(alwaysVar: IntegerVariable, varValue : IntegerValue, varName : java String) {
+	IntegerVariable.name(alwaysVar, varName);
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 5);
+}
+
+pattern afterUntil1ScopeAux(alwaysVar: IntegerVariable, varValue : IntegerValue, varName : java String) {
+	IntegerVariable.name(alwaysVar, varName);
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 0);
+}
+
+pattern afterUntil2ScopeAux(alwaysVar: IntegerVariable, varValue : IntegerValue, varName : java String) {
+	IntegerVariable.name(alwaysVar, varName);
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 5);
+}

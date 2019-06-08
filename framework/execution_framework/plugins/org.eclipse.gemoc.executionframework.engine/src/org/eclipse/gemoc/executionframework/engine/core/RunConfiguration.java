@@ -150,4 +150,9 @@ public class RunConfiguration implements IRunConfiguration {
 		return _debugModelID;
 	}
 
+	@Override
+	public ILaunchConfiguration getLaunchConfiguration() {
+		return _launchConfiguration;
+	}
+
 }

@@ -11,7 +11,7 @@
 package org.eclipse.gemoc.xdsmlframework.api.core;
 
 import java.util.Collection;
-
+import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.gemoc.xdsmlframework.api.extensions.engine_addon.EngineAddonSpecificationExtension;
 
@@ -46,5 +46,5 @@ public interface IRunConfiguration {
 
 	boolean getBreakStart();
 
-	
+	ILaunchConfiguration getLaunchConfiguration();
 }

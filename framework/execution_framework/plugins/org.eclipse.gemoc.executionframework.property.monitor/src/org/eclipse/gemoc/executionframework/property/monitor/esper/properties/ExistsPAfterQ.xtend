@@ -29,14 +29,14 @@ class ExistsPAfterQ extends AbstractExistenceProperty {
 			'''
 				select * from «name»
 				match_recognize (
-					measures P1 as P, Q as Q, ExecEnd as EoE
+					measures P1 as P, Q as Q, EoE as EoE
 					«pattern»
 					define
 						P as P.«pFqn»? is not null,
 						P1 as P1.«pFqn»? is not null,
 						nP as nP.«pFqn»? is null,
 						Q as Q.«qFqn»? is not null,
-						ExecEnd as ExecEnd.executionAboutToStop? is not null
+						EoE as EoE.executionAboutToStop? is not null
 				)
 			'''
 		return result
@@ -44,20 +44,19 @@ class ExistsPAfterQ extends AbstractExistenceProperty {
 	
 	private def String rec(int i) {
 		'''«IF i == 0»
-			nP*? (P«IF exists.boundType == BoundType.LOWER_BOUND»1«ENDIF» | ExecEnd)
+			nP*? (P«IF exists.boundType == BoundType.LOWER_BOUND»1«ENDIF» | EoE)
 			«ELSEIF i == 1»
-			nP*? (P1«IF exists.boundType != BoundType.LOWER_BOUND» «rec(i - 1)»«ENDIF» | ExecEnd)
+			nP*? (P1«IF exists.boundType != BoundType.LOWER_BOUND» «rec(i - 1)»«ENDIF» | EoE)
 			«ELSE»
-			nP*? (P«IF exists.boundType == BoundType.UPPER_BOUND»1«ENDIF» «rec(i - 1)» | ExecEnd)
+			nP*? (P«IF exists.boundType == BoundType.UPPER_BOUND»1«ENDIF» «rec(i - 1)» | EoE)
 			«ENDIF»'''
 	}
 	
 	private def getPattern() {
 		val pattern =
 			'''
-				pattern (Q «rec(exists.n)» | ExecEnd)
+				pattern (Q «rec(exists.n)» | EoE)
 			'''
-		println(pattern)
 		return pattern
 	}
 	
@@ -72,11 +71,11 @@ class ExistsPAfterQ extends AbstractExistenceProperty {
 			return if (reachedP) TruthValue.SATISFIED else TruthValue.VIOLATED
 		} else {
 			val execEnd = events.get("EoE")
-			val reachedExecEnd = !(execEnd === null || execEnd.empty)
+			val reachedEoE = !(execEnd === null || execEnd.empty)
 			if (exists.boundType == BoundType.UPPER_BOUND) {
-				return if (reachedExecEnd) TruthValue.SATISFIED else TruthValue.VIOLATED
+				return if (reachedEoE) TruthValue.SATISFIED else TruthValue.VIOLATED
 			} else {
-				return if (reachedP && reachedExecEnd) TruthValue.SATISFIED else TruthValue.VIOLATED
+				return if (reachedP && reachedEoE) TruthValue.SATISFIED else TruthValue.VIOLATED
 			}
 		}
 	}

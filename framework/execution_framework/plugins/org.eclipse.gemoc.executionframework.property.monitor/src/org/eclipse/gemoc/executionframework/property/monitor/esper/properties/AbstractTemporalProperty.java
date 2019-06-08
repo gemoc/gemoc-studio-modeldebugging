@@ -32,6 +32,8 @@ public abstract class AbstractTemporalProperty {
 
 	protected final Map<String, IQuerySpecification<?>> queries = new HashMap<>();
 
+//	private final Set<ViatraQueryMatcher<?>> matchers = new HashSet<>();
+
 	private final Map<String, IPatternMatch> lastMatches = new HashMap<>();
 
 	private final PropertyState propertyState;
@@ -41,7 +43,7 @@ public abstract class AbstractTemporalProperty {
 	protected EPCompiled compiled;
 
 	protected final SpecificationBuilder builder;
-	
+
 	private final Set<EPRuntime> activeRuntimes = new HashSet<>();
 
 	public AbstractTemporalProperty(SpecificationBuilder builder, String name) {
@@ -49,6 +51,29 @@ public abstract class AbstractTemporalProperty {
 		this.name = name;
 		propertyState = new PropertyState(name, TruthValue.UNKNOWN);
 	}
+
+//	public Map<String, Object> produceNewMatches2(Set<ViatraQueryMatcher<?>> matchers) {
+//		final boolean matchesUpdated = this.matchers.stream().anyMatch(m -> matchers.contains(m));
+//		if (matchesUpdated) {
+//			final List<IPatternMatch> relevantMatches = this.matchers.stream().flatMap(m -> m.getAllMatches().stream())
+//					.map(m -> m.toImmutable()).collect(Collectors.toList());
+//			final boolean sameMatches = relevantMatches.isEmpty() ? lastMatches.isEmpty()
+//					: relevantMatches.stream()
+//							.allMatch(m -> lastMatches.containsKey(m.patternName())
+//									? lastMatches.get(m.patternName()).isCompatibleWith(m)
+//									: false);
+//			if (sameMatches) {
+//				return null;
+//			} else {
+//				lastMatches.clear();
+//				relevantMatches.forEach(m -> lastMatches.put(m.patternName(), m));
+//				final Map<String, Object> result = new HashMap<>(lastMatches);
+//				return result;
+//			}
+//		} else {
+//			return null;
+//		}
+//	}
 
 	public Map<String, Object> produceNewMatches(Set<IPatternMatch> matches) {
 		final List<IPatternMatch> relevantMatches = matches.stream().filter(m -> queries.containsKey(m.patternName()))
@@ -59,8 +84,6 @@ public abstract class AbstractTemporalProperty {
 								? lastMatches.get(m.patternName()).isCompatibleWith(m)
 								: false);
 		if (sameMatches) {
-//			final Map<String, Object> result = new HashMap<>(lastMatches);
-//			return result;
 			return null;
 		} else {
 			lastMatches.clear();
@@ -75,7 +98,7 @@ public abstract class AbstractTemporalProperty {
 	}
 
 	protected abstract String getStatementString();
-	
+
 	protected abstract TruthValue getStatus(Map<String, List<Map<?, ?>>> events);
 
 	protected String getFqn(IQuerySpecification<?> query) {
@@ -97,7 +120,7 @@ public abstract class AbstractTemporalProperty {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void deploy(EPRuntime runtime, Consumer<AbstractTemporalProperty> onTriggered) {
 		try {
 			activeRuntimes.add(runtime);
@@ -106,7 +129,8 @@ public abstract class AbstractTemporalProperty {
 			Arrays.stream(deployment.getStatements()).forEach(statement -> statement.addListener((events, o, x, rt) -> {
 				if (events != null) {
 					triggered(Arrays.stream(events).map(e -> (MapEventBean) e).collect(Collectors.toList()));
-					if (propertyState.getValue() == TruthValue.SATISFIED || propertyState.getValue() == TruthValue.VIOLATED) {
+					if (propertyState.getValue() == TruthValue.SATISFIED
+							|| propertyState.getValue() == TruthValue.VIOLATED) {
 						try {
 							rt.getDeploymentService().undeploy(deployment.getDeploymentId());
 							onTriggered.accept(this);
@@ -153,7 +177,7 @@ public abstract class AbstractTemporalProperty {
 		}
 		propertyState.setValue(status);
 	}
-	
+
 	public void destroy(SpecificationBuilder builder) {
 		queries.values().forEach(q -> builder.forgetSpecification(q));
 	}
@@ -161,6 +185,14 @@ public abstract class AbstractTemporalProperty {
 	public Map<String, IQuerySpecification<?>> getQueries() {
 		return queries;
 	}
+
+//	public void addMatcher(ViatraQueryMatcher<?> matcher) {
+//		matchers.add(matcher);
+//	}
+//
+//	public void reset() {
+//		matchers.clear();
+//	}
 
 	public PropertyState getPropertyState() {
 		return propertyState;
@@ -185,14 +217,6 @@ public abstract class AbstractTemporalProperty {
 
 		public void setValue(TruthValue value) {
 			this.value = value;
-		}
-
-		public void finalize() {
-//			if (value == TruthValue.TEMPORARILY_VIOLATED) {
-//				value = TruthValue.VIOLATED;
-//			} else if (value == TruthValue.TEMPORARILY_SATISFIED) {
-//				value = TruthValue.SATISFIED;
-//			}
 		}
 	}
 }

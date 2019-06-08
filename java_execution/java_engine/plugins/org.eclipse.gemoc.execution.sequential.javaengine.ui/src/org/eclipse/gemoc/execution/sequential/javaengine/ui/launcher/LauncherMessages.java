@@ -17,8 +17,6 @@ import org.eclipse.osgi.util.NLS;
 public class LauncherMessages extends NLS {
 	private static final String PACKAGE_NAME = "org.eclipse.gemoc.execution.sequential.javaengine.ui.launcher.LauncherMessages";//$NON-NLS-1$
 
-	
-
 	public static String SequentialMainTab_Model_not_specified;
 	public static String SequentialMainTab_invalid_model_file;
 	public static String SequentialMainTab_model_doesnt_exist;
@@ -34,6 +32,7 @@ public class LauncherMessages extends NLS {
 	public static String SequentialMainTab_Language_main_methods_dont_exist;
 
 	public static String SequentialMainTab_Language_root_element_not_selected;
+	public static String SequentialMainTab_Language_root_element_not_found;
 	public static String SequentialMainTab_Language_incompatible_root_and_main;
 
 	static {

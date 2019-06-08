@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.stream.Collectors;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.URI;
@@ -70,6 +71,14 @@ public class GenericEventManager implements IEventManager {
 	public void engineInitialized(IExecutionEngine<?> executionEngine) {
 		engine = executionEngine;
 		relationshipManager.setExecutedResource(engine.getExecutionContext().getResourceModel());
+		IConfigurationElement[] eventEmitters = Platform.getExtensionRegistry().getConfigurationElementsFor("org.eclipse.gemoc.executionframework.event.event_emitter");
+		Arrays.stream(eventEmitters).forEach(e -> {
+			try {
+				((IEventEmitter) e.createExecutableExtension("class")).setEventManager(this, engine.getExecutionContext().getResourceModel());
+			} catch (CoreException e1) {
+				e1.printStackTrace();
+			}
+		});
 	}
 
 	@Override

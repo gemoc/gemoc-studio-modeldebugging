@@ -29,12 +29,12 @@ class AlwaysPAfterQ extends AbstractTemporalProperty {
 				select * from «name»
 				match_recognize (
 					measures nP as nP
-					pattern (ExecEnd | (Q P* (ExecEnd | nP)))
+					pattern (EoE | (Q P* (nP | EoE)))
 					define
 						P as P.«pFqn»? is not null,
 						nP as nP.«pFqn»? is null,
 						Q as Q.«qFqn»? is not null,
-						ExecEnd as ExecEnd.executionAboutToStop? is not null
+						EoE as EoE.executionAboutToStop? is not null
 				)
 			'''
 		return result

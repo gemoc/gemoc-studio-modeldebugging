@@ -1,0 +1,87 @@
+activity benchmark {
+	// constants
+	int inc = 1,
+	int maxLoop = 99,
+	int mod = 10,
+	
+	// variables
+	int counterVar = 0,
+	int alwaysVar_0 = 0,
+	int existsVar_0 = 0,
+	int absenceVar_0 = 0,
+	int precedenceVar1_0 = 0,
+	int precedenceVar2_0 = 0,
+	int precedenceVar3_0 = -91,
+	int precedenceVar4_0 = -93,
+	int responseVar1_0 = 0,
+	int responseVar2_0 = 0,
+	int afterVar_0 = -50,
+	int beforeVar_0 = -95,
+	int betweenVar1_0 = 0,
+	int betweenVar2_0 = 0,
+	int afterUntilVar1_0 = 0,
+	int afterUntilVar2_0 = 0,
+	bool doneVar = false,
+	bool notDoneVar = true
+	
+	nodes {
+		initial initialNode out(edge01),
+		merge mergeNode in (edge01, edge13) out (edge02),
+		action counterAction comp {
+			counterVar = counterVar + inc,
+			doneVar = counterVar >= maxLoop,
+			notDoneVar = !doneVar
+		} in (edge02) out (edge03),
+		action alwaysAction comp {
+			alwaysVar_0 = counterVar % mod
+		} in (edge03) out (edge04),
+		action existsAction comp {
+			existsVar_0 = counterVar % mod
+		} in (edge04) out (edge05),
+		action absenceAction comp {
+			absenceVar_0 = counterVar % mod
+		} in (edge05) out (edge06),
+		action precedenceAction comp {
+			precedenceVar1_0 = counterVar % mod,
+			precedenceVar2_0 = counterVar % mod,
+			precedenceVar3_0 = precedenceVar3_0 + inc,
+			precedenceVar4_0 = precedenceVar4_0 + inc
+		} in (edge06) out (edge07),
+		action responseAction comp {
+			responseVar1_0 = counterVar % mod,
+			responseVar2_0 = counterVar % mod
+		} in (edge07) out (edge08),
+		action afterAction comp {
+			afterVar_0 = afterVar_0 + inc
+		} in (edge08) out (edge09),
+		action beforeAction comp {
+			beforeVar_0 = beforeVar_0 + inc
+		} in (edge09) out (edge10),
+		action betweenAction comp {
+			betweenVar1_0 = counterVar % mod,
+			betweenVar2_0 = counterVar % mod
+		} in (edge10) out (edge11),
+		action afterUntilAction comp {
+			afterUntilVar1_0 = counterVar % mod,
+			afterUntilVar2_0 = counterVar % mod
+		} in (edge11) out (edge12),
+		decision decisionNode in(edge12) out(edge13, edge14),
+		final finalNode in(edge14)
+	}
+	edges {
+		flow edge01 from initialNode to mergeNode,
+		flow edge02 from mergeNode to counterAction,
+		flow edge03 from counterAction to alwaysAction,
+		flow edge04 from alwaysAction to existsAction,
+		flow edge05 from existsAction to absenceAction,
+		flow edge06 from absenceAction to precedenceAction,
+		flow edge07 from precedenceAction to responseAction,
+		flow edge08 from responseAction to afterAction,
+		flow edge09 from afterAction to beforeAction,
+		flow edge10 from beforeAction to betweenAction,
+		flow edge11 from betweenAction to afterUntilAction,
+		flow edge12 from afterUntilAction to decisionNode,
+		flow edge13 from decisionNode to mergeNode [notDoneVar],
+		flow edge14 from decisionNode to finalNode [doneVar]
+	}
+}

@@ -34,7 +34,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -156,8 +156,7 @@ public class PropertyMonitor implements IEngineSelectionListener {
 		valueViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-//				return ((PropertyState) element).getValue().toString();
-				return "TODO";
+				return ((PropertyState) element).getValue().toString();
 			}
 		});
 		
@@ -168,13 +167,8 @@ public class PropertyMonitor implements IEngineSelectionListener {
 	private Group createGroup(Composite parent, String text) {
 		Group group = new Group(parent, SWT.NULL);
 		group.setText(text);
-		GridLayout locationLayout = new GridLayout();
-		final GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
-		locationLayout.numColumns = 1;
-		locationLayout.marginHeight = 10;
-		locationLayout.marginWidth = 10;
+		final FillLayout locationLayout = new FillLayout();
 		group.setLayout(locationLayout);
-		group.setLayoutData(gd);
 		return group;
 	}
 

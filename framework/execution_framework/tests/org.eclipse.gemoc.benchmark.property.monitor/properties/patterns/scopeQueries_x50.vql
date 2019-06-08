@@ -1,0 +1,358 @@
+package ad.queries.x50
+
+import "http://org.gemoc.activitydiagram.sequential.xactivitydiagram/activitydiagram/" as ad
+import java ^java.lang.String
+
+pattern beforeScope() {
+	find beforeScopeAux(_, _, "beforeVar_0");
+	find beforeScopeAux(_, _, "beforeVar_1");
+	find beforeScopeAux(_, _, "beforeVar_2");
+	find beforeScopeAux(_, _, "beforeVar_3");
+	find beforeScopeAux(_, _, "beforeVar_4");
+	find beforeScopeAux(_, _, "beforeVar_5");
+	find beforeScopeAux(_, _, "beforeVar_6");
+	find beforeScopeAux(_, _, "beforeVar_7");
+	find beforeScopeAux(_, _, "beforeVar_8");
+	find beforeScopeAux(_, _, "beforeVar_9");
+	find beforeScopeAux(_, _, "beforeVar_10");
+	find beforeScopeAux(_, _, "beforeVar_11");
+	find beforeScopeAux(_, _, "beforeVar_12");
+	find beforeScopeAux(_, _, "beforeVar_13");
+	find beforeScopeAux(_, _, "beforeVar_14");
+	find beforeScopeAux(_, _, "beforeVar_15");
+	find beforeScopeAux(_, _, "beforeVar_16");
+	find beforeScopeAux(_, _, "beforeVar_17");
+	find beforeScopeAux(_, _, "beforeVar_18");
+	find beforeScopeAux(_, _, "beforeVar_19");
+	find beforeScopeAux(_, _, "beforeVar_20");
+	find beforeScopeAux(_, _, "beforeVar_21");
+	find beforeScopeAux(_, _, "beforeVar_22");
+	find beforeScopeAux(_, _, "beforeVar_23");
+	find beforeScopeAux(_, _, "beforeVar_24");
+	find beforeScopeAux(_, _, "beforeVar_25");
+	find beforeScopeAux(_, _, "beforeVar_26");
+	find beforeScopeAux(_, _, "beforeVar_27");
+	find beforeScopeAux(_, _, "beforeVar_28");
+	find beforeScopeAux(_, _, "beforeVar_29");
+	find beforeScopeAux(_, _, "beforeVar_30");
+	find beforeScopeAux(_, _, "beforeVar_31");
+	find beforeScopeAux(_, _, "beforeVar_32");
+	find beforeScopeAux(_, _, "beforeVar_33");
+	find beforeScopeAux(_, _, "beforeVar_34");
+	find beforeScopeAux(_, _, "beforeVar_35");
+	find beforeScopeAux(_, _, "beforeVar_36");
+	find beforeScopeAux(_, _, "beforeVar_37");
+	find beforeScopeAux(_, _, "beforeVar_38");
+	find beforeScopeAux(_, _, "beforeVar_39");
+	find beforeScopeAux(_, _, "beforeVar_40");
+	find beforeScopeAux(_, _, "beforeVar_41");
+	find beforeScopeAux(_, _, "beforeVar_42");
+	find beforeScopeAux(_, _, "beforeVar_43");
+	find beforeScopeAux(_, _, "beforeVar_44");
+	find beforeScopeAux(_, _, "beforeVar_45");
+	find beforeScopeAux(_, _, "beforeVar_46");
+	find beforeScopeAux(_, _, "beforeVar_47");
+	find beforeScopeAux(_, _, "beforeVar_48");
+	find beforeScopeAux(_, _, "beforeVar_49");
+}
+
+pattern afterScope() {
+	find afterScopeAux(_, _, "afterVar_0");
+	find afterScopeAux(_, _, "afterVar_1");
+	find afterScopeAux(_, _, "afterVar_2");
+	find afterScopeAux(_, _, "afterVar_3");
+	find afterScopeAux(_, _, "afterVar_4");
+	find afterScopeAux(_, _, "afterVar_5");
+	find afterScopeAux(_, _, "afterVar_6");
+	find afterScopeAux(_, _, "afterVar_7");
+	find afterScopeAux(_, _, "afterVar_8");
+	find afterScopeAux(_, _, "afterVar_9");
+	find afterScopeAux(_, _, "afterVar_10");
+	find afterScopeAux(_, _, "afterVar_11");
+	find afterScopeAux(_, _, "afterVar_12");
+	find afterScopeAux(_, _, "afterVar_13");
+	find afterScopeAux(_, _, "afterVar_14");
+	find afterScopeAux(_, _, "afterVar_15");
+	find afterScopeAux(_, _, "afterVar_16");
+	find afterScopeAux(_, _, "afterVar_17");
+	find afterScopeAux(_, _, "afterVar_18");
+	find afterScopeAux(_, _, "afterVar_19");
+	find afterScopeAux(_, _, "afterVar_20");
+	find afterScopeAux(_, _, "afterVar_21");
+	find afterScopeAux(_, _, "afterVar_22");
+	find afterScopeAux(_, _, "afterVar_23");
+	find afterScopeAux(_, _, "afterVar_24");
+	find afterScopeAux(_, _, "afterVar_25");
+	find afterScopeAux(_, _, "afterVar_26");
+	find afterScopeAux(_, _, "afterVar_27");
+	find afterScopeAux(_, _, "afterVar_28");
+	find afterScopeAux(_, _, "afterVar_29");
+	find afterScopeAux(_, _, "afterVar_30");
+	find afterScopeAux(_, _, "afterVar_31");
+	find afterScopeAux(_, _, "afterVar_32");
+	find afterScopeAux(_, _, "afterVar_33");
+	find afterScopeAux(_, _, "afterVar_34");
+	find afterScopeAux(_, _, "afterVar_35");
+	find afterScopeAux(_, _, "afterVar_36");
+	find afterScopeAux(_, _, "afterVar_37");
+	find afterScopeAux(_, _, "afterVar_38");
+	find afterScopeAux(_, _, "afterVar_39");
+	find afterScopeAux(_, _, "afterVar_40");
+	find afterScopeAux(_, _, "afterVar_41");
+	find afterScopeAux(_, _, "afterVar_42");
+	find afterScopeAux(_, _, "afterVar_43");
+	find afterScopeAux(_, _, "afterVar_44");
+	find afterScopeAux(_, _, "afterVar_45");
+	find afterScopeAux(_, _, "afterVar_46");
+	find afterScopeAux(_, _, "afterVar_47");
+	find afterScopeAux(_, _, "afterVar_48");
+	find afterScopeAux(_, _, "afterVar_49");
+}
+
+pattern between1Scope() {
+	find between1ScopeAux(_, _, "betweenVar1_0");
+	find between1ScopeAux(_, _, "betweenVar1_1");
+	find between1ScopeAux(_, _, "betweenVar1_2");
+	find between1ScopeAux(_, _, "betweenVar1_3");
+	find between1ScopeAux(_, _, "betweenVar1_4");
+	find between1ScopeAux(_, _, "betweenVar1_5");
+	find between1ScopeAux(_, _, "betweenVar1_6");
+	find between1ScopeAux(_, _, "betweenVar1_7");
+	find between1ScopeAux(_, _, "betweenVar1_8");
+	find between1ScopeAux(_, _, "betweenVar1_9");
+	find between1ScopeAux(_, _, "betweenVar1_10");
+	find between1ScopeAux(_, _, "betweenVar1_11");
+	find between1ScopeAux(_, _, "betweenVar1_12");
+	find between1ScopeAux(_, _, "betweenVar1_13");
+	find between1ScopeAux(_, _, "betweenVar1_14");
+	find between1ScopeAux(_, _, "betweenVar1_15");
+	find between1ScopeAux(_, _, "betweenVar1_16");
+	find between1ScopeAux(_, _, "betweenVar1_17");
+	find between1ScopeAux(_, _, "betweenVar1_18");
+	find between1ScopeAux(_, _, "betweenVar1_19");
+	find between1ScopeAux(_, _, "betweenVar1_20");
+	find between1ScopeAux(_, _, "betweenVar1_21");
+	find between1ScopeAux(_, _, "betweenVar1_22");
+	find between1ScopeAux(_, _, "betweenVar1_23");
+	find between1ScopeAux(_, _, "betweenVar1_24");
+	find between1ScopeAux(_, _, "betweenVar1_25");
+	find between1ScopeAux(_, _, "betweenVar1_26");
+	find between1ScopeAux(_, _, "betweenVar1_27");
+	find between1ScopeAux(_, _, "betweenVar1_28");
+	find between1ScopeAux(_, _, "betweenVar1_29");
+	find between1ScopeAux(_, _, "betweenVar1_30");
+	find between1ScopeAux(_, _, "betweenVar1_31");
+	find between1ScopeAux(_, _, "betweenVar1_32");
+	find between1ScopeAux(_, _, "betweenVar1_33");
+	find between1ScopeAux(_, _, "betweenVar1_34");
+	find between1ScopeAux(_, _, "betweenVar1_35");
+	find between1ScopeAux(_, _, "betweenVar1_36");
+	find between1ScopeAux(_, _, "betweenVar1_37");
+	find between1ScopeAux(_, _, "betweenVar1_38");
+	find between1ScopeAux(_, _, "betweenVar1_39");
+	find between1ScopeAux(_, _, "betweenVar1_40");
+	find between1ScopeAux(_, _, "betweenVar1_41");
+	find between1ScopeAux(_, _, "betweenVar1_42");
+	find between1ScopeAux(_, _, "betweenVar1_43");
+	find between1ScopeAux(_, _, "betweenVar1_44");
+	find between1ScopeAux(_, _, "betweenVar1_45");
+	find between1ScopeAux(_, _, "betweenVar1_46");
+	find between1ScopeAux(_, _, "betweenVar1_47");
+	find between1ScopeAux(_, _, "betweenVar1_48");
+	find between1ScopeAux(_, _, "betweenVar1_49");
+}
+
+pattern between2Scope() {
+	find between2ScopeAux(_, _, "betweenVar2_0");
+	find between2ScopeAux(_, _, "betweenVar2_1");
+	find between2ScopeAux(_, _, "betweenVar2_2");
+	find between2ScopeAux(_, _, "betweenVar2_3");
+	find between2ScopeAux(_, _, "betweenVar2_4");
+	find between2ScopeAux(_, _, "betweenVar2_5");
+	find between2ScopeAux(_, _, "betweenVar2_6");
+	find between2ScopeAux(_, _, "betweenVar2_7");
+	find between2ScopeAux(_, _, "betweenVar2_8");
+	find between2ScopeAux(_, _, "betweenVar2_9");
+	find between2ScopeAux(_, _, "betweenVar2_10");
+	find between2ScopeAux(_, _, "betweenVar2_11");
+	find between2ScopeAux(_, _, "betweenVar2_12");
+	find between2ScopeAux(_, _, "betweenVar2_13");
+	find between2ScopeAux(_, _, "betweenVar2_14");
+	find between2ScopeAux(_, _, "betweenVar2_15");
+	find between2ScopeAux(_, _, "betweenVar2_16");
+	find between2ScopeAux(_, _, "betweenVar2_17");
+	find between2ScopeAux(_, _, "betweenVar2_18");
+	find between2ScopeAux(_, _, "betweenVar2_19");
+	find between2ScopeAux(_, _, "betweenVar2_20");
+	find between2ScopeAux(_, _, "betweenVar2_21");
+	find between2ScopeAux(_, _, "betweenVar2_22");
+	find between2ScopeAux(_, _, "betweenVar2_23");
+	find between2ScopeAux(_, _, "betweenVar2_24");
+	find between2ScopeAux(_, _, "betweenVar2_25");
+	find between2ScopeAux(_, _, "betweenVar2_26");
+	find between2ScopeAux(_, _, "betweenVar2_27");
+	find between2ScopeAux(_, _, "betweenVar2_28");
+	find between2ScopeAux(_, _, "betweenVar2_29");
+	find between2ScopeAux(_, _, "betweenVar2_30");
+	find between2ScopeAux(_, _, "betweenVar2_31");
+	find between2ScopeAux(_, _, "betweenVar2_32");
+	find between2ScopeAux(_, _, "betweenVar2_33");
+	find between2ScopeAux(_, _, "betweenVar2_34");
+	find between2ScopeAux(_, _, "betweenVar2_35");
+	find between2ScopeAux(_, _, "betweenVar2_36");
+	find between2ScopeAux(_, _, "betweenVar2_37");
+	find between2ScopeAux(_, _, "betweenVar2_38");
+	find between2ScopeAux(_, _, "betweenVar2_39");
+	find between2ScopeAux(_, _, "betweenVar2_40");
+	find between2ScopeAux(_, _, "betweenVar2_41");
+	find between2ScopeAux(_, _, "betweenVar2_42");
+	find between2ScopeAux(_, _, "betweenVar2_43");
+	find between2ScopeAux(_, _, "betweenVar2_44");
+	find between2ScopeAux(_, _, "betweenVar2_45");
+	find between2ScopeAux(_, _, "betweenVar2_46");
+	find between2ScopeAux(_, _, "betweenVar2_47");
+	find between2ScopeAux(_, _, "betweenVar2_48");
+	find between2ScopeAux(_, _, "betweenVar2_49");
+}
+
+pattern afterUntil1Scope() {
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_0");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_1");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_2");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_3");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_4");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_5");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_6");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_7");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_8");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_9");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_10");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_11");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_12");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_13");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_14");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_15");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_16");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_17");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_18");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_19");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_20");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_21");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_22");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_23");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_24");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_25");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_26");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_27");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_28");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_29");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_30");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_31");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_32");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_33");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_34");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_35");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_36");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_37");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_38");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_39");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_40");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_41");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_42");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_43");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_44");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_45");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_46");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_47");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_48");
+	find afterUntil1ScopeAux(_, _, "afterUntilVar1_49");
+}
+
+pattern afterUntil2Scope() {
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_0");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_1");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_2");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_3");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_4");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_5");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_6");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_7");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_8");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_9");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_10");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_11");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_12");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_13");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_14");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_15");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_16");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_17");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_18");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_19");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_20");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_21");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_22");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_23");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_24");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_25");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_26");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_27");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_28");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_29");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_30");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_31");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_32");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_33");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_34");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_35");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_36");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_37");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_38");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_39");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_40");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_41");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_42");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_43");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_44");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_45");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_46");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_47");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_48");
+	find afterUntil2ScopeAux(_, _, "afterUntilVar2_49");
+}
+
+pattern beforeScopeAux(alwaysVar: IntegerVariable, varValue : IntegerValue, varName : java String) {
+	IntegerVariable.name(alwaysVar, varName);
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 0);
+}
+
+pattern afterScopeAux(alwaysVar: IntegerVariable, varValue : IntegerValue, varName : java String) {
+	IntegerVariable.name(alwaysVar, varName);
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 0);
+}
+
+pattern between1ScopeAux(alwaysVar: IntegerVariable, varValue : IntegerValue, varName : java String) {
+	IntegerVariable.name(alwaysVar, varName);
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 0);
+}
+
+pattern between2ScopeAux(alwaysVar: IntegerVariable, varValue : IntegerValue, varName : java String) {
+	IntegerVariable.name(alwaysVar, varName);
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 5);
+}
+
+pattern afterUntil1ScopeAux(alwaysVar: IntegerVariable, varValue : IntegerValue, varName : java String) {
+	IntegerVariable.name(alwaysVar, varName);
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 0);
+}
+
+pattern afterUntil2ScopeAux(alwaysVar: IntegerVariable, varValue : IntegerValue, varName : java String) {
+	IntegerVariable.name(alwaysVar, varName);
+	IntegerVariable.currentValue(alwaysVar, varValue);
+	IntegerValue.value(varValue, 5);
+}
