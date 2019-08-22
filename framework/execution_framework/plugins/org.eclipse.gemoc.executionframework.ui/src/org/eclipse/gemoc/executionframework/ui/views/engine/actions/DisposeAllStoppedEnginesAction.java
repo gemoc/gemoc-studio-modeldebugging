@@ -10,29 +10,35 @@
  *******************************************************************************/
 package org.eclipse.gemoc.executionframework.ui.views.engine.actions;
 
-import org.eclipse.jface.action.Action;
+import org.eclipse.gemoc.executionframework.ui.Activator;
+import org.eclipse.gemoc.xdsmlframework.api.core.EngineStatus.RunStatus;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.ISharedImages;
-import org.eclipse.gemoc.commons.eclipse.ui.ViewHelper;
-import org.eclipse.gemoc.executionframework.ui.Activator;
-import org.eclipse.gemoc.executionframework.ui.views.engine.EnginesStatusView;
 
-public class DisposeAllStoppedEnginesAction extends Action 
-{
+public class DisposeAllStoppedEnginesAction extends AbstractEngineAction {
 
-	public DisposeAllStoppedEnginesAction()
-	{
+	public DisposeAllStoppedEnginesAction() {
 		setText("Dispose stopped engines");
 		setToolTipText("Dispose all stopped engines");
 		ImageDescriptor id = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, ISharedImages.IMG_ELCL_REMOVEALL);
 		setImageDescriptor(id);
 	}
-	
+
 	@Override
-	public void run()
-	{
-		EnginesStatusView view = ViewHelper.retrieveView(EnginesStatusView.ID);
-		view.removeStoppedEngines();
+	public void run() {
+		org.eclipse.gemoc.executionframework.engine.Activator.getDefault().gemocRunningEngineRegistry.getRunningEngines().forEach((name, engine) -> {
+			switch (engine.getRunningStatus()) {
+			case Stopped:
+				engine.dispose();
+				break;
+			default:
+			}
+		});
 	}
 
+	@Override
+	public void updateButton() {
+		setEnabled(org.eclipse.gemoc.executionframework.engine.Activator.getDefault().gemocRunningEngineRegistry.getRunningEngines().entrySet().stream()
+				.anyMatch(e -> e.getValue().getRunningStatus().equals(RunStatus.Stopped)));
+	}
 }

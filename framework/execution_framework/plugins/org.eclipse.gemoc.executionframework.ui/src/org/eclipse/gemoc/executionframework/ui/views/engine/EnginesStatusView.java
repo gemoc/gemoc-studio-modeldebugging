@@ -15,6 +15,20 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.eclipse.gemoc.commons.eclipse.ui.TreeViewerHelper;
+import org.eclipse.gemoc.executionframework.engine.core.GemocRunningEnginesRegistry;
+import org.eclipse.gemoc.executionframework.engine.core.IEngineRegistrationListener;
+import org.eclipse.gemoc.executionframework.ui.Activator;
+import org.eclipse.gemoc.executionframework.ui.SharedIcons;
+import org.eclipse.gemoc.executionframework.ui.views.engine.actions.AbstractEngineAction;
+import org.eclipse.gemoc.executionframework.ui.views.engine.actions.DisposeAllStoppedEnginesAction;
+import org.eclipse.gemoc.executionframework.ui.views.engine.actions.DisposeStoppedEngineAction;
+import org.eclipse.gemoc.executionframework.ui.views.engine.actions.StopAllEnginesAction;
+import org.eclipse.gemoc.executionframework.ui.views.engine.actions.StopEngineAction;
+import org.eclipse.gemoc.trace.commons.model.trace.Step;
+import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine;
+import org.eclipse.gemoc.xdsmlframework.api.core.EngineStatus.RunStatus;
+import org.eclipse.gemoc.xdsmlframework.api.engine_addon.IEngineAddon;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.resource.JFaceResources;
@@ -36,21 +50,6 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.gemoc.commons.eclipse.ui.TreeViewerHelper;
-import org.eclipse.gemoc.executionframework.engine.core.GemocRunningEnginesRegistry;
-import org.eclipse.gemoc.executionframework.engine.core.IEngineRegistrationListener;
-import org.eclipse.gemoc.executionframework.ui.Activator;
-import org.eclipse.gemoc.executionframework.ui.SharedIcons;
-import org.eclipse.gemoc.executionframework.ui.views.engine.actions.DisposeAllStoppedEnginesAction;
-import org.eclipse.gemoc.executionframework.ui.views.engine.actions.DisposeStoppedEngineAction;
-//import org.eclipse.gemoc.executionframework.ui.views.engine.actions.PauseResumeEngineDeciderAction;
-import org.eclipse.gemoc.executionframework.ui.views.engine.actions.StopEngineAction;
-import org.eclipse.gemoc.xdsmlframework.api.core.EngineStatus.RunStatus;
-//import org.eclipse.gemoc.executionframework.ui.views.engine.actions.SwitchDeciderAction;
-import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine;
-import org.eclipse.gemoc.xdsmlframework.api.engine_addon.IEngineAddon;
-
-import org.eclipse.gemoc.trace.commons.model.trace.Step;
 
 public class EnginesStatusView extends ViewPart implements IEngineAddon, IEngineRegistrationListener {
 
@@ -59,14 +58,11 @@ public class EnginesStatusView extends ViewPart implements IEngineAddon, IEngine
 	 */
 	public static final String ID = "org.eclipse.gemoc.executionframework.ui.views.engine.EnginesStatusView";
 
-	public TreeViewer _viewer;
+	private TreeViewer _viewer;
 	private ViewContentProvider _contentProvider;
+	private final List<AbstractEngineAction> _actions = new ArrayList<>();
 
-	/**
-	 * The constructor.
-	 */
-	public EnginesStatusView() {
-	}
+	private IExecutionEngine<?> selectedEngine = null;
 
 	@Override
 	public void dispose() {
@@ -109,9 +105,11 @@ public class EnginesStatusView extends ViewPart implements IEngineAddon, IEngine
 
 	private void buildMenu() {
 		// addActionToToolbar(new PauseResumeEngineDeciderAction());
-		addActionToToolbar(new StopEngineAction());
-		addActionToToolbar(new DisposeStoppedEngineAction());
-		addActionToToolbar(new DisposeAllStoppedEnginesAction());
+		_actions.add(new StopEngineAction());
+		_actions.add(new StopAllEnginesAction());
+		_actions.add(new DisposeStoppedEngineAction());
+		_actions.add(new DisposeAllStoppedEnginesAction());
+		_actions.forEach(a -> addActionToToolbar(a));
 		// addSeparatorToToolbar();
 		// addActionToToolbar(new SwitchDeciderAction());
 	}
@@ -166,6 +164,10 @@ public class EnginesStatusView extends ViewPart implements IEngineAddon, IEngine
 
 					case Stopped:
 						result = SharedIcons.getSharedImage(SharedIcons.STOPPED_ENGINE_ICON);
+						break;
+
+					case WaitingForEvent:
+						result = SharedIcons.getSharedImage(SharedIcons.WAITING_ENGINE_ICON);
 						break;
 
 					case WaitingLogicalStepSelection:
@@ -248,6 +250,9 @@ public class EnginesStatusView extends ViewPart implements IEngineAddon, IEngine
 					case Running:
 						result += "Running";
 						break;
+					case WaitingForEvent:
+						result += "Waiting For Event";
+						break;
 					case WaitingLogicalStepSelection:
 						result += "Waiting LogicalStep Selection";
 						break;
@@ -302,26 +307,16 @@ public class EnginesStatusView extends ViewPart implements IEngineAddon, IEngine
 		return null;
 	}
 
-	public void removeStoppedEngines() {
+	public void updateView() {
 		Display.getDefault().syncExec(new Runnable() {
 			public void run() {
 				// we may be triggered by a registry change or by an engine change
 				// if registry changes, then may need to observe the new engine
-				for (Entry<String, IExecutionEngine<?>> engineEntry : org.eclipse.gemoc.executionframework.engine.Activator.getDefault().gemocRunningEngineRegistry.getRunningEngines().entrySet()) {
-					switch (engineEntry.getValue().getRunningStatus()) {
-					case Stopped:
-						engineEntry.getValue().dispose();
-						org.eclipse.gemoc.executionframework.engine.Activator.getDefault().gemocRunningEngineRegistry.unregisterEngine(engineEntry.getKey());
-						break;
-					default:
-					}
-				}
 				_viewer.setInput(org.eclipse.gemoc.executionframework.engine.Activator.getDefault().gemocRunningEngineRegistry);
+				_actions.forEach(a -> a.updateButton());
 			}
 		});
 	}
-
-	private IExecutionEngine<?> selectedEngine = null;
 
 	private void fireEngineSelectionChanged() {
 		IExecutionEngine<?> engine = getSelectedEngine();
@@ -349,7 +344,7 @@ public class EnginesStatusView extends ViewPart implements IEngineAddon, IEngine
 
 	@Override
 	public void engineUnregistered(IExecutionEngine<?> engine) {
-		engine.getExecutionContext().getExecutionPlatform().removeEngineAddon(this);
+		updateView();
 	}
 
 	private void updateUserInterface(final IExecutionEngine<?> engine) {
@@ -366,20 +361,12 @@ public class EnginesStatusView extends ViewPart implements IEngineAddon, IEngine
 				}
 			}
 		});
-
-	}
-
-	@Override
-	public void engineAboutToStart(IExecutionEngine<?> engine) {
 	}
 
 	@Override
 	public void engineStarted(IExecutionEngine<?> engine) {
 		reselectEngine(engine);
-	}
-
-	@Override
-	public void aboutToExecuteStep(IExecutionEngine<?> executionEngine, Step<?> logicalStepToApply) {
+		updateView();
 	}
 
 	@Override
@@ -390,6 +377,7 @@ public class EnginesStatusView extends ViewPart implements IEngineAddon, IEngine
 	@Override
 	public void engineStopped(IExecutionEngine<?> engine) {
 		reselectEngine(engine);
+		updateView();
 	}
 
 	@Override
@@ -398,37 +386,22 @@ public class EnginesStatusView extends ViewPart implements IEngineAddon, IEngine
 	}
 
 	@Override
-	public void stepSelected(IExecutionEngine<?> engine, Step<?> selectedLogicalStep) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void stepExecuted(IExecutionEngine<?> engine, Step<?> logicalStepExecuted) {
 		reselectEngine(engine); // need to update the executed step count in the view
-
-	}
-
-	@Override
-	public void engineStatusChanged(IExecutionEngine<?> engine, RunStatus newStatus) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void proposedStepsChanged(IExecutionEngine<?> engine, Collection<Step<?>> logicalSteps) {
 		reselectEngine(engine);
-
-	}
-
-	@Override
-	public void engineAboutToDispose(IExecutionEngine<?> engine) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public List<String> validate(List<IEngineAddon> otherAddons) {
 		return new ArrayList<>();
+	}
+	
+	@Override
+	public void engineStatusChanged(IExecutionEngine<?> engine, RunStatus newStatus) {
+		reselectEngine(engine);
 	}
 }

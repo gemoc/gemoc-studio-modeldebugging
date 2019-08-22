@@ -58,6 +58,8 @@ public abstract class AbstractExecutionEngine<C extends IExecutionContext<R, ?, 
 	protected boolean _started = false;
 	protected boolean _isStopped = false;
 
+	protected String _name;
+
 	public Thread thread;
 	public boolean stopOnAddonError = false;
 	public Throwable error = null;
@@ -109,7 +111,6 @@ public abstract class AbstractExecutionEngine<C extends IExecutionContext<R, ?, 
 
 	@Override
 	public final void dispose() {
-
 		try {
 			stop();
 			notifyEngineAboutToDispose();
@@ -121,7 +122,7 @@ public abstract class AbstractExecutionEngine<C extends IExecutionContext<R, ?, 
 	}
 
 	public String getName() {
-		return engineKindName() + " " + _executionContext.getRunConfiguration().getExecutedModelURI();
+		return _name == null ? engineKindName() + " " + _executionContext.getRunConfiguration().getExecutedModelURI() : _name;
 	}
 
 	private void addonError(IEngineAddon addon, Exception e) {
@@ -211,8 +212,7 @@ public abstract class AbstractExecutionEngine<C extends IExecutionContext<R, ?, 
 			} catch (EngineStoppedException ese) {
 				Activator.getDefault().debug("Addon (" + addon.getClass().getSimpleName() + "@" + addon.hashCode() + ") has received stop command  with message : " + ese.getMessage());
 				stop();
-				throw ese; // do not continue to execute anything, forward
-							// exception
+				throw ese; // do not continue to execute anything, forward exception
 			} catch (Exception e) {
 				addonError(addon, e);
 			}
@@ -320,23 +320,19 @@ public abstract class AbstractExecutionEngine<C extends IExecutionContext<R, ?, 
 	public final void startSynchronous() {
 		try {
 			notifyEngineAboutToStart();
-			Activator.getDefault().gemocRunningEngineRegistry.registerEngine(getName(), AbstractExecutionEngine.this);
+			_name = Activator.getDefault().gemocRunningEngineRegistry.registerEngine(getName(), AbstractExecutionEngine.this);
 			setEngineStatus(EngineStatus.RunStatus.Running);
 			beforeStart();
 			notifyEngineStarted();
 			try {
 				performStart();
 			} finally {
-				// We always try to commit the last remaining
-				// transaction
+				// We always try to commit the last remaining transaction
 				commitCurrentTransaction();
 			}
-
 		} catch (EngineStoppedException stopException) {
-			// not really an error, simply print the stop exception
-			// message
+			// not really an error, simply print the stop exception message
 			Activator.getDefault().info("Engine stopped by the user : " + stopException.getMessage());
-
 		} catch (Throwable e) {
 			error = e;
 			e.printStackTrace();

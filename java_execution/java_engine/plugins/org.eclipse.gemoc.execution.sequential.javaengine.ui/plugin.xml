@@ -82,6 +82,14 @@
             public="true"
             sourceLocatorId="org.eclipse.gemoc.execution.sequential.javaengine.ui.sourceLocator">
       </launchConfigurationType>
+      <launchConfigurationType
+            delegate="org.eclipse.gemoc.execution.sequential.javaengine.ui.launcher.EventBasedLauncher"
+            id="org.eclipse.gemoc.execution.sequential.eventbased.javaengine.ui.launcher"
+            modes="run, debug"
+            name="Gemoc Sequential Event-Based eXecutable Model"
+            public="true"
+            sourceLocatorId="org.eclipse.gemoc.execution.sequential.javaengine.ui.sourceLocator">
+      </launchConfigurationType>
    </extension>
     <extension
           point="org.eclipse.debug.ui.debugModelPresentations">
@@ -103,6 +111,11 @@
         configTypeID="org.eclipse.gemoc.execution.sequential.javaengine.ui.launcher"
         id="org.eclipse.gemoc.execution.sequential.javaengine.ui.launcher.image">
     </launchConfigurationTypeImage>
+    <launchConfigurationTypeImage
+          configTypeID="org.eclipse.gemoc.execution.sequential.eventbased.javaengine.ui.launcher"
+          icon="icons/IconeGemocModel-16.png"
+          id="org.eclipse.gemoc.execution.sequential.eventbased.javaengine.ui.launcher.image">
+    </launchConfigurationTypeImage>
 	</extension>
 	   <extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
 	    <launchConfigurationTabGroup
@@ -110,6 +123,11 @@
            id="org.eclipse.gemoc.execution.sequential.javaengine.ui.launcher.tabGroup"
            type="org.eclipse.gemoc.execution.sequential.javaengine.ui.launcher">
 	    </launchConfigurationTabGroup>
+        <launchConfigurationTabGroup
+              class="org.eclipse.gemoc.execution.sequential.javaengine.ui.launcher.EventBasedLauncherTabGroup"
+              id="org.eclipse.gemoc.execution.sequential.eventbased.javaengine.ui.launcher.tabGroup"
+              type="org.eclipse.gemoc.execution.sequential.eventbased.javaengine.ui.launcher">
+        </launchConfigurationTabGroup>
 	</extension>
     <extension
           point="org.eclipse.core.expressions.propertyTesters">
@@ -153,6 +171,46 @@
             </contextLabel>
             <contextLabel
                   label="Gemoc Sequential eXecutable Model"
+                  mode="debug">
+            </contextLabel>
+         </contextualLaunch>
+      </shortcut>
+      <shortcut
+            class="org.eclipse.gemoc.execution.sequential.javaengine.ui.launcher.EventBasedLauncher"
+            description="Create a configuration to launch an Eclipse application in debug mode."
+            icon="icons/IconeGemocModel-16.png"
+            id="org.eclipse.gemoc.execution.sequential.javaengine.ui.GemocExecutableReflectiveModel"
+            label="Gemoc Sequential Event-Based eXecutable Model"
+            modes="run, debug">
+         <configurationType
+               id="org.eclipse.gemoc.execution.sequential.eventbased.javaengine.ui.launcher">
+         </configurationType>
+         <contextualLaunch>
+            <enablement>
+               <with
+                     variable="selection">
+                  <count
+                        value="1">
+                  </count>
+                  <iterate>
+                     <or>
+                        <test
+                              property="org.eclipse.gemoc.execution.sequential.javaengine.ui.propertytesters.isExecutableDomainSpecificModel">
+                        </test>
+                        <test
+                              property="org.eclipse.debug.ui.matchesPattern"
+                              value="*.xmi">
+                        </test>
+                     </or>
+                  </iterate>
+               </with>
+            </enablement>
+            <contextLabel
+                  label="Gemoc Sequential Event-Based eXecutable Model"
+                  mode="run">
+            </contextLabel>
+            <contextLabel
+                  label="Gemoc Sequential Event-Based eXecutable Model"
                   mode="debug">
             </contextLabel>
          </contextualLaunch>

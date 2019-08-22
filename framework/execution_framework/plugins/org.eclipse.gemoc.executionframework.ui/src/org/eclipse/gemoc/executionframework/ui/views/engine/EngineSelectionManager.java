@@ -21,7 +21,7 @@ import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine;
  */
 public class EngineSelectionManager implements IEngineSelectionListener{
 
-	private IExecutionEngine _lastSelectedEngine;
+	private IExecutionEngine<?> _lastSelectedEngine;
 	private final List<IEngineSelectionListener> engineSelectionListeners;
 	
 	public EngineSelectionManager(){
@@ -30,12 +30,12 @@ public class EngineSelectionManager implements IEngineSelectionListener{
 		engineSelectionListeners.add(this);
 	}
 	
-	public IExecutionEngine get_lastSelectedEngine() {
+	public IExecutionEngine<?> get_lastSelectedEngine() {
 		return _lastSelectedEngine;
 	}
 
 	@Override
-	public void engineSelectionChanged(IExecutionEngine engine) {
+	public void engineSelectionChanged(IExecutionEngine<?> engine) {
 		_lastSelectedEngine = engine;		
 	}
 

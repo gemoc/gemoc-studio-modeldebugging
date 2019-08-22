@@ -10,85 +10,69 @@
  *******************************************************************************/
 package org.eclipse.gemoc.executionframework.ui.views.engine.actions;
 
+import org.eclipse.gemoc.executionframework.ui.Activator;
+import org.eclipse.gemoc.executionframework.ui.views.engine.IEngineSelectionListener;
+import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IWorkbenchPartSite;
-import org.eclipse.gemoc.executionframework.ui.Activator;
-import org.eclipse.gemoc.executionframework.ui.views.engine.IEngineSelectionListener;
-import org.eclipse.gemoc.xdsmlframework.api.core.ExecutionMode;
-import org.eclipse.gemoc.xdsmlframework.api.core.IExecutionEngine;
-import org.eclipse.gemoc.xdsmlframework.api.core.EngineStatus.RunStatus;
 
-public abstract class AbstractEngineAction extends Action  implements IMenuCreator, IEngineSelectionListener{
+public abstract class AbstractEngineAction extends Action implements IMenuCreator, IEngineSelectionListener {
 
-	public AbstractEngineAction(){	
+	protected IExecutionEngine<?> _currentSelectedEngine;
+
+	public AbstractEngineAction() {
 		super("fake", AS_PUSH_BUTTON);
 		setMenuCreator(this);
 		setEnabled(false);
-		
+
 		init();
 		updateButton();
-		
+
 		Activator.getDefault().getEngineSelectionManager().addEngineSelectionListener(this);
 	}
-	public AbstractEngineAction(int style){	
+
+	public AbstractEngineAction(int style) {
 		super("fake", style);
 		setMenuCreator(this);
 		setEnabled(false);
-		
+
 		init();
 		updateButton();
-		
+
 		Activator.getDefault().getEngineSelectionManager().addEngineSelectionListener(this);
 	}
-	
-	protected void init(){
-		
+
+	protected void init() {
 	}
-	protected void updateButton(){
-		
+
+	public void updateButton() {
 	}
 
 	@Override
-	public void dispose() 
-	{
+	public void dispose() {
 		Activator.getDefault().getEngineSelectionManager().removeEngineSelectionListener(this);
 	}
-	
+
 	protected void showMessage(IWorkbenchPartSite partSite, String message) {
-		MessageDialog.openInformation(
-			partSite.getShell(),
-			"Gemoc Engines Status",
-			message);
+		MessageDialog.openInformation(partSite.getShell(), "Gemoc Engines Status", message);
 	}
+
+	public IExecutionEngine<?> getCurrentSelectedEngine() {
 	
 	
-	protected IExecutionEngine<?> _currentSelectedEngine;
-	public IExecutionEngine<?> getCurrentSelectedEngine(){
 		return _currentSelectedEngine;
 	}
-	
+
 	@Override
-	public void engineSelectionChanged(IExecutionEngine<?> engine) 
-	{
+	public void engineSelectionChanged(IExecutionEngine<?> engine) {
 		_currentSelectedEngine = engine;
-		
-		if (_currentSelectedEngine == null)
-		{
-			setEnabled(false);			
-		}
-		else
-		{
-			setEnabled(
-					!_currentSelectedEngine.getRunningStatus().equals(RunStatus.Stopped)
-					&& _currentSelectedEngine.getExecutionContext().getExecutionMode().equals(ExecutionMode.Animation));
-						
-		}
+		updateButton();
 	}
-	
+
 	@Override
 	public Menu getMenu(Control parent) {
 		return null;
@@ -98,5 +82,5 @@ public abstract class AbstractEngineAction extends Action  implements IMenuCreat
 	public Menu getMenu(Menu parent) {
 		return null;
 	}
-	
+
 }
