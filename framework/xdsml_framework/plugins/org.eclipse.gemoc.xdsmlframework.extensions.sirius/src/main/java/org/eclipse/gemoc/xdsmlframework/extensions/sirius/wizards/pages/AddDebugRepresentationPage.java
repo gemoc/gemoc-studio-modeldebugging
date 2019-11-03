@@ -77,7 +77,7 @@ public class AddDebugRepresentationPage extends WizardPage {
 
 	public void setDiagram(DiagramDescription diagram) {
 		debugLayerCombo.removeAll();
-		for (Layer layer : diagram.getAllLayers()) {
+		for (Layer layer : diagram.getAdditionalLayers()) {
 			debugLayerCombo.add(layer.getName());
 		}
 		debugLayerCombo.setText("Debug");

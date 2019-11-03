@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.gemoc.xdsmlframework.extensions.sirius.wizards.pages;
 
+import org.eclipse.gemoc.xdsmlframework.extensions.sirius.wizards.NewGemocDebugRepresentationWizard;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.sirius.diagram.description.DiagramDescription;
@@ -21,7 +22,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.gemoc.xdsmlframework.extensions.sirius.wizards.NewGemocDebugRepresentationWizard;
 
 public class NewViewPointProjectPage extends WizardPage {
 
