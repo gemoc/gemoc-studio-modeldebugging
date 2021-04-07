@@ -13,7 +13,9 @@ package org.eclipse.gemoc.executionframework.engine.core;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -90,6 +92,14 @@ public class RunConfiguration implements IRunConfiguration {
 			Activator.getDefault().error(e.getMessage(), e);
 			return defaultValue;
 		}
+	}
+	//added from Dorian's work
+	protected Map<String, String> getAttribute(String attributeName, Map<String, String> defaultValue) throws CoreException {
+		return _launchConfiguration.getAttribute(attributeName, defaultValue);
+	}
+	//added from Dorian's work
+	protected Set<String> getAttribute(String attributeName, Set<String> defaultValue) throws CoreException {
+		return _launchConfiguration.getAttribute(attributeName, defaultValue);
 	}
 
 	private int _animationDelay = 0;
