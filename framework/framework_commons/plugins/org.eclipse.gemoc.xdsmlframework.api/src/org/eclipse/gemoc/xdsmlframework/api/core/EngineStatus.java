@@ -22,8 +22,8 @@ public class  EngineStatus {
 	
 	Step<?> chosenLogicalStep;
 
-
-	public enum RunStatus { Initializing, Running, WaitingLogicalStepSelection, Stopped}
+	//the 'waitingForEvent' is added based on Dorian's work
+	public enum RunStatus { Initializing, Running, WaitingForEvent, WaitingLogicalStepSelection, Stopped}
 
 	
 	/**
