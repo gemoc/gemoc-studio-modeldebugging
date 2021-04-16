@@ -232,7 +232,11 @@ public class GenericEventManager implements IEventManager {
 				.findFirst().orElse(null);
 		
 		if (language != null) {
-			final Resource res = resSet.getResource(URI.createURI(language.getAttribute("xdsmlFilePath")), true);
+			String xdsmlFilePath = language.getAttribute("xdsmlFilePath");
+			if (!xdsmlFilePath.startsWith("platform:/plugin")) {
+				xdsmlFilePath = "platform:/plugin" + xdsmlFilePath;
+			}
+			final Resource res = resSet.getResource(URI.createURI(xdsmlFilePath), true);
 			final Dsl dsl = (Dsl) res.getContents().get(0);
 			final Bundle bundle = Platform.getBundle(language.getContributor().getName());
 
